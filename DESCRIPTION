@@ -1,0 +1,18 @@
+Package: BatNav
+Title: BatNav shiny application
+Version: 0.0.0.9000
+Authors@R: 
+    person( "Romain", 
+            "Fernandez",
+            "romain.fernandez@lougeneste.com", 
+            role = c("aut", "cre"), 
+            comment = c(ORCID = "0009-0004-0984-7301"))
+Description: BatNav shiny application
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.0
+Imports: 
+    here,
+    shiny,
+    shinydashboard
