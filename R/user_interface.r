@@ -5,18 +5,36 @@ ui <-  dashboardPage(
         ),
 
         dashboardSidebar(
-            menuItem("Charger les données", tabName = "readData", icon = icon("poll")
+            sidebarMenu(
+                menuItem(   "Importation des données", 
+                            tabName = "readData", 
+                            icon = icon("download-alt", lib = "glyphicon")
+                ),
+
+                menuItem(   "Visualisation des données",
+                            tabName = "VizData",
+                            icon = icon("eye-open", lib = "glyphicon"))
             )
         ),
 
         dashboardBody(
-            tabItem(tabName = "readData", 
-                    h1("Charger les données"), 
-                    fileInput(  inputId = "dataFile", 
-                                label = NULL,
-                                multiple = TRUE,
-                                buttonLabel = "Choisir un dossier", 
-                                placeholder = "Aucun dossier")
+            tabItems(
+                tabItem(tabName = "readData", 
+                        h1("Importation des données", align = "center"),
+                        h2("Rechercher les tableaux de localisation"), 
+                        fileInput(  inputId = "BDDFile", 
+                                    label = NULL,
+                                    multiple = TRUE,
+                                    buttonLabel = "Choisir les fichiers", 
+                                    placeholder = "Aucun fichier"),
+                        
+                        uiOutput("titlePreviewBDD"),
+                        dataTableOutput(outputId = "previewBDD")
+                ),
+
+                tabItem(tabName = "VizData",
+                        h1("Visualisation des données", align = "center"),
+                )
             )
         )
 )
