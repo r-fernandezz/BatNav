@@ -1,15 +1,9 @@
 server <- function(input, output) { 
 
-    #Print title when files are uploaded
-    output$titlePreviewBDD <- renderUI({
-        req(input$BDDFile)
-        h2("Visualiser les bases de données")
-    }) 
-
-    # Preview bdd
-    output$previewBDD <- renderDataTable({
+    df_gps <- reactive({
 
         req(input$BDDFile)
+        req(input$dateRange)
         
         df_ls <- lapply(input$BDDFile$datapath, read.csv, header = TRUE)
         df_ls <- lapply(df_ls, subset, select = c(  "name", "DeviceID", "Year", 
@@ -27,8 +21,17 @@ server <- function(input, output) {
                                                     "failed", "DataSource", "NewDataSource",
                                                     "NewDevice", "Index"))
         df_merge <- do.call(rbind, df_ls)
-        assign("df_merge", df_merge, envir = .GlobalEnv) #for dev
+        #assign("df_merge", df_merge, envir = .GlobalEnv) #for dev
+        #assign("dateRange", input$dateRange, envir = .GlobalEnv) #for dev
+        df_filter <- filterGPSdata(df = df_merge, DataMin = input$dateRange[1], DataMax = input$dateRange[2])
 
+        return(df_filter)
+
+    })
+
+    # Preview bdd
+    output$previewBDD <- renderDataTable({
+        df_gps()
     }, options = list(scrollX = TRUE, pageLength = 8))
 
 }

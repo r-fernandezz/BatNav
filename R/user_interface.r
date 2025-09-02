@@ -6,7 +6,7 @@ ui <-  dashboardPage(
 
         dashboardSidebar(
             sidebarMenu(
-                menuItem(   "Importation des données", 
+                menuItem(   "Importation des données GPS", 
                             tabName = "readData", 
                             icon = icon("download-alt", lib = "glyphicon")
                 ),
@@ -20,16 +20,27 @@ ui <-  dashboardPage(
         dashboardBody(
             tabItems(
                 tabItem(tabName = "readData", 
-                        h1("Importation des données", align = "center"),
-                        h2("Rechercher les tableaux de localisation"), 
+                        h1("Importation des données GPS", align = "center"),
+
+                        h2("Période de déploiement des GPS"),
+                        dateRangeInput(inputId = "dateRange",
+                                        label = NULL,
+                                        format = "dd-mm-yyyy",
+                                        language = "fr",
+                                        separator = "à"
+                        ),
+
+                        h2("Tableaux des localisation GPS"), 
                         fileInput(  inputId = "BDDFile", 
                                     label = NULL,
                                     multiple = TRUE,
                                     buttonLabel = "Choisir les fichiers", 
-                                    placeholder = "Aucun fichier"),
-                        
-                        uiOutput("titlePreviewBDD"),
+                                    placeholder = "Aucun fichier"
+                        ),
+
+                        h2("Vérification des données importées"),
                         dataTableOutput(outputId = "previewBDD")
+
                 ),
 
                 tabItem(tabName = "VizData",
