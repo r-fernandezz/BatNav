@@ -38,6 +38,14 @@ ui <-  dashboardPage(
                                     placeholder = "Aucun fichier"
                         ),
 
+                        h2("Type de points conservés dans l'analyse"),
+                        radioButtons(   inputId = "speedZero",
+                                        label = NULL,
+                                        choices = c("Conserver tous les points" = FALSE,
+                                                    "Conserver uniquement les points avec une vitesse de 0 km/h" = TRUE),
+                                        inline = TRUE
+                        ),
+
                         h2("Vérification des données importées"),
                         dataTableOutput(outputId = "previewBDD")
 

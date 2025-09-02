@@ -4,6 +4,7 @@ server <- function(input, output) {
 
         req(input$BDDFile)
         req(input$dateRange)
+        req(input$speedZero)
         
         df_ls <- lapply(input$BDDFile$datapath, read.csv, header = TRUE)
         df_ls <- lapply(df_ls, subset, select = c(  "name", "DeviceID", "Year", 
@@ -23,7 +24,11 @@ server <- function(input, output) {
         df_merge <- do.call(rbind, df_ls)
         #assign("df_merge", df_merge, envir = .GlobalEnv) #for dev
         #assign("dateRange", input$dateRange, envir = .GlobalEnv) #for dev
-        df_filter <- filterGPSdata(df = df_merge, DataMin = input$dateRange[1], DataMax = input$dateRange[2])
+        #assign("speedZero", input$speedZero, envir = .GlobalEnv) #for dev
+        df_filter <- filterGPSdata( df = df_merge, 
+                                    DataMin = input$dateRange[1], 
+                                    DataMax = input$dateRange[2],
+                                    speedZero = input$speedZero)
 
         return(df_filter)
 
