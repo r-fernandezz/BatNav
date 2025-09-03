@@ -20,7 +20,7 @@ ui <-  dashboardPage(
         dashboardBody(
             tabItems(
                 tabItem(tabName = "readData", 
-                    h1("Quelles sont les données que vous voulez considérer dans votre analyse ?", align = "center"),
+                    h1("Quelles sont vos données pour cette analyse ?", align = "center"),
 
                     h2("Période de déploiement des GPS"),
                     dateRangeInput(inputId = "dateRange",
@@ -61,7 +61,19 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataPNR",
                         h1("Emprise sur le Parc National de La Réunion", align = "center"),
-                        plotOutput("map_PNR")
+                        fluidRow(
+                            box(
+                                title = "Carte des localisations",
+                                width = 6,
+                                plotOutput("map_PNR")
+                            ),
+                            box(
+                                title = "Résumé des localisations",
+                                width = 6,
+                                tableOutput("tab_PNR")
+                            )
+                        )
+                        
                 )
             )
         )

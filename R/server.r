@@ -50,15 +50,48 @@ server <- function(input, output) {
 
         req(df_gps())
         df_gpsRCT <- df_gps()
-        
+
         gps_sf <- st_as_sf(df_gpsRCT, coords = c("Longitudedecimal", "Latitudedecimal"), crs = st_crs("EPSG:4326"))
         ggplot() +
-        geom_sf(data = PNR_shp_coeur, fill = "#32913a", alpha = 0.5) +
-        geom_sf(data = PNR_shp_adh, fill = "#15ff00", alpha = 0.5) +
-        geom_sf(data = PNR_shp_ouvAdh, fill = "#ffe600", alpha = 0.5) +
-        geom_sf(data = gps_sf, color = "#ff0000", size = 1) +
-        theme_minimal()
+        geom_sf(data = PNR_shp, aes(fill = Type), alpha = 0.5) +
+        geom_sf(data = gps_sf, aes(color = "Localisations GPS"), size = 1) +
+        scale_fill_manual(values = c(
+                            "Coeur du Parc national" = "#32913a",
+                            "Aire d'Adhésion" = "#15ff00",
+                            "Aire ouverte à l'Adhésion" = "#ffe600"
+                        )) +
+        scale_color_manual(values = c("Localisations GPS" =  "#ff0000")) +
+        labs(fill = NULL, color = NULL) +
+        theme_minimal() +
+        theme(
+            legend.position = "bottom"
+        )
 
     })
+
+    output$tab_PNR <- renderTable({
+
+        req(df_gps())
+        df_gpsRCT <- df_gps()
+
+        gps_sf <- st_as_sf(df_gpsRCT, coords = c("Longitudedecimal", "Latitudedecimal"), crs = st_crs("EPSG:4326"))
+        gps_sf <- st_transform(gps_sf, st_crs(PNR_shp))
+        pt <- st_within(gps_sf, PNR_shp, sparse = FALSE)
+        colnames(pt) <- gsub(" ", "_", PNR_shp$Type)
+        
+        df <- data.frame(
+                inside  = colSums(pt == TRUE),
+                proportion = (colSums(pt == TRUE)/nrow(df_gpsRCT))*100,
+                row.names = gsub("_", " ", colnames(pt))
+        )
+
+        df <- df[-3, ] #remove one category
+        df["Hors du parc", ] <-  c( as.numeric(nrow(df_gpsRCT) - sum(df$inside)), 
+                                    as.numeric(((nrow(df_gpsRCT) - sum(df$inside))/nrow(df_gpsRCT))*100)) # add line outside PNR
+        colnames(df) <- c("Nombre de points l'intérieur", "Pourcentage")
+
+        return(df)
+
+    }, rownames = TRUE, align = "c")
 
 }
