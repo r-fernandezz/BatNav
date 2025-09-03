@@ -1,5 +1,6 @@
 server <- function(input, output) { 
 
+    # Import location database
     df_gps <- reactive({
 
         req(input$BDDFile)
@@ -36,7 +37,7 @@ server <- function(input, output) {
 
     })
 
-    # Preview bdd
+    # Preview location database
     output$previewBDD <- renderDataTable({
         df_gps()
 
@@ -69,6 +70,7 @@ server <- function(input, output) {
 
     })
 
+    # Table with PNR areas
     output$tab_PNR <- renderTable({
 
         req(df_gps())
@@ -94,4 +96,26 @@ server <- function(input, output) {
 
     }, rownames = TRUE, align = "c")
 
+    # Table with OCS areas
+    output$tab_OCS <- renderDataTable({
+
+        req(df_gps())
+        df_gpsRCT <- df_gps()
+
+        gps_sf <- st_as_sf(df_gpsRCT, coords = c("Longitudedecimal", "Latitudedecimal"), crs = st_crs("EPSG:4326"))
+        gps_sf <- st_transform(gps_sf, st_crs(ocs_shp))
+        pt <- st_within(gps_sf, ocs_shp, sparse = TRUE) #st_within creates an indice for each polygon
+        pt_n3 <- sapply(pt, function(x) if(length(x) > 0) ocs_shp$Niveau3[x[1]] else NA) #pt return indice
+        tab_n3 <- table(pt_n3)
+        df <- data.frame(
+                    Type_oso = names(tab_n3),
+                    Nb_point = as.numeric(tab_n3),
+                    proportion = round((as.numeric(tab_n3)/nrow(df_gpsRCT))*100, digit = 2)
+                    )
+        
+        colnames(df) <- c("Types de végétation", "Nombre de points", "Proportion")
+
+        return(df)
+
+    })
 }

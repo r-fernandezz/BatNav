@@ -18,4 +18,5 @@ Imports:
     here,
     sf,
     shiny,
+    shinycssloaders,
     shinydashboard

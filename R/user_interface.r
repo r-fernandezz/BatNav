@@ -11,8 +11,13 @@ ui <-  dashboardPage(
                             icon = icon("download-alt", lib = "glyphicon")
                 ),
 
-                menuItem(   "Parc National Réunion",
+                menuItem(   "Parc National de La Réunion",
                             tabName = "VizDataPNR",
+                            icon = icon("eye-open", lib = "glyphicon")
+                ),
+
+                menuItem(   "Occupation du sol",
+                            tabName = "VizDataOCS",
                             icon = icon("eye-open", lib = "glyphicon"))
             )
         ),
@@ -55,7 +60,7 @@ ui <-  dashboardPage(
                     ),
 
                     h2("Vérification des données importées"),
-                    dataTableOutput(outputId = "previewBDD")
+                    withSpinner(dataTableOutput(outputId = "previewBDD"))
 
                 ),
 
@@ -65,15 +70,20 @@ ui <-  dashboardPage(
                             box(
                                 title = "Carte des localisations",
                                 width = 6,
-                                plotOutput("map_PNR")
+                                withSpinner(plotOutput("map_PNR"))
                             ),
                             box(
                                 title = "Résumé des localisations",
                                 width = 6,
-                                tableOutput("tab_PNR")
+                                withSpinner(tableOutput("tab_PNR"))
                             )
                         )
                         
+                ),
+
+                tabItem(tabName = "VizDataOCS",
+                        h1("Zones fréquentées par les individus"),
+                        withSpinner(dataTableOutput(outputId = "tab_OCS"))
                 )
             )
         )
