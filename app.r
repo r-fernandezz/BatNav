@@ -3,7 +3,7 @@ source(here::here("R", "global.r"))
 
 # To load all functions (except "ui", "server" and "global") used to build Shiny application
 ls <- list.files(here::here("R"), full.names = TRUE)
-ls_sub <- grepv("server.r|user_interface.r||global.r", ls, invert = TRUE)
+ls_sub <- grepv("server.r|user_interface.r|global.r", ls, invert = TRUE)
 lapply(ls_sub, source)
 
 # To load server and ui functions
