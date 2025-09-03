@@ -11,8 +11,8 @@ ui <-  dashboardPage(
                             icon = icon("download-alt", lib = "glyphicon")
                 ),
 
-                menuItem(   "Visualisation des données",
-                            tabName = "VizData",
+                menuItem(   "Parc National Réunion",
+                            tabName = "VizDataPNR",
                             icon = icon("eye-open", lib = "glyphicon"))
             )
         ),
@@ -20,39 +20,48 @@ ui <-  dashboardPage(
         dashboardBody(
             tabItems(
                 tabItem(tabName = "readData", 
-                        h1("Importation des données GPS", align = "center"),
+                    h1("Quelles sont les données que vous voulez considérer dans votre analyse ?", align = "center"),
 
-                        h2("Période de déploiement des GPS"),
-                        dateRangeInput(inputId = "dateRange",
-                                        label = NULL,
-                                        format = "dd-mm-yyyy",
-                                        language = "fr",
-                                        separator = "à"
-                        ),
-
-                        h2("Tableaux des localisation GPS"), 
-                        fileInput(  inputId = "BDDFile", 
+                    h2("Période de déploiement des GPS"),
+                    dateRangeInput(inputId = "dateRange",
                                     label = NULL,
-                                    multiple = TRUE,
-                                    buttonLabel = "Choisir les fichiers", 
-                                    placeholder = "Aucun fichier"
+                                    format = "dd-mm-yyyy",
+                                    language = "fr",
+                                    separator = "à"
+                    ),
+
+                    h2("Tableaux des localisation GPS"), 
+                    fileInput(  inputId = "BDDFile", 
+                                label = NULL,
+                                multiple = TRUE,
+                                buttonLabel = "Choisir les fichiers", 
+                                placeholder = "Aucun fichier"
+                    ),
+
+                    h2("Filtrage des points par la vitesse"),
+                    radioButtons(   
+                            inputId = "speedZero",
+                            label = NULL,
+                            choices = c("Conserver uniquement les points avec une vitesse de 0 km/h" = TRUE,
+                                        "Conserver tous les points" = FALSE)
                         ),
 
-                        h2("Type de points conservés dans l'analyse"),
-                        radioButtons(   inputId = "speedZero",
-                                        label = NULL,
-                                        choices = c("Conserver tous les points" = FALSE,
-                                                    "Conserver uniquement les points avec une vitesse de 0 km/h" = TRUE),
-                                        inline = TRUE
-                        ),
+                    h2("Filtrage des points par une emprise spatiale"),
+                    radioButtons(   inputId = "filterWindow",
+                                    label = NULL,
+                                    choices = c("Supprimer les points hors de la fenêtre 10°S–30°S, 40°E–65°E" = TRUE,
+                                                "Conserver les points hors de la fenêtre 10°S–30°S, 40°E–65°E" = FALSE
+                                                )
+                    ),
 
-                        h2("Vérification des données importées"),
-                        dataTableOutput(outputId = "previewBDD")
+                    h2("Vérification des données importées"),
+                    dataTableOutput(outputId = "previewBDD")
 
                 ),
 
-                tabItem(tabName = "VizData",
-                        h1("Visualisation des données", align = "center"),
+                tabItem(tabName = "VizDataPNR",
+                        h1("Emprise sur le Parc National de La Réunion", align = "center"),
+                        plotOutput("map_PNR")
                 )
             )
         )
