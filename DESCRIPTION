@@ -20,4 +20,5 @@ Imports:
     sf,
     shiny,
     shinycssloaders,
-    shinydashboard
+    shinydashboard,
+    terra

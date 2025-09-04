@@ -139,4 +139,39 @@ server <- function(input, output) {
         return(df)
 
     }, align = "c")
+
+    # Map with RPG areas
+    output$map_RPG <- renderPlot({
+
+        req(df_gps())
+        get_map_RPG(df_gps(), rpg_shp)
+
+    })
+
+    # Download map RPG
+    output$download_map_RPG <- downloadHandler(
+        filename = function() {
+            paste("map_RPG_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_map_RPG(df_gps(), rpg_shp), device = "png", width = 10, height = 8)
+        }
+    )
+
+    # Table with RPG areas
+    output$tab_RPG <- renderDataTable({
+
+        req(df_gps())
+
+        df <- pt_within_poly(df_gps(), rpg_shp, arg_shp = "CODE_CULTU")
+        df_merged <- merge(df, rpgRef_tab, by.x = "type", by.y = "CODE", all.x = TRUE)
+        df_order <- df_merged[, c("LIBELLE_CULTURE","nb_point", "proportion")]
+        
+        nb_pt_ext <- nrow(df_gps()) - sum(df_order$nb_point)
+        df_order <- rbind(df_order, data.frame(LIBELLE_CULTURE = "Hors RPG", nb_point = nb_pt_ext, proportion = round(nb_pt_ext / nrow(df_gps()) * 100, 2)))
+        colnames(df_order) <- c("Types de parcelles", "Nombre de points", "Proportion")
+        
+        return(df_order)
+
+    })
 }

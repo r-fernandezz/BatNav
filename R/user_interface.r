@@ -12,17 +12,22 @@ ui <-  dashboardPage(
                 ),
                 menuItem("Croisement couches SIG", icon = icon("book", lib = "glyphicon"),
                 
-                    menuSubItem(   "Parc National de La Réunion",
+                    menuSubItem("Parc National de La Réunion",
                                 tabName = "VizDataPNR",
                                 icon = icon("eye-open", lib = "glyphicon")
                     ),
 
-                    menuSubItem(   "Occupation du sol",
+                    menuSubItem("Occupation du sol",
                                 tabName = "VizDataOCS",
                                 icon = icon("eye-open", lib = "glyphicon")),
 
-                    menuSubItem(   "Plan Local d'urbanisme",
+                    menuSubItem("Plan Local d'Urbanisme (PLU)",
                                 tabName = "VizDataPLU",
+                                icon = icon("eye-open", lib = "glyphicon")
+                    ),
+
+                    menuSubItem("Réf. Parcellaire Graphique (RPG)",
+                                tabName = "VizDataRPG",
                                 icon = icon("eye-open", lib = "glyphicon")
                     )
                 ),
@@ -164,6 +169,33 @@ ui <-  dashboardPage(
                                 title = "Dénombrement des localisations",
                                 width = 6,
                                 withSpinner(tableOutput("tab_PLU"))
+                            )
+                        )
+                ),
+
+                tabItem(tabName = "VizDataRPG",
+                        h1("Types de parcelles agricoles fréquentées"),
+                        p(
+                            "Analyses réalisées avec les données du Référentiel Parcellaire Graphique (RPG) 2024",
+                            a("(source)", 
+                                href = "https://geoservices.ign.fr/rpg#telechargementrpg2024", 
+                                target = "_blank"
+                            )
+                        ),
+                        fluidRow(
+                            box(
+                                title = "Carte des localisations",
+                                width = 6,
+                                withSpinner(plotOutput("map_RPG")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_map_RPG", "Télécharger la carte")
+                                ),
+                            ),
+                            box(
+                                title = "Dénombrement des localisations",
+                                width = 6,
+                                withSpinner(dataTableOutput("tab_RPG"))
                             )
                         )
                 )
