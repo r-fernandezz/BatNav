@@ -1,15 +1,26 @@
 ui <-  dashboardPage(
 
         dashboardHeader(
-            title = "BatNav"
+            title = tags$a(
+                "BatNav",
+                href = "https://github.com/r-fernandezz/BatNav",
+                target = "_blank",
+                style = "color: #fff;"
+            )
         ),
 
         dashboardSidebar(
             sidebarMenu(
+                menuItem("Accueil", 
+                         tabName = "home", 
+                         icon = icon("home", lib = "glyphicon")
+                ),
+
                 menuItem(   "Paramétrage des données GPS", 
                             tabName = "readData", 
                             icon = icon("map-marker", lib = "glyphicon")
                 ),
+
                 menuItem("Croisement couches SIG", icon = icon("book", lib = "glyphicon"),
                 
                     menuSubItem("Parc National de La Réunion",
@@ -45,23 +56,88 @@ ui <-  dashboardPage(
                     br(),
                     a(  "Code on Github",
                         href = "https://github.com/r-fernandezz/BatNav",
-                        target = "_blank"
+                        target = "_blank",
+                        style = "color: #9C9A9A;"
                     ),
-                    style = "position: absolute; bottom: 5px; color: #888; font-size: 10px; text-align: center; width: 220px;"
+                    style = "position: absolute; bottom: 5px; color: #9C9A9A; font-size: 10px; text-align: center; width: 220px;"
                 )
             )
         ),
 
         dashboardBody(
-            tags$head( #personalised CSS for centering all tables
+            tags$head( #personalised CSS
                 tags$style(HTML("
-                .shiny-table {
-                    margin-left: auto !important;
-                    margin-right: auto !important;
-                }
+                    /* For centering all tables */
+                    .shiny-table {
+                        margin-left: auto !important;
+                        margin-right: auto !important;
+                    }
+
+                    /* Header color */
+                    .skin-blue .main-header .navbar {
+                    background-color: #F57627;  !important;
+                    }
+
+                    .skin-blue .main-header .logo {
+                    background-color: #F57627;  !important;
+                    color: #fff;  !important;
+                    }
+
+                    /* Flyover color */
+                    .logo:hover, 
+                    .skin-blue .main-header .sidebar-toggle:hover {
+                    background-color: #B02B00 !important; /* couleur au survol */
+                    color: #fff !important;
+                    }
+
+                    /* Sidebar color */
+                    .skin-blue .main-sidebar {
+                    background-color: #34495e;  !important;
+                    }
+
+                    /* Sidebar text color */
+                    .skin-blue .sidebar a {
+                    color: #fff;  !important;
+                    }
+
+                    /* Body background color */
+                    .content-wrapper, .right-side {
+                    background-color: #f4f6f7;
+                    }
+
+                    /* Box color */
+                    .box {
+                    border-top: 3px solid #F57627;
+                    }
+
+                    /* Button color */
+                    .btn {
+                    background-color: #F57627;
+                    color: #fff;
+                    border: none;
+                    }
+
+                    .btn:hover {
+                    background-color: #F57627;
+                    color: #fff;
+                    }
                 "))
             ),
             tabItems(
+                tabItem(tabName = "home",
+                    h1("Bienvenue dans BatNav !", align = "center"),
+                    br(),
+                    p("BatNav est une application R Shiny développée pour faciliter l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion."),
+                    p("L'application permet de :"),
+                    tags$ul(
+                        tags$li("Importer et prévisualiser des données GPS."),
+                        tags$li("Filtrer les données par période, vitesse et emprise spatiale."),
+                        tags$li("Croiser les données GPS avec des couches SIG."),
+                        tags$li("Visualiser les résultats et les exporter si besoin.")
+                    ),
+                    p("Pour commencer, rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres d'analyse. Ensuite, pour visualiser vos résultats déplacer vous dans les différents onglets disponibles."),
+                ),
+
                 tabItem(tabName = "readData", 
                     h1("Quelles sont vos données pour cette analyse ?", align = "center"),
 
