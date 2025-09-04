@@ -126,16 +126,29 @@ ui <-  dashboardPage(
             tabItems(
                 tabItem(tabName = "home",
                     h1("Bienvenue dans BatNav !", align = "center"),
-                    br(),
-                    p("BatNav est une application R Shiny développée pour faciliter l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion."),
-                    p("L'application permet de :"),
-                    tags$ul(
-                        tags$li("Importer et prévisualiser des données GPS."),
-                        tags$li("Filtrer les données par période, vitesse et emprise spatiale."),
-                        tags$li("Croiser les données GPS avec des couches SIG."),
-                        tags$li("Visualiser les résultats et les exporter si besoin.")
-                    ),
-                    p("Pour commencer, rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres d'analyse. Ensuite, pour visualiser vos résultats déplacer vous dans les différents onglets disponibles."),
+                    fluidRow(
+                        column(
+                            width = 3,
+                            tags$img(
+                                src = "icons/logoGCOI.png",  
+                                width = "100%",
+                                style = "max-width:150px; margin-top:30px;"
+                            )
+                        ),
+                        column(
+                            width = 9,
+                            br(),
+                            p("BatNav est une application R Shiny développée pour faciliter l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion."),
+                            p("L'application permet de :"),
+                            tags$ul(
+                                tags$li("Importer et prévisualiser des données GPS."),
+                                tags$li("Filtrer les données par période, vitesse et emprise spatiale."),
+                                tags$li("Croiser les données GPS avec des couches SIG."),
+                                tags$li("Visualiser les résultats et les exporter si besoin.")
+                            ),
+                            p("Pour commencer, rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres d'analyse. Ensuite, pour visualiser vos résultats déplacer vous dans les différents onglets disponibles.")
+                        )
+                    )
                 ),
 
                 tabItem(tabName = "readData", 
