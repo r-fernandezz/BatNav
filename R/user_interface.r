@@ -6,9 +6,9 @@ ui <-  dashboardPage(
 
         dashboardSidebar(
             sidebarMenu(
-                menuItem(   "Importation des données GPS", 
+                menuItem(   "Paramétrage des données GPS", 
                             tabName = "readData", 
-                            icon = icon("download-alt", lib = "glyphicon")
+                            icon = icon("wrench", lib = "glyphicon")
                 ),
 
                 menuItem(   "Parc National de La Réunion",
@@ -18,11 +18,34 @@ ui <-  dashboardPage(
 
                 menuItem(   "Occupation du sol",
                             tabName = "VizDataOCS",
-                            icon = icon("eye-open", lib = "glyphicon"))
+                            icon = icon("eye-open", lib = "glyphicon")),
+
+                menuItem(   "Plan Local d'urbanisme",
+                            tabName = "VizDataPLU",
+                            icon = icon("eye-open", lib = "glyphicon")
+                ),
+
+                div(
+                    "Romain Fernandez v1.0.0 - 2025",
+                    br(),
+                    a(  "Code on Github",
+                        href = "https://github.com/r-fernandezz/BatNav",
+                        target = "_blank"
+                    ),
+                    style = "position: absolute; bottom: 5px; color: #888; font-size: 10px; text-align: center; width: 220px;"
+                )
             )
         ),
 
         dashboardBody(
+            tags$head( #personalised CSS for centering all tables
+                tags$style(HTML("
+                .shiny-table {
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                }
+                "))
+            ),
             tabItems(
                 tabItem(tabName = "readData", 
                     h1("Quelles sont vos données pour cette analyse ?", align = "center"),
@@ -65,7 +88,14 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "VizDataPNR",
-                        h1("Emprise sur le Parc National de La Réunion", align = "center"),
+                        h1("Emprise sur le Parc National de La Réunion"),
+                        p(
+                            "Analyses réalisées avec les données générées par le Parc national de La Réunion 2021",
+                            a("(source)", 
+                                href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/PNRun", 
+                                target = "_blank"
+                            )
+                        ),
                         fluidRow(
                             box(
                                 title = "Carte des localisations",
@@ -87,11 +117,45 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataOCS",
                         h1("Zones fréquentées par les individus"),
+                        p(
+                            "Analyses réalisées avec les données générées par Dupuy, Stéphane; Gaetano, Raffaele, 2019, 'La Réunion - Carte d'occupation du sol 2018 (Spot6/7) - 1.5m'",
+                            a("(source)", 
+                                href = "https://geode.cirad.fr/geonetwork/srv/fre/catalog.search#/metadata/4181a26f-1a3d-42f4-a72c-da7eaff285ee", 
+                                target = "_blank"
+                            )
+                        ),
                         div(
                             style = "text-align: center;",
-                            downloadButton("download_OCS", "Télécharger le tableau")
+                            downloadButton("download_tab_OCS", "Télécharger le tableau")
                         ),
                         withSpinner(dataTableOutput(outputId = "tab_OCS"))
+                ),
+
+                tabItem(tabName = "VizDataPLU",
+                        h1("Zones d'urbanisation et d'activités économiques"),
+                        p(
+                            "Analyses réalisées avec la base permanente des PLU de La Réunion 2021",
+                            a("(source)", 
+                                href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/d35ec660-e26f-4bcb-add0-83c90997018f", 
+                                target = "_blank"
+                            )
+                        ),
+                        fluidRow(
+                            box(
+                                title = "Carte des localisations",
+                                width = 6,
+                                withSpinner(plotOutput("map_PLU")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_map_PLU", "Télécharger la carte")
+                                ),
+                            ),
+                            box(
+                                title = "Résumé des localisations",
+                                width = 6,
+                                withSpinner(tableOutput("tab_PLU"))
+                            )
+                        )
                 )
             )
         )

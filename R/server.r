@@ -44,7 +44,10 @@ server <- function(input, output) {
         df_gps <- df_gps() #for dev
         assign("df_gps", df_gps, envir = .GlobalEnv) #for dev
 
-    }, options = list(scrollX = TRUE, pageLength = 8))
+    }, options = list(
+        scrollX = TRUE, pageLength = 8,
+        columnDefs = list(list(className = 'dt-center', targets = "_all"))
+        ))
 
     # Analysis with PNR emprise
     output$map_PNR <- renderPlot({
@@ -70,9 +73,7 @@ server <- function(input, output) {
     output$tab_PNR <- renderTable({
 
         req(df_gps())
-        df_gpsRCT <- df_gps()
-
-        get_PNR_table(df_gpsRCT, PNR_shp)
+        get_PNR_table(df_gps(), PNR_shp)
 
     }, rownames = TRUE, align = "c")
 
@@ -80,14 +81,21 @@ server <- function(input, output) {
     output$tab_OCS <- renderDataTable({
 
         req(df_gps())
-        df_gpsRCT <- df_gps()
+        df <- pt_within_poly(df_gps(), ocs_shp, arg_shp = "Niveau3")
 
-        get_OCS_table(df_gpsRCT, ocs_shp)
+        nb_pt_ext <- nrow(df_gps()) - sum(df$nb_point)
+        pr_pt_ext <- round(nb_pt_ext / nrow(df_gps()) * 100, 2)
+        df <- rbind(df, data.frame(type = "Hors catégories", nb_point = nb_pt_ext, proportion = pr_pt_ext))
 
-    })
+        colnames(df) <- c("Occupation du sol", "Nombre de points", "Proportion")
+        return(df)
+
+    }, options = list(
+        columnDefs = list(list(className = 'dt-center', targets = "_all"))
+        ))
 
     # Export table OSC
-    output$download_OCS <- downloadHandler(
+    output$download_tab_OCS <- downloadHandler(
         filename = function() {
             paste("table_OCS_", Sys.Date(), ".csv", sep = "")
         },
@@ -95,4 +103,40 @@ server <- function(input, output) {
             write.csv(get_OCS_table(df_gps(), ocs_shp), file, row.names = FALSE)
         }
     )
+
+    # Map with PLU areas
+    output$map_PLU <- renderPlot({
+
+        req(df_gps())
+        get_map_PLU(df_gps(), plu_shp)
+
+    })
+
+    # Download map PLU
+    output$download_map_PLU <- downloadHandler(
+        filename = function() {
+            paste("map_PLU_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_map_PLU(df_gps(), plu_shp), device = "png", width = 10, height = 8)
+        }
+    )
+
+    # Table with PLU areas
+    output$tab_PLU <- renderTable({
+
+        req(df_gps())
+        df <- pt_within_poly(df_gps(), plu_shp, arg_shp = "typezone")
+        if(any(df$type == "A")) df[df$type == "A", ]$type <- "Agricole"
+        if(any(df$type == "AU")) df[df$type == "AU", ]$type <- "Urbanisable"
+        if(any(df$type == "N")) df[df$type == "N", ]$type <- "Naturelle"
+        if(any(df$type == "U")) df[df$type == "U", ]$type <- "Urbanisée"
+
+        nb_pt_ext <- nrow(df_gps()) - sum(df$nb_point)
+        pr_pt_ext <- round(nb_pt_ext / nrow(df_gps()) * 100, 2)
+        df <- rbind(df, data.frame(type = "Hors PLU", nb_point = nb_pt_ext, proportion = pr_pt_ext))
+        colnames(df) <- c("Zonage des PLU", "Nombre de points", "Proportion")
+        return(df)
+
+    }, align = "c")
 }
