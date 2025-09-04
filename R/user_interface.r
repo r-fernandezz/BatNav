@@ -70,7 +70,11 @@ ui <-  dashboardPage(
                             box(
                                 title = "Carte des localisations",
                                 width = 6,
-                                withSpinner(plotOutput("map_PNR"))
+                                withSpinner(plotOutput("map_PNR")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_PNR", "Télécharger la carte")
+                                )
                             ),
                             box(
                                 title = "Résumé des localisations",
@@ -83,6 +87,10 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataOCS",
                         h1("Zones fréquentées par les individus"),
+                        div(
+                            style = "text-align: center;",
+                            downloadButton("download_OCS", "Télécharger le tableau")
+                        ),
                         withSpinner(dataTableOutput(outputId = "tab_OCS"))
                 )
             )
