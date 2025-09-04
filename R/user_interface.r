@@ -8,21 +8,31 @@ ui <-  dashboardPage(
             sidebarMenu(
                 menuItem(   "Paramétrage des données GPS", 
                             tabName = "readData", 
-                            icon = icon("wrench", lib = "glyphicon")
+                            icon = icon("map-marker", lib = "glyphicon")
+                ),
+                menuItem("Croisement couches SIG", icon = icon("book", lib = "glyphicon"),
+                
+                    menuSubItem(   "Parc National de La Réunion",
+                                tabName = "VizDataPNR",
+                                icon = icon("eye-open", lib = "glyphicon")
+                    ),
+
+                    menuSubItem(   "Occupation du sol",
+                                tabName = "VizDataOCS",
+                                icon = icon("eye-open", lib = "glyphicon")),
+
+                    menuSubItem(   "Plan Local d'urbanisme",
+                                tabName = "VizDataPLU",
+                                icon = icon("eye-open", lib = "glyphicon")
+                    )
                 ),
 
-                menuItem(   "Parc National de La Réunion",
-                            tabName = "VizDataPNR",
-                            icon = icon("eye-open", lib = "glyphicon")
+                menuItem("Hauteur de vol", icon = icon("stats", lib = "glyphicon")
+
                 ),
 
-                menuItem(   "Occupation du sol",
-                            tabName = "VizDataOCS",
-                            icon = icon("eye-open", lib = "glyphicon")),
+                menuItem("Distribution spatio-temporelle", icon = icon("screenshot", lib = "glyphicon")
 
-                menuItem(   "Plan Local d'urbanisme",
-                            tabName = "VizDataPLU",
-                            icon = icon("eye-open", lib = "glyphicon")
                 ),
 
                 div(
@@ -107,7 +117,7 @@ ui <-  dashboardPage(
                                 )
                             ),
                             box(
-                                title = "Résumé des localisations",
+                                title = "Dénombrement des localisations",
                                 width = 6,
                                 withSpinner(tableOutput("tab_PNR"))
                             )
@@ -151,7 +161,7 @@ ui <-  dashboardPage(
                                 ),
                             ),
                             box(
-                                title = "Résumé des localisations",
+                                title = "Dénombrement des localisations",
                                 width = 6,
                                 withSpinner(tableOutput("tab_PLU"))
                             )
