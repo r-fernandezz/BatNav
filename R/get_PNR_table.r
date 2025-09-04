@@ -24,10 +24,16 @@ get_PNR_table <- function(df_gpsRCT, PNR_shp) {
             row.names = gsub("_", " ", colnames(pt))
     )
 
-    df <- df[-3, ] #remove one category
-    df["Hors du parc", ] <-  c( as.numeric(nrow(df_gpsRCT) - sum(df$inside)), 
-                                as.numeric(((nrow(df_gpsRCT) - sum(df$inside))/nrow(df_gpsRCT))*100)) # add line outside PNR
-    colnames(df) <- c("Nombre de points l'intérieur", "Pourcentage")
+    df <- cbind(row.names(df), df)
+    row.names(df) <- NULL
+    colnames(df) <- c("zones", "inside", "proportion") #temporary names
+
+    df <- df[!(df$zones == "Aire ouverte à l'Adhésion"), ] #remove one category
+    df <- rbind(df, data.frame( zones = "Hors du parc", 
+                                inside = as.numeric(nrow(df_gpsRCT) - sum(df$inside)), 
+                                proportion = as.numeric(((nrow(df_gpsRCT) - sum(df$inside))/nrow(df_gpsRCT))*100))) # add line outside PNR
+    colnames(df) <- c("Zones du Parc", "Nombre de points l'intérieur", "Pourcentage")
+
 
     return(df)
 

@@ -75,7 +75,7 @@ server <- function(input, output) {
         req(df_gps())
         get_PNR_table(df_gps(), PNR_shp)
 
-    }, rownames = TRUE, align = "c")
+    }, align = "c")
 
     # Table with OCS areas
     output$tab_OCS <- renderDataTable({
