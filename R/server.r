@@ -73,7 +73,7 @@ server <- function(input, output) {
     output$tab_PNR <- renderTable({
 
         req(df_gps())
-        get_PNR_table(df_gps(), PNR_shp)
+        get_tab_PNR(df_gps(), PNR_shp)
 
     }, align = "c")
 

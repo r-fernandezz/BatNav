@@ -11,7 +11,7 @@
 #' 
 #' 
 
-get_PNR_table <- function(df_gpsRCT, PNR_shp) {  
+get_tab_PNR <- function(df_gpsRCT, PNR_shp) {  
 
     gps_sf <- st_as_sf(df_gpsRCT, coords = c("Longitudedecimal", "Latitudedecimal"), crs = st_crs("EPSG:4326"))
     gps_sf <- st_transform(gps_sf, st_crs(PNR_shp))
