@@ -40,6 +40,11 @@ ui <-  dashboardPage(
                     menuSubItem("Réf. Parcellaire Graphique (RPG)",
                                 tabName = "VizDataRPG",
                                 icon = icon("eye-open", lib = "glyphicon")
+                    ),
+
+                    menuSubItem("Pollution lumineuse",
+                                tabName = "VizDataPollu",
+                                icon = icon("eye-open", lib = "glyphicon")
                     )
                 ),
 
@@ -123,6 +128,7 @@ ui <-  dashboardPage(
                     }
                 "))
             ),
+
             tabItems(
                 tabItem(tabName = "home",
                     h1("Bienvenue dans BatNav !", align = "center"),
@@ -148,7 +154,7 @@ ui <-  dashboardPage(
                             ),
                         ),
                         br(),
-                        div(
+                    div(
                             style = "text-align: center; left: 15px; margin-top: 20px;",
                             p("Pour commencer, rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres d'analyse. Ensuite, pour visualiser vos résultats déplacer vous dans les différents onglets disponibles.")
                         )
@@ -289,6 +295,43 @@ ui <-  dashboardPage(
                                 title = "Dénombrement des localisations",
                                 width = 6,
                                 withSpinner(dataTableOutput("tab_RPG"))
+                            )
+                        )
+                ),
+
+                tabItem(tabName = "VizDataPollu",
+                        h1("Niveau de pollution lumineuse"),
+                        p(
+                            "Analyses réalisées avec les données de modélisation de la pollution lumineuse (coeur de nuit - 00h à 5h00 du matin) du Parc national de la Réunion de 2021",
+                            a("(source)", 
+                                href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/7b3397d6-eeb0-4bcb-b0ac-62607f1e4bd5", 
+                                target = "_blank"
+                            ),
+                            br(),
+                            tags$a(
+                                "Voir la documentation (PDF page 23)",
+                                href = "pollution_lumineuse_methode.pdf",  # Place le PDF dans le dossier www/
+                                target = "_blank"
+                                )
+                        ),
+                        fluidRow(
+                            box(
+                                title = "Carte des localisations",
+                                width = 6,
+                                withSpinner(plotOutput("map_pollu")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_map_pollu", "Télécharger la carte")
+                                ),
+                            ),
+                            box(
+                                title = "Dénombrement des localisations",
+                                width = 6,
+                                withSpinner(plotOutput("hist_pollu")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_hist_pollu", "Télécharger l'histogramme")
+                                )
                             )
                         )
                 )

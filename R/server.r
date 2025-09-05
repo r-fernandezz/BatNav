@@ -174,4 +174,40 @@ server <- function(input, output) {
         return(df_order)
 
     })
+
+    # Map with light pollution
+    output$map_pollu <- renderPlot({
+
+        req(df_gps())
+        get_map_Pollu(df_gps(), pollu_rast)
+
+    })
+
+    # Download map light pollution
+    output$download_map_pollu <- downloadHandler(
+        filename = function() {
+            paste("map_Pollution_lumineuse_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_map_Pollu(df_gps(), pollu_rast), device = "png", width = 10, height = 8)
+        }
+    )
+
+    #Histogram of pollution levels
+    output$hist_pollu <- renderPlot({
+
+        req(df_gps())
+        get_hist_pollu(df_gps(), pollu_rast)
+
+    })
+
+    #Download histogram light pollution
+    output$download_hist_pollu <- downloadHandler(
+        filename = function() {
+            paste("hist_Pollution_lumineuse_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_hist_pollu(df_gps(), pollu_rast), device = "png", width = 10, height = 8)
+        }
+    )
 }
