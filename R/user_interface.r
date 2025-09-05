@@ -130,7 +130,7 @@ ui <-  dashboardPage(
                         column(
                             width = 3,
                             tags$img(
-                                src = "icons/logoGCOI.png",  
+                                src = "logo-GCOI.png",
                                 width = "100%",
                                 style = "max-width:150px; margin-top:30px;"
                             )
@@ -138,7 +138,7 @@ ui <-  dashboardPage(
                         column(
                             width = 9,
                             br(),
-                            p("BatNav est une application R Shiny développée pour faciliter l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion."),
+                            p("BatNav est une application R Shiny développée par le GCOI pour faciliter la mise à jour des résultats de l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion."),
                             p("L'application permet de :"),
                             tags$ul(
                                 tags$li("Importer et prévisualiser des données GPS."),
@@ -146,6 +146,10 @@ ui <-  dashboardPage(
                                 tags$li("Croiser les données GPS avec des couches SIG."),
                                 tags$li("Visualiser les résultats et les exporter si besoin.")
                             ),
+                        ),
+                        br(),
+                        div(
+                            style = "text-align: center; left: 15px; margin-top: 20px;",
                             p("Pour commencer, rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres d'analyse. Ensuite, pour visualiser vos résultats déplacer vous dans les différents onglets disponibles.")
                         )
                     )
