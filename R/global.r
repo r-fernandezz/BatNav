@@ -1,4 +1,8 @@
 ######################### Read all libraries #########################
+install.packages(c("yaml", "renv"))
+renv::restore()
+
+######################### Read all libraries #########################
 library(desc)
 pkgs <- desc::desc_get_deps(file = here::here("DESCRIPTION"))
 pkgs <- pkgs$package[pkgs$type %in% c("Imports", "Depends")]
