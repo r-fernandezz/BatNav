@@ -34,11 +34,18 @@ filterGPSdata <- function(df, DataMin, DataMax, speedZero, filterWindow){
     }
 
     # Filter points with a windows
-    if(filterWindow == TRUE){
+    if(filterWindow == "SudOIFilter"){
         df_sub <- subset(df_sub, Longitudedecimal > 40)
         df_sub <- subset(df_sub, Longitudedecimal < 65)
         df_sub <- subset(df_sub, Latitudedecimal > -30)
         df_sub <- subset(df_sub, Latitudedecimal < -10)
+    }
+
+    if(filterWindow == "ReunionFilter"){
+        df_sub <- subset(df_sub, Longitudedecimal > 55.2)
+        df_sub <- subset(df_sub, Longitudedecimal < 55.9)
+        df_sub <- subset(df_sub, Latitudedecimal > -21.4)
+        df_sub <- subset(df_sub, Latitudedecimal < -20.8)
     }
 
     return(df_sub)
