@@ -99,14 +99,7 @@ server <- function(input, output) {
     output$tab_OCS <- renderDataTable({
 
         req(df_gps())
-        df <- pt_within_poly(df_gps(), ocs_shp, arg_shp = "Niveau3")
-
-        nb_pt_ext <- nrow(df_gps()) - sum(df$nb_point)
-        pr_pt_ext <- round(nb_pt_ext / nrow(df_gps()) * 100, 2)
-        df <- rbind(df, data.frame(type = "Hors catégories", nb_point = nb_pt_ext, proportion = pr_pt_ext))
-
-        colnames(df) <- c("Occupation du sol", "Nombre de points", "Proportion")
-        return(df)
+        get_tab_OCS(df_gps(), ocs_shp)
 
     }, options = list(
         columnDefs = list(list(className = 'dt-center', targets = "_all"))
@@ -118,7 +111,7 @@ server <- function(input, output) {
             paste("table_OCS_", Sys.Date(), ".csv", sep = "")
         },
         content = function(file) {
-            write.csv(get_OCS_table(df_gps(), ocs_shp), file, row.names = FALSE)
+            write.csv(get_tab_OCS(df_gps(), ocs_shp), file, row.names = FALSE)
         }
     )
 

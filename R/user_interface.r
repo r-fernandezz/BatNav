@@ -162,7 +162,7 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "readData", 
-                    h1("Quelles sont vos données pour cette analyse ?", align = "center"),
+                    h1("Quelles sont les données à analyser ?", align = "center"),
 
                     h2("Période de déploiement des GPS"),
                     dateRangeInput(inputId = "dateRange",
@@ -208,7 +208,8 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataPNR",
                         h1("Emprise sur le Parc National de La Réunion"),
-                        p(
+                        p(  
+                            icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec les données générées par le Parc national de La Réunion 2021",
                             a("(source)", 
                                 href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/PNRun", 
@@ -236,7 +237,8 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataOCS",
                         h1("Zones fréquentées par les individus"),
-                        p(
+                        p(  
+                            icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec les données générées par Dupuy, Stéphane; Gaetano, Raffaele, 2019, 'La Réunion - Carte d'occupation du sol 2018 (Spot6/7) - 1.5m'",
                             a("(source)", 
                                 href = "https://geode.cirad.fr/geonetwork/srv/fre/catalog.search#/metadata/4181a26f-1a3d-42f4-a72c-da7eaff285ee", 
@@ -252,7 +254,8 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataPLU",
                         h1("Zones d'urbanisation et d'activités économiques"),
-                        p(
+                        p(  
+                            icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec la base permanente des PLU de La Réunion 2021",
                             a("(source)", 
                                 href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/d35ec660-e26f-4bcb-add0-83c90997018f", 
@@ -279,13 +282,17 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataRPG",
                         h1("Types de parcelles agricoles fréquentées"),
-                        p(
+                        p(  
+                            icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec les données du Référentiel Parcellaire Graphique (RPG) 2024",
                             a("(source)", 
                                 href = "https://geoservices.ign.fr/rpg#telechargementrpg2024", 
                                 target = "_blank"
                             )
                         ),
+                        p(  style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "Cette analyses devrait être réalisée uniquement avec des localisations GPS enregistrées en 2024 pour éviter des biais."),
                         fluidRow(
                             box(
                                 title = "Carte des localisations",
@@ -306,7 +313,8 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "VizDataPollu",
                         h1("Niveau de pollution lumineuse"),
-                        p(
+                        p(  
+                            icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec les données de modélisation de la pollution lumineuse (coeur de nuit - 00h à 5h00 du matin) du Parc national de la Réunion de 2021",
                             a("(source)", 
                                 href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/7b3397d6-eeb0-4bcb-b0ac-62607f1e4bd5", 
