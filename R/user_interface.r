@@ -184,8 +184,9 @@ ui <-  dashboardPage(
                     radioButtons(   
                             inputId = "speedZero",
                             label = NULL,
-                            choices = c("Conserver uniquement les points avec une vitesse de 0 km/h" = TRUE,
-                                        "Conserver tous les points" = FALSE)
+                            choices = c("Conserver les points avec une vitesse de 0 km/h" = "0km/h",
+                                        "Conserver les points avec une vitesse > 0 km/h" = ">0km/h",
+                                        "Conserver tous les points" = "all")
                         ),
 
                     h2("Filtrage des points par une emprise spatiale"),

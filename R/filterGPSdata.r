@@ -22,9 +22,15 @@ filterGPSdata <- function(df, DataMin, DataMax, speedZero, filterWindow){
     df_sub <- df_sub[ , !(colnames(df_sub) == "full_date")]
 
     # Keep only points where speed is zero
-    if(speedZero == TRUE){
+    if(speedZero == "0km/h"){
         df_sub$Speed <- as.numeric(df_sub$Speed)
         df_sub <- subset(df_sub, Speed == 0)
+    }
+
+    # Keep only points where speed is >0km/h
+    if(speedZero == ">0km/h"){
+        df_sub$Speed <- as.numeric(df_sub$Speed)
+        df_sub <- subset(df_sub, Speed > 0)
     }
 
     # Filter points with a windows
