@@ -197,7 +197,10 @@ ui <-  dashboardPage(
                     ),
 
                     h2("Vérification des données importées"),
-                    withSpinner(dataTableOutput(outputId = "previewBDD"))
+                    withSpinner(dataTableOutput(outputId = "previewBDD")),
+
+                    h2("Visualisation des données importées"),
+                    leaflet::leafletOutput("mapInteractive", height = 600),
 
                 ),
 

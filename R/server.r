@@ -37,6 +37,24 @@ server <- function(input, output) {
 
     })
 
+    # Preview location map
+    output$mapInteractive <- renderLeaflet({
+
+        req(df_gps())
+
+        leaflet(data = df_gps()) %>%
+            addTiles() %>%
+            fitBounds(lng1 = ~min(Longitudedecimal), lat1 = ~min(Latitudedecimal), lng2 = ~max(Longitudedecimal), lat2 = ~max(Latitudedecimal), options = list()) %>%
+            addCircleMarkers(
+                lng = ~Longitudedecimal,
+                lat = ~Latitudedecimal,
+                radius = 1,
+                color = "red",
+                fillOpacity = 0.8
+            )
+
+    })
+
     # Preview location database
     output$previewBDD <- renderDataTable({
         df_gps()
