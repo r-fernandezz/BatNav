@@ -198,6 +198,20 @@ ui <-  dashboardPage(
                                                 )
                     ),
 
+                    h2("Filtrage par individu"),
+                    p("Ajouter un tableau CSV avec deux colonnes 'DeviceID' et 'nom_individu' (sans accents !) pour faire la correspondance entre l'identifiant du GPS et le nom de l'individu."),
+                    fileInput(  inputId = "correspFile", 
+                                label = NULL,
+                                multiple = FALSE,
+                                buttonLabel = "Choisir le fichier", 
+                                placeholder = "Aucun fichier"
+                    ),
+                    selectizeInput( inputId = "filterInd",
+                                    label = "Sectionner les individus",
+                                    multiple = TRUE,
+                                    choices = NULL,
+                    ),
+
                     h2("Vérification des données importées"),
                     withSpinner(dataTableOutput(outputId = "previewBDD")),
 

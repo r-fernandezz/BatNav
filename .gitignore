@@ -5,4 +5,3 @@ settings.json
 # Renv environment
 renv/*
 .Rprofile
-.Rbuildignore

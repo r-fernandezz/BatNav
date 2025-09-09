@@ -33,8 +33,39 @@ server <- function(input, output) {
                                     speedZero = input$speedZero,
                                     filterWindow  = input$filterWindow)
 
+        # If correspondence table is provided merge column "nom_individu"
+        if(!is.null(input$correspFile)){
+            req(corresp_tab())
+            df_filter <- merge(df_filter, corresp_tab(), by = "DeviceID", all.x = TRUE)
+            assign("df_merge", df_filter, envir = .GlobalEnv) #for dev
+        }
+
+        if(length(input$filterInd) > 0){
+            req(input$filterInd)
+            df_filter <- df_filter[df_filter$nom_individu %in% input$filterInd, ]
+        }
+
         return(df_filter)
 
+    })
+
+    # Correspondance table
+    corresp_tab <- reactive({
+
+        req(input$correspFile)
+        df_corresp <- read.csv(input$correspFile$datapath, header = TRUE)
+        assign("df_corresp", df_corresp, envir = .GlobalEnv) #for dev
+
+    })
+
+    # Update choice of individuals in selectizeInput
+    observeEvent(corresp_tab(), {
+        req(corresp_tab())
+        updateSelectizeInput(
+            inputId = "filterInd",
+            choices = as.list(setNames(corresp_tab()$nom_individu, corresp_tab()$nom_individu)),
+            server = TRUE
+        )
     })
 
     # Preview location map
