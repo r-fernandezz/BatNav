@@ -45,6 +45,11 @@ ui <-  dashboardPage(
                     menuSubItem("Pollution lumineuse",
                                 tabName = "VizDataPollu",
                                 icon = icon("eye-open", lib = "glyphicon")
+                    ),
+
+                    menuSubItem("Modèle num. de terrain (MNT)",
+                                tabName = "VizDataMNT",
+                                icon = icon("eye-open", lib = "glyphicon")
                     )
                 ),
 
@@ -360,6 +365,61 @@ ui <-  dashboardPage(
                                     downloadButton("download_hist_pollu", "Télécharger l'histogramme")
                                 )
                             )
+                        )
+                ),
+
+                tabItem(tabName = "VizDataMNT",
+                        h1("Modèle numérique de terrain (MNT)"),
+                        p(  
+                            icon("book", lib = "font-awesome"),
+                            "Ces analyses sont réalisées avec le levé LidarHD de 2025 de l'institut national de l'information géographique et forestière (IGN-F).",
+                            a("(source)", 
+                                href = "https://cartes.gouv.fr/catalogue/dataset/IGNF_MNT-LIDAR-HD", 
+                                target = "_blank"
+                            )),
+                        p("Ces données ont été dégradées à une résolution de 3m (produit brut à 0.5m)."),
+                        p(  
+                            style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "Cette analyses télécharges les dalles MNT dans lesquelles des points sont trouvés à l'intérieur. 
+                            Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur. 
+                            Cette analyse peut donc être longue si les dalles n'ont jamais été téléchargées."
+                        ),
+                        br(),
+                        div(
+                            style = "text-align: center;",
+                            actionButton("runMNT_analysis", "Lancer l'analyse")
+                        ),
+                        br(),
+                        br(),
+                        fluidRow(
+                            box(
+                                title = "Distribution de l'altitude des localisations",
+                                width = 6,
+                                withSpinner(plotOutput("hist_altitude")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_hist_altitude", "Télécharger l'histogramme")
+                                )
+                            ),
+                            box(
+                                title = "Orientation des pentes sous les localisations",
+                                width = 6,
+                                withSpinner(plotOutput("hist_aspect")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_hist_aspect", "Télécharger l'histogramme")
+                                )
+                            ),
+                            box(
+                                title = "Inclinaison des pentes sous les localisations",
+                                width = 6,
+                                withSpinner(plotOutput("hist_slope")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_hist_slope", "Télécharger l'histogramme")
+                                )
+                            ),
                         )
                 )
             )

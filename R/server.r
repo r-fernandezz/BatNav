@@ -261,4 +261,61 @@ server <- function(input, output) {
             ggsave(file, plot = get_hist_pollu(df_gps(), pollu_rast), device = "png", width = 10, height = 8)
         }
     )
+
+    # Create dataframe with LidarHD values
+    df_lidar_MNT <- eventReactive(input$runMNT_analysis, {
+        req(df_gps())
+        df_mnt <- value_lidarHD(df_gps(), lidarMNT) #with column altitude, slope, aspect
+        assign("df_lidar_MNT", df_mnt, envir = .GlobalEnv) #for dev
+    })
+
+    # Create histogram of altitude values
+    output$hist_altitude <- renderPlot({
+        req(df_lidar_MNT())
+        get_hist_altitude(df_lidar_MNT())
+    })
+
+    # Download histogram of altitude values
+    output$download_hist_altitude <- downloadHandler(
+        filename = function() {
+            paste("hist_Altitude_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_hist_altitude(df_lidar_MNT()), device = "png", width = 10, height = 8)
+        }
+    )
+
+    # Create histogram of aspect values
+    output$hist_aspect <- renderPlot({
+        req(df_lidar_MNT())
+        get_Pohist_aspect(df_lidar_MNT())
+    })
+
+    # Download histogram of aspect values
+    output$download_hist_aspect <- downloadHandler(
+        filename = function() {
+            paste("hist_Orientation_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_Pohist_aspect(df_lidar_MNT()), device = "png", width = 10, height = 8)
+        }
+    )
+
+    # Create histogram of slope values
+    output$hist_slope <- renderPlot({
+        req(df_lidar_MNT())
+        get_hist_slope(df_lidar_MNT())
+    })
+
+    # Download histogram of slope values
+    output$download_hist_slope <- downloadHandler(  
+        filename = function() {
+            paste("hist_Inclinaison_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_hist_slope(df_lidar_MNT()), device = "png", width = 10, height = 8)
+        }
+    )
+
+
 }
