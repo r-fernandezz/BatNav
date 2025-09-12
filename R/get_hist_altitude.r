@@ -15,7 +15,8 @@
 get_hist_altitude <- function(df_lidar_MNT) {
 
     df_lidar_MNT$class <- cut(df_lidar_MNT$altMnt,
-                                breaks = seq(0, 3000, by = 200),
+                                breaks = seq(0, 3100, by = 200),
+                                labels = paste(seq(0, 2900, by = 200), seq(200, 3100, by = 200), sep = "\nà\n"),
                                 right = FALSE)
 
     ggplot(df_lidar_MNT, aes(x = class)) + 
