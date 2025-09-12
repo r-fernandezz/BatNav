@@ -155,6 +155,22 @@ server <- function(input, output) {
         }
     )
 
+    # Diagramme circulaire OCS
+    output$DiagCirc_OCS <- renderPlot({
+        req(df_gps())
+        get_diagCirc_OCS(df_gps(), ocs_shp)
+    })
+
+    # Download diagramme circulaire OCS
+    output$download_diagCirc_OCS <- downloadHandler(
+        filename = function() {
+            paste("diagCirc_OCS_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_diagCirc_OCS(df_gps(), ocs_shp), device = "png", width = 10, height = 8, limitsize = FALSE)
+        }
+    )
+
     # Map with PLU areas
     output$map_PLU <- renderPlot({
 

@@ -268,7 +268,16 @@ ui <-  dashboardPage(
                             style = "text-align: center;",
                             downloadButton("download_tab_OCS", "Télécharger le tableau")
                         ),
-                        withSpinner(dataTableOutput(outputId = "tab_OCS"))
+                        withSpinner(dataTableOutput(outputId = "tab_OCS")),
+                        br(),
+                        h3("Proportion de localisation par type d'occupation du sol"),
+                        withSpinner(plotOutput("DiagCirc_OCS")),
+                        br(),
+                        div(
+                            style = "text-align: center;",
+                            downloadButton("download_diagCirc_OCS", "Télécharger le diagramme")
+                        )
+                        
                 ),
 
                 tabItem(tabName = "VizDataPLU",
@@ -381,9 +390,10 @@ ui <-  dashboardPage(
                         p(  
                             style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Cette analyses télécharges les dalles MNT dans lesquelles des points sont trouvés à l'intérieur. 
+                            "Ces analyses télécharges les dalles MNT dans lesquelles des points sont trouvés à l'intérieur (et leurs 8 voisines). 
                             Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur. 
-                            Cette analyse peut donc être longue si les dalles n'ont jamais été téléchargées."
+                            Cette analyse peut donc être longue si les dalles n'ont jamais été téléchargées auparavant. 
+                            Si une erreur survient sur l'une des dalles, supprimer là (dossier 'data/LidarHD' dans BatNav) et relancer l'analyse."
                         ),
                         br(),
                         div(
