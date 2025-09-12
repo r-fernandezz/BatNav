@@ -156,7 +156,7 @@ server <- function(input, output) {
     )
 
     # Diagramme circulaire OCS
-    output$DiagCirc_OCS <- renderPlot({
+    output$diagCirc_OCS <- renderPlot({
         req(df_gps())
         get_diagCirc_OCS(df_gps(), ocs_shp)
     })
@@ -206,6 +206,22 @@ server <- function(input, output) {
         return(df)
 
     }, align = "c")
+
+    # Diagramme circulaire PLU
+    output$diagCirc_PLU <- renderPlot({
+        req(df_gps())
+        get_diagCirc_PLU(df_gps(), plu_shp)
+    })
+
+    #Download diagramme circulaire PLU
+    output$download_diagCirc_PLU <- downloadHandler(
+        filename = function() {
+            paste("diagCirc_PLU_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_diagCirc_PLU(df_gps(), plu_shp), device = "png", width = 10, height = 8)
+        }
+    )
 
     # Map with RPG areas
     output$map_RPG <- renderPlot({

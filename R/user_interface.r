@@ -271,7 +271,7 @@ ui <-  dashboardPage(
                         withSpinner(dataTableOutput(outputId = "tab_OCS")),
                         br(),
                         h3("Proportion de localisation par type d'occupation du sol"),
-                        withSpinner(plotOutput("DiagCirc_OCS")),
+                        withSpinner(plotOutput("diagCirc_OCS")),
                         br(),
                         div(
                             style = "text-align: center;",
@@ -281,7 +281,7 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "VizDataPLU",
-                        h1("Zones d'urbanisation et d'activités économiques"),
+                        h1("Les zones du plan local d'urbanisme fréquéntées"),
                         p(  
                             icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec la base permanente des PLU de La Réunion 2021",
@@ -304,7 +304,18 @@ ui <-  dashboardPage(
                                 title = "Dénombrement des localisations",
                                 width = 6,
                                 withSpinner(tableOutput("tab_PLU"))
+                            ),
+                            br(),
+                            box(
+                                title = "Proportion de localisation par type de zone",
+                                width = 6,
+                                withSpinner(plotOutput("diagCirc_PLU")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_diagCirc_PLU", "Télécharger le diagramme")
+                                )
                             )
+                            
                         )
                 ),
 

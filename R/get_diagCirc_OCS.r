@@ -1,3 +1,15 @@
+#' get_diagCirc_OCS
+#'
+#' @description Create circular diagram of land use (OCS) types from GPS data.
+#'
+#'
+#' @param df_gps Dataframe. Dataframe with GPS coordinates (longitude, latitude).
+#' @param ocs_shp SpatialPolygonsDataFrame. Spatial polygons for OCS areas.
+#'
+#' @return ggplot object.
+#'
+#' @export NULL
+
 get_diagCirc_OCS <- function(df_gps, ocs_shp) {
 
     df_ocs <- get_tab_OCS(df_gps, ocs_shp)
@@ -17,8 +29,8 @@ get_diagCirc_OCS <- function(df_gps, ocs_shp) {
         theme(
             legend.position = "right",
             legend.title = element_blank(),
-            legend.text = element_text(size = 8),   # plus petit si besoin
-            legend.key.size = unit(0.5, "cm")        # réduit la taille des cases
+            legend.text = element_text(size = 8),
+            legend.key.size = unit(0.5, "cm")
         ) +
         guides(fill = guide_legend(nrow = 15, ncol = 2, byrow = FALSE))
 
