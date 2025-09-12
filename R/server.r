@@ -294,6 +294,58 @@ server <- function(input, output) {
         }
     )
 
+    # Table with vegetation types ONF
+    output$tab_vegeONF <- renderDataTable({
+
+        req(df_gps())
+        get_tab_vegeONF(df_gps())
+
+    }, options = list(
+        columnDefs = list(list(className = 'dt-center', targets = "_all"))
+        ))
+
+    # Download table vegetation ONF
+    output$download_tab_vegeONF <- downloadHandler(
+        filename = function() {
+            paste("table_Vegetation_ONF_", Sys.Date(), ".csv", sep = "")
+        },
+        content = function(file) {
+            write.csv(get_tab_vegeONF(df_gps()), file, row.names = FALSE)
+        }
+    )
+
+    # Histogram of vegetation origin ONF
+    output$hist_vegeONForg <- renderPlot({
+        req(df_gps())
+        get_hist_vegeONForg(df_gps())
+    })
+
+    # Download histogram of vegetation origin ONF
+    output$download_hist_vegeONForg <- downloadHandler(
+        filename = function() {
+            paste("hist_Origin_Vegetation_ONF_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_hist_vegeONForg(df_gps()), device = "png", width = 10, height = 8)
+        }
+    )
+
+    # Diagramme circulaire vegetation ONF
+    output$diagCirc_vegeONF <- renderPlot({
+        req(df_gps())
+        get_diagCirc_vegeONF(df_gps())
+    })
+
+    #Download diagramme circulaire vegetation ONF
+    output$download_diagCirc_vegeONF <- downloadHandler(
+        filename = function() {
+            paste("diagCirc_Vegetation_ONF_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_diagCirc_vegeONF(df_gps()), device = "png", width = 10, height = 8, limitsize = FALSE)
+        }
+    )
+
     # Create dataframe with LidarHD values
     df_lidar_MNT <- eventReactive(input$runMNT_analysis, {
         req(df_gps())

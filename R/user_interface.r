@@ -47,6 +47,11 @@ ui <-  dashboardPage(
                                 icon = icon("eye-open", lib = "glyphicon")
                     ),
 
+                    menuSubItem("Typologie de végétation",
+                                tabName = "VizDataVegeONF",
+                                icon = icon("eye-open", lib = "glyphicon")
+                    ),
+
                     menuSubItem("Modèle num. de terrain (MNT)",
                                 tabName = "VizDataMNT",
                                 icon = icon("eye-open", lib = "glyphicon")
@@ -255,7 +260,7 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "VizDataOCS",
-                        h1("Zones fréquentées par les individus"),
+                        h1("Classes d'occupation du sol fréquentées par les individus"),
                         p(  
                             icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec les données générées par Dupuy, Stéphane; Gaetano, Raffaele, 2019, 'La Réunion - Carte d'occupation du sol 2018 (Spot6/7) - 1.5m'",
@@ -270,13 +275,13 @@ ui <-  dashboardPage(
                         ),
                         withSpinner(dataTableOutput(outputId = "tab_OCS")),
                         br(),
-                        h3("Proportion de localisation par type d'occupation du sol"),
-                        withSpinner(plotOutput("diagCirc_OCS")),
-                        br(),
+                        h3("Proportion de localisation par classe d'occupation du sol"),
                         div(
                             style = "text-align: center;",
                             downloadButton("download_diagCirc_OCS", "Télécharger le diagramme")
-                        )
+                        ),
+                        br(),
+                        withSpinner(plotOutput("diagCirc_OCS"))
                         
                 ),
 
@@ -362,7 +367,7 @@ ui <-  dashboardPage(
                             br(),
                             tags$a(
                                 "Voir la documentation (PDF page 23)",
-                                href = "pollution_lumineuse_methode.pdf",  # Place le PDF dans le dossier www/
+                                href = "pollution_lumineuse_methode.pdf",
                                 target = "_blank"
                                 )
                         ),
@@ -387,6 +392,46 @@ ui <-  dashboardPage(
                             )
                         )
                 ),
+
+                tabItem(tabName = "VizDataVegeONF",
+                    h1("Types de végétation fréquentées"),
+                    p(
+                        icon("book", lib = "font-awesome"),
+                        "Analyses réalisées avec le référentiel typologique de végétation de l'ONF de 2019.",
+                        br(),
+                        tags$a(
+                                "Voir la documentation (PDF)",
+                                href = "Metadonnées_typologie_vegetation_ONF.pdf",
+                                target = "_blank"
+                                )
+                    ),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_tab_vegeONF", "Télécharger le tableau")
+                    ),
+                    withSpinner(dataTableOutput(outputId = "tab_vegeONF")),
+                    br(),
+                    h3("Proportion de localisation par classe d'occupation du sol"),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_diagCirc_vegeONF", "Télécharger le diagramme")
+                    ),
+                    br(),
+                    withSpinner(plotOutput("diagCirc_vegeONF")),
+                    br(),
+                    fluidRow(
+                        box(
+                            title = "Origine de la végétation fréquentée",
+                            width = 6,
+                            withSpinner(plotOutput("hist_vegeONForg")),
+                            br(),
+                            div(
+                                style = "text-align: center;",
+                                downloadButton("download_hist_vegeONForg", "Télécharger de l'histogramme")
+                            )
+                        )
+                    )
+                    ),
 
                 tabItem(tabName = "VizDataMNT",
                         h1("Modèle numérique de terrain (MNT)"),
