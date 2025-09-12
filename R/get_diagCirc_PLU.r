@@ -14,19 +14,23 @@
 
 get_diagCirc_PLU <- function(df_gps, plu_shp) {
 
-    df_gps <- pt_within_poly(df_gps, plu_shp, arg_shp = "typezone")
+    df <- pt_within_poly(df_gps, plu_shp, arg_shp = "typezone")
 
-    ggplot(df_gps, aes(x = "", y = nb_point, fill = type)) +
+    # Add point ouside PLU
+    nb_pt_ext <- nrow(df_gps) - sum(df$nb_point)
+    pr_pt_ext <- round(nb_pt_ext / nrow(df_gps) * 100, 2)
+    df <- rbind(df, data.frame(type = "HP", nb_point = nb_pt_ext, proportion = pr_pt_ext))
+
+    ggplot(df, aes(x = "", y = nb_point, fill = type)) +
         geom_bar(stat = "identity", width = 1, color = "white") +
         coord_polar(theta = "y") +
-        labs(x = NULL, y = NULL, fill = "Occupation du sol") +
         scale_fill_manual(
-            values = c("A" = "#e7ef4a", "AU" = "#359bef", "N" = "#3cd061", "U" = "#9a36d0"),
-            labels = c("A" = "Agricole", "AU" = "Urbanisable", "N" = "Naturelle", "U" = "Urbanisée")
+            values = c("A" = "#e7ef4a", "AU" = "#359bef", "N" = "#3cd061", "U" = "#9a36d0", "HP" = "#d3d3d3"),
+            labels = c("A" = "Agricole", "AU" = "Urbanisable", "N" = "Naturelle", "U" = "Urbanisée", "HP" = "Hors PLU")
         ) +
         theme_void() +
         theme(
-            legend.position = "bottom",
+            legend.position = "right",
             legend.title = element_blank()
         ) 
 }
