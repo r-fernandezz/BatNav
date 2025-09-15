@@ -16,6 +16,11 @@ get_diagCirc_vegeONF <- function(df_gps) {
 
     df <- get_tab_vegeONF(df_gps)
 
+    df <- df[order(df$Proportion, decreasing = TRUE), ]
+    df$'Typologie de végétation' <- factor(df$'Typologie de végétation',
+                                            levels = df$'Typologie de végétation'[order(df$Proportion, decreasing = TRUE)]
+        )
+
     ggplot(df, aes(x = "", y = `Nombre de points`, fill = `Typologie de végétation`)) +
         geom_bar(stat = "identity", width = 1, color = "white") +
         coord_polar(theta = "y") +

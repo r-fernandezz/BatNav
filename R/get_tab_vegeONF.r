@@ -13,7 +13,7 @@
 #' 
 #' 
 
-get_tab_vegeONF <- function(df_gps, arg_shp = "VEG_LEGEND", namecol = "Typologie de végétation") {
+get_tab_vegeONF <- function(df_gps, arg_shp = "VEG_NIV2", namecol = "Typologie de végétation") {
 
 
     df <- pt_within_poly(df_gps, shp = vegONF_shp, arg_shp)

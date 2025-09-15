@@ -21,6 +21,13 @@ get_diagCirc_PLU <- function(df_gps, plu_shp) {
     pr_pt_ext <- round(nb_pt_ext / nrow(df_gps) * 100, 2)
     df <- rbind(df, data.frame(type = "HP", nb_point = nb_pt_ext, proportion = pr_pt_ext))
 
+    # Order by proportion
+    df <- df[order(df$proportion, decreasing = TRUE), ]
+    df$type <- factor(
+                df$type,
+                levels = df$type[order(df$proportion, decreasing = TRUE)]
+    )
+
     ggplot(df, aes(x = "", y = nb_point, fill = type)) +
         geom_bar(stat = "identity", width = 1, color = "white") +
         coord_polar(theta = "y") +
