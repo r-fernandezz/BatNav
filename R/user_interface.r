@@ -90,24 +90,35 @@ ui <-  dashboardPage(
 
                     /* Header color */
                     .skin-blue .main-header .navbar {
-                    background-color: #F57627;  !important;
+                    background-color: #A72800;  !important;
                     }
 
                     .skin-blue .main-header .logo {
-                    background-color: #F57627;  !important;
+                    background-color: #A72800;  !important;
                     color: #fff;  !important;
                     }
 
                     /* Flyover color */
                     .logo:hover, 
                     .skin-blue .main-header .sidebar-toggle:hover {
-                    background-color: #B02B00 !important; /* couleur au survol */
+                    background-color: #ABC649 !important; /* couleur au survol */
                     color: #fff !important;
                     }
 
                     /* Sidebar color */
                     .skin-blue .main-sidebar {
-                    background-color: #34495e;  !important;
+                    background-color: #000043;  !important;
+                    }
+
+                    /* Flyover sidebar color */
+                    .skin-blue .main-sidebar .sidebar a:hover {
+                        background-color: #ABC649 !important;
+                        color: #fff !important;
+                    }
+
+                    /* Submenu sidebar background color */
+                    .skin-blue .main-sidebar .sidebar .treeview-menu {
+                        background-color: #1C382D !important; /* Mets ici la couleur que tu veux */
                     }
 
                     /* Sidebar text color */
@@ -122,18 +133,18 @@ ui <-  dashboardPage(
 
                     /* Box color */
                     .box {
-                    border-top: 3px solid #F57627;
+                    border-top: 3px solid #A72800;
                     }
 
                     /* Button color */
                     .btn {
-                    background-color: #F57627;
+                    background-color: #A72800;
                     color: #fff;
                     border: none;
                     }
 
                     .btn:hover {
-                    background-color: #F57627;
+                    background-color: #F1B370;
                     color: #fff;
                     }
                 "))
