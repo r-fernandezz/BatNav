@@ -23,9 +23,19 @@ get_map_PNR <- function(df_gpsRCT, PNR_shp) {
         )
     )
     
+    # Change encoding and list names of commune shapefile for better visualization
+    com_shp$NOM <- iconv(com_shp$NOM, from = "latin1", to = "UTF-8")
+    com_shp$NOM <- ifelse(
+                    com_shp$NOM %in% c("Le Tampon", "Cilaos", "Bras-Panon", "Saint-Benoit", "Salazie", "Saint-Paul", "Saint-Denis", "Saint-Pierre", "Sainte-Rose", "Saint-Philippe"),
+                    com_shp$NOM,
+                    NA
+                    )
+
     ggplot() +
-    geom_sf(data = PNR_shp, aes(fill = Type), alpha = 0.5) +
-    geom_sf(data = gps_sf, aes(color = "Localisations GPS"), size = 1) +
+    geom_sf(data = com_shp, fill = NA, color = "black", size = 0.2) +
+    geom_sf(data = PNR_shp, aes(fill = Type), color = NA, alpha = 0.5) +
+    geom_sf(data = gps_sf, aes(color = "Localisations GPS"), size = 0.8, alpha = 0.8) +
+    geom_sf_text(data = com_shp, aes(label = NOM), size = 3, color = "black", fontface = "bold", na.rm = TRUE) +
     scale_fill_manual(
         values = c(
             "Coeur du Parc national" = "#32913a",
@@ -42,7 +52,10 @@ get_map_PNR <- function(df_gpsRCT, PNR_shp) {
     labs(fill = NULL, color = NULL) +
     theme_minimal() +
     theme(
-        legend.position = "bottom"
+        legend.position = "bottom",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5)
     )
 
 }

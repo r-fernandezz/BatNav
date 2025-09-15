@@ -14,6 +14,7 @@ ocs_shp <- st_read(here::here("data", "OSO_Niveau3_Dupuy_al_2018", "classif_2018
 plu_shp <- st_read(here::here("data", "PLU_2021", "pos_pluPolygon.shp"))
 rpg_shp <- st_read(here::here("data", "RPG_2024", "PARCELLES_GRAPHIQUES.gpkg"))
 vegONF_shp <- st_read(here::here("data", "Typologie_vegetation_ONF_2023", "RUN_VEGETATION.shp"))
+com_shp <- st_read(here::here("data", "Communes", "COMMUNE.TAB"))
 rpgRef_tab <- read.csv2(here::here("data", "RPG_2024", "REF_CULTURES_2023.csv"), fileEncoding = "latin1")
 rpgRef_tab <- rpgRef_tab[ , colnames(rpgRef_tab) %in% c("CODE", "LIBELLE_CULTURE")]
 pollu_rast <- rast(here::here("data", "Pollution_lumineuse", "PNReunion-PolLum-CoeurNuit-2021-Monobande.tif"))

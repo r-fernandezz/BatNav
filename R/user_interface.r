@@ -336,7 +336,7 @@ ui <-  dashboardPage(
                         ),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Cette analyse utilise des données RPG de 2024 qui peuvent varier d'une année sur l'autre."),
+                            "Les données des RPG peuvent varier d'une année sur l'autre."),
                         fluidRow(
                             box(
                                 title = "Carte des localisations",
@@ -446,10 +446,9 @@ ui <-  dashboardPage(
                         p(  
                             style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Ces analyses télécharges les dalles MNT dans lesquelles des points sont trouvés à l'intérieur (et leurs 8 voisines). 
+                            "Cette analyse télécharge les dalles MNT dans lesquelles des points sont trouvés à l'intérieur (et les 8 dalles voisines). 
                             Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur. 
-                            Cette analyse peut donc être longue si les dalles n'ont jamais été téléchargées auparavant. 
-                            Si une erreur survient sur l'une des dalles, supprimez là (dossier 'data/LidarHD' dans BatNav) et relancer l'analyse."
+                            Cette analyse peut donc être longue si les dalles n'ont jamais été téléchargées auparavant."
                         ),
                         br(),
                         div(

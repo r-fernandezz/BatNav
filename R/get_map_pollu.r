@@ -19,6 +19,16 @@ get_map_Pollu <- function(df_gpsRCT, pollu_rast) {
     pollu_df <- as.data.frame(pollu_rast, xy = TRUE)
     colnames(pollu_df) <- c("x", "y", "value")
 
+    # Change encoding and list names of commune shapefile for better visualization
+    com_shp$NOM <- iconv(com_shp$NOM, from = "latin1", to = "UTF-8")
+    com_shp$NOM <- ifelse(
+                    com_shp$NOM %in% c("Le Tampon", "Cilaos", "Bras-Panon", "Saint-Benoit", "Salazie", "Saint-Paul", "Saint-Denis", "Saint-Pierre", "Sainte-Rose", "Saint-Philippe"),
+                    com_shp$NOM,
+                    NA
+                    )
+    com_shp <- st_transform(com_shp, crs = st_crs("EPSG:4326"))
+
+
     # Class found into technical report (into data folder)
     pollu_df$class <- cut(pollu_df$value,
                             breaks = c(0, 19.5, 20.30, 20.75, 21.00, 21.25, 21.50, 21.70, 22.00),
@@ -33,8 +43,10 @@ get_map_Pollu <- function(df_gpsRCT, pollu_rast) {
                             right = FALSE)
     
     ggplot() +
+    geom_sf(data = com_shp, fill = NA, color = "black", size = 0.2) +
+    geom_sf_text(data = com_shp, aes(label = NOM), size = 3, color = "black", fontface = "bold") +
     geom_raster(data = pollu_df, aes(x = x, y = y, fill = class), alpha = 0.5) +
-    geom_sf(data = gps_sf, aes(color = "Localisations GPS"), size = 1, alpha = 0.5) +
+    geom_sf(data = gps_sf, aes(color = "Localisations GPS"), size = 0.8, alpha = 0.8) +
     scale_fill_manual(
         values = c( 
             "Grandes_villes" = "red", 
@@ -64,7 +76,8 @@ get_map_Pollu <- function(df_gpsRCT, pollu_rast) {
         legend.position = "bottom",
         legend.box = "vertical",
         legend.text = element_text(size = 10),
-        legend.key.width = unit(0.5, "cm")
+        legend.key.width = unit(0.5, "cm"),
+        axis.text.y = element_text(angle = 90, hjust = 0.5)
     )
 
 }
