@@ -73,25 +73,43 @@ server <- function(input, output) {
 
         req(df_gps())
 
-        leaflet(data = df_gps()) %>%
+        map <- leaflet(data = df_gps()) %>%
             addTiles() %>%
-            fitBounds(lng1 = ~min(Longitudedecimal), lat1 = ~min(Latitudedecimal), lng2 = ~max(Longitudedecimal), lat2 = ~max(Latitudedecimal), options = list()) %>%
-            addCircleMarkers(
-                lng = ~Longitudedecimal,
-                lat = ~Latitudedecimal,
-                popup = ~paste(
-                    ifelse(!is.null(input$correspFile), 
-                        paste("<b>Nom de l'individu :</b>", nom_individu, "<br>"),
-                        paste("<b>Numéro de GPS (DeviceID) :</b>", DeviceID, "<br>")
-                    ),
-                    "<b>Date :</b>", paste(Day, Month, Year, sep = "/"), "<br>",
-                    "<b>Heure :</b>", paste(Hour, Minute, Second, sep = ":"), "<br>",
-                    "<b>Vitesse :</b>", Speed, "km/h<br>"
-                ),
-                radius = 1,
-                color = "red",
-                fillOpacity = 0.8
-            )
+            fitBounds(lng1 = ~min(Longitudedecimal), lat1 = ~min(Latitudedecimal), lng2 = ~max(Longitudedecimal), lat2 = ~max(Latitudedecimal), options = list())
+            
+            if("nom_individu" %in% colnames(df_gps())){
+                map <- map %>% addCircleMarkers(
+                                lng = ~Longitudedecimal,
+                                lat = ~Latitudedecimal,
+                                popup = ~paste(
+                                    "<b>Nom de l'individu :</b>", nom_individu, "<br>",
+                                    "<b>Date :</b>", paste(Day, Month, Year, sep = "/"), "<br>",
+                                    "<b>Heure :</b>", paste(Hour, Minute, Second, sep = ":"), "<br>",
+                                    "<b>Vitesse :</b>", Speed, "km/h<br>"
+                                ),
+                                radius = 1,
+                                color = "red",
+                                fillOpacity = 0.8
+                            )
+            }
+
+            if(!"nom_individu" %in% colnames(df_gps())){
+                map <- map %>% addCircleMarkers(
+                                lng = ~Longitudedecimal,
+                                lat = ~Latitudedecimal,
+                                popup = ~paste(
+                                    "<b>Numéro de GPS (DeviceID) :</b>", DeviceID, "<br>",
+                                    "<b>Date :</b>", paste(Day, Month, Year, sep = "/"), "<br>",
+                                    "<b>Heure :</b>", paste(Hour, Minute, Second, sep = ":"), "<br>",
+                                    "<b>Vitesse :</b>", Speed, "km/h<br>"
+                                ),
+                                radius = 1,
+                                color = "red",
+                                fillOpacity = 0.8
+                            )
+            }
+        
+        return(map)
 
     })
 

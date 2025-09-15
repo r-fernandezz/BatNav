@@ -336,7 +336,7 @@ ui <-  dashboardPage(
                         ),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Cette analyses devrait être réalisée uniquement avec des localisations GPS enregistrées en 2024 pour éviter des biais."),
+                            "Cette analyse utilise des données RPG de 2024 qui peuvent varier d'une année sur l'autre."),
                         fluidRow(
                             box(
                                 title = "Carte des localisations",
@@ -394,7 +394,7 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "VizDataVegeONF",
-                    h1("Types de végétation fréquentées"),
+                    h1("Types de végétation fréquentés"),
                     p(
                         icon("book", lib = "font-awesome"),
                         "Analyses réalisées avec le référentiel typologique de végétation de l'ONF de 2019.",
@@ -411,7 +411,7 @@ ui <-  dashboardPage(
                     ),
                     withSpinner(dataTableOutput(outputId = "tab_vegeONF")),
                     br(),
-                    h3("Proportion de localisation par classe d'occupation du sol"),
+                    h3("Proportion de localisation par type de végétation"),
                     div(
                         style = "text-align: center;",
                         downloadButton("download_diagCirc_vegeONF", "Télécharger le diagramme")
@@ -449,7 +449,7 @@ ui <-  dashboardPage(
                             "Ces analyses télécharges les dalles MNT dans lesquelles des points sont trouvés à l'intérieur (et leurs 8 voisines). 
                             Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur. 
                             Cette analyse peut donc être longue si les dalles n'ont jamais été téléchargées auparavant. 
-                            Si une erreur survient sur l'une des dalles, supprimer là (dossier 'data/LidarHD' dans BatNav) et relancer l'analyse."
+                            Si une erreur survient sur l'une des dalles, supprimez là (dossier 'data/LidarHD' dans BatNav) et relancer l'analyse."
                         ),
                         br(),
                         div(
