@@ -7,7 +7,7 @@ License](https://img.shields.io/badge/License-GPL%20v3.0-blue.svg)
 ![WIP](https://www.repostatus.org/badges/latest/wip.svg)
 
 <p align="center">
-<img src="www/logo_BatNav_officiel.png" width="300" />
+<img src="www/logo-BatNav_officiel.png" width="300" />
 </p>
 
 BatNav is a Shiny application to perform spatial analyses using GPS points of flying foxes recorded by GCOI.
