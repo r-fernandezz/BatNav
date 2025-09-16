@@ -6,7 +6,7 @@ ui <-  dashboardPage(
                 target = "_blank",
                 style = "color: #fff;",
                 tags$img(
-                    src = "logo-GCOI_white.png",
+                    src = "logo-BatNav_officiel_white.png",
                     style = "height: 40px; margin-right: 10px;"
                 ),
                 "BatNav"
@@ -71,13 +71,17 @@ ui <-  dashboardPage(
                 ),
 
                 div(
-                    "Romain Fernandez v1.0.0 - 2025",
+                    "Romain Fernandez - BatNav v1.0.0 (2025)",
                     br(),
                     a(  "Code on Github",
                         href = "https://github.com/r-fernandezz/BatNav",
                         target = "_blank",
                         style = "color: #9C9A9A;"
                     ),
+                    tags$img(
+                                src = "logo-GCOI_grey.png",
+                                style = "display: block; margin-left: auto; margin-right: auto; max-width: 100px; margin-top: 3px;"
+                            ),
                     style = "position: absolute; bottom: 5px; color: #9C9A9A; font-size: 10px; text-align: center; width: 220px;"
                 )
             )
@@ -156,23 +160,18 @@ ui <-  dashboardPage(
 
             tabItems(
                 tabItem(tabName = "home",
-                    h1("🚀 Bienvenue dans BatNav !", align = "center", style = "font-weight: bold;"),
-                    fluidRow(
-                        column(6,
-                            tags$img(
-                                    src = "logo-BatNav.png",
-                                    style = "display: block; margin-left: auto; margin-right: 0px; max-width: 200px; margin-top: 50px;"
-                                )
-                        ),
-                        column(6,
-                            tags$img(
-                                    src = "logo-GCOI.png",
-                                    style = "display: block; margin-left: 0px; margin-right: auto; max-width: 200px; margin-top: 50px;"
-                                )
-                        )
+                    tags$img(
+                        src = "logo-GCOI.png",
+                        style = "display: block; margin-left: auto; margin-right: 5px; max-width: 100px; margin-top: 5px;"
                     ),
-                    br(),
-                    p("📋 BatNav est une application R Shiny développée par le GCOI pour faciliter la mise à jour des résultats de l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion.",
+                    h1("Bienvenue dans BatNav !", align = "center", style = "font-weight: bold;"),
+                    fluidRow(
+                        tags$img(
+                                src = "logo-BatNav_officiel.png",
+                                style = "display: block; margin-left: auto; margin-right: auto; max-width: 550px; margin-top: 50px;"
+                            )
+                    ),
+                    p("🚀 BatNav est une application R Shiny développée par le GCOI pour faciliter la mise à jour des résultats de l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion.",
                         style = "text-align: justify; margin-left: 15px; margin-right: 15px;"
                     ),
                     div(
