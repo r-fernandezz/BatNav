@@ -2,10 +2,14 @@ ui <-  dashboardPage(
 
         dashboardHeader(
             title = tags$a(
-                "BatNav",
                 href = "https://github.com/r-fernandezz/BatNav",
                 target = "_blank",
-                style = "color: #fff;"
+                style = "color: #fff;",
+                tags$img(
+                    src = "logo-GCOI_white.png",
+                    style = "height: 40px; margin-right: 10px;"
+                ),
+                "BatNav"
             )
         ),
 
@@ -152,34 +156,47 @@ ui <-  dashboardPage(
 
             tabItems(
                 tabItem(tabName = "home",
-                    h1("Bienvenue dans BatNav !", align = "center"),
+                    h1("🚀 Bienvenue dans BatNav !", align = "center", style = "font-weight: bold;"),
                     fluidRow(
-                        column(
-                            width = 3,
+                        column(6,
                             tags$img(
-                                src = "logo-GCOI.png",
-                                width = "100%",
-                                style = "max-width:150px; margin-top:30px;"
-                            )
+                                    src = "logo-BatNav.png",
+                                    style = "display: block; margin-left: auto; margin-right: 0px; max-width: 200px; margin-top: 50px;"
+                                )
                         ),
-                        column(
-                            width = 9,
-                            br(),
-                            p("BatNav est une application R Shiny développée par le GCOI pour faciliter la mise à jour des résultats de l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion."),
-                            p("L'application permet de :"),
-                            tags$ul(
-                                tags$li("Importer et prévisualiser des données GPS."),
-                                tags$li("Filtrer les données par période, vitesse et emprise spatiale."),
-                                tags$li("Croiser les données GPS avec des couches SIG."),
-                                tags$li("Visualiser les résultats et les exporter si besoin.")
-                            ),
-                        ),
-                        br(),
-                    div(
-                            style = "text-align: center; left: 15px; margin-top: 20px;",
-                            p("Pour commencer, rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres d'analyse. Ensuite, pour visualiser vos résultats déplacer vous dans les différents onglets disponibles.")
+                        column(6,
+                            tags$img(
+                                    src = "logo-GCOI.png",
+                                    style = "display: block; margin-left: 0px; margin-right: auto; max-width: 200px; margin-top: 50px;"
+                                )
                         )
-                    )
+                    ),
+                    br(),
+                    p("📋 BatNav est une application R Shiny développée par le GCOI pour faciliter la mise à jour des résultats de l'analyse des données de localisation GPS des Roussettes noires de l'île de La Réunion.",
+                        style = "text-align: justify; margin-left: 15px; margin-right: 15px;"
+                    ),
+                    div(
+                        style = "text-align: justify; margin-left: 15px; margin-right: 15px;",
+                            p("L'application permet", style = "font-weight: bold;"),
+                            tags$ul(
+                                style = "list-style-type: none; padding-left: 0;",
+                                tags$li("✅ Importer, filtrer et prévisualiser des données GPS."),
+                                tags$li("✅ Croiser les données GPS avec plusieurs couches SIG."),
+                                tags$li("✅ Analyser la hauteur de vol des individus."),
+                                tags$li("✅ Analyser la distribution spatio-temporelle des individus."),
+                                tags$li("✅ Visualiser les résultats et les exporter si besoin.")
+                            )
+                    ),
+                    br(),
+                    div(
+                            style = "text-align: justify; margin-left: 15px; margin-right: 15px;",
+                            p("Pour commencer :", style = "font-weight: bold;"),
+                            tags$ul(
+                                style = "list-style-type: none; padding-left: 0;",
+                                tags$li("1️⃣ Rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres de votre analyse."),
+                                tags$li("2️⃣ Lancer si besoin les analyses et visualiser vos résultats en vous déplaçant dans les différents onglets disponibles.")
+                            )
+                        )
                 ),
 
                 tabItem(tabName = "readData", 

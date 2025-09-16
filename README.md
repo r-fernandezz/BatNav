@@ -16,7 +16,21 @@ BatNav is a Shiny application to perform spatial analyses using GPS points of fl
 
 :three: Check if the compiler '*gfortran*' (or '*gcc-fortran*') and the library '*udunits*' are installed on your computer.
 
-:four: Open R terminal **into BatNav folder** and run this command to install the required packages (choose option 1.).
+:four: Open R terminal **into BatNav folder** 
+
+- If you use windows :scream: Open windows power shell in the BatNav folder (Shift+Right Click on the folder) and launch R terminal with this command :
+
+```powershell
+& "C:\Program Files\R\R-4.5.1\bin\Rscript.exe"
+```
+
+- If you use MacOS or Linux :smirk: Open bash terminal into the BatNav folder (Right Click in the folder) and launch R terminal with this command :
+
+```bash
+R
+```
+
+:five: Launch command below in the same R terminal to install the packages required by BatNav.
 
 ```r
 install.packages(c("yaml", "renv"))
@@ -24,21 +38,8 @@ renv::activate()
 renv::restore()
 ```
 
-:five: Last step depend to your operating system :
-
-- If you use windows :scream: You can launch BatNav to run the command bellow, but first modify it to match the paths on your computer. Open Windows PowerShell **in the BatNav folder** to run the command.
-
-```powershell
-    & "C:\Program Files\R\R-4.5.1\bin\Rscript.exe" "E:\your\BatNav\app.R"
-```
-
-- If you use MacOS or Linux :smirk: You can launch BatNav to run the command bellow, but first modify it to match the paths on your computer. Open a terminal **in the BatNav folder** to run the command.
-
-```bash
-Rscript app.R
-```
-:warning: If you choose option 2. to install the packages with renv::restore() it's possible that R doesn't find the packages. If is happens, you can try to add your personal library path at the beginning of the script "global.R" (in the R folder). Copy and paste the line below into the script, but modify the path to match your personal library path.
+:six: Launch shiny application with this command in the same R terminal:
 
 ```r
-.libPaths("/path/to/your/R/x86_64-pc-linux-gnu-library/")
+shiny::runApp("app.r")
 ```

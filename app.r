@@ -7,8 +7,8 @@ ls_sub <- grepv("server.r|user_interface.r|global.r", ls, invert = TRUE)
 lapply(ls_sub, source)
 
 # To load server and ui functions
-source(here::here("R", "user_interface.r"))
-source(here::here("R", "server.r"))
+source(here::here("user_interface.r"))
+source(here::here("server.r"))
 
 # Run application
 shiny::shinyApp(ui = ui, server = server, options = list(launch.browser = TRUE))
