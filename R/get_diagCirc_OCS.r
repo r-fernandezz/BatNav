@@ -30,7 +30,8 @@ get_diagCirc_OCS <- function(df_gps, ocs_shp) {
             "#8C564B", "#E377C2", "#7F7F7F", "#BCBD22", "#17BECF",
             "#393B79", "#5254A3", "#6B6ECF", "#9C9EDE", "#637939",
             "#8CA252", "#B5CF6B", "#CEDB9C", "#8C6D31", "#BD9E39",
-            "#E7BA52", "#E7CB94", "#843C39", "#AD494A", "#D6616B"
+            "#E7BA52", "#E7CB94", "#843C39", "#AD494A", "#D6616B", 
+            "#00FFFF", "#CCFF00",  "#FF1493"
             )) +
         theme_void() +
         theme(
