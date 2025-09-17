@@ -25,6 +25,11 @@ ui <-  dashboardPage(
                             icon = icon("map-marker", lib = "glyphicon")
                 ),
 
+                menuItem(   "Exploration des données", 
+                            tabName = "exploreData", 
+                            icon = icon("zoom-in", lib = "glyphicon")
+                ),
+
                 menuItem("Croisement couches SIG", icon = icon("book", lib = "glyphicon"),
                 
                     menuSubItem("Parc National de La Réunion",
@@ -164,7 +169,7 @@ ui <-  dashboardPage(
                         src = "logo-GCOI.png",
                         style = "display: block; margin-left: auto; margin-right: 5px; max-width: 100px; margin-top: 5px;"
                     ),
-                    h1("Bienvenue dans BatNav !", align = "center", style = "font-weight: bold;"),
+                    h1("Bienvenue dans BatNav !", align = "center", style = "font-weight: bold; front-size= 30px;"),
                     fluidRow(
                         tags$img(
                                 src = "logo-BatNav_officiel.png",
@@ -199,7 +204,7 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "readData", 
-                    h1("Quelles sont les données à analyser ?", align = "center"),
+                    h1("Importer les données GPS pour votre analyse"),
 
                     h2("Période de déploiement des GPS"),
                     dateRangeInput(inputId = "dateRange",
@@ -255,6 +260,21 @@ ui <-  dashboardPage(
                     h2("Visualisation des données importées"),
                     leaflet::leafletOutput("mapInteractive", height = 600),
 
+                ),
+
+                tabItem(tabName = "exploreData",
+                        h1("Explorer les données importées"),
+                        
+                        h3("Résumé des données importées et filtrées"),
+                        p(  style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "Si un filtre de vitesse est appliqué dans les paramétrages, alors les dates de déploiement seront modifiées."
+                            ),
+                        p(  style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "La colonne proportion théorique est calculé sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
+                            ),
+                        withSpinner(dataTableOutput("summaryTable"))
                 ),
 
                 tabItem(tabName = "VizDataPNR",

@@ -120,9 +120,80 @@ server <- function(input, output) {
         df_gps <- df_gps() #for dev
         assign("df_gps", df_gps, envir = .GlobalEnv) #for dev
 
-    }, options = list(
-        scrollX = TRUE, pageLength = 8,
-        columnDefs = list(list(className = 'dt-center', targets = "_all"))
+    },  options = list(
+            scrollX = TRUE, pageLength = 8,
+            columnDefs = list(list(className = 'dt-center', targets = "_all"))
+        ))
+
+    # Add summary table
+    output$summaryTable <- renderDataTable({
+
+        req(df_gps())
+
+        df_gpsRCT <- df_gps()
+
+        # Number day of tracking by individuals
+        df_gpsRCT$date <- as.Date(paste(df_gpsRCT$Year, df_gpsRCT$Month, df_gpsRCT$Day, sep = "-"))
+
+        df <- data.frame(
+                DeviceID = unique(df_gpsRCT$DeviceID),
+                nb_point = sapply(unique(df_gpsRCT$DeviceID), function(x) {
+                    nrow(df_gpsRCT[df_gpsRCT$DeviceID == x, ])
+                }),
+                date_min = as.Date(sapply(unique(df_gpsRCT$DeviceID), function(x) {
+                    min(df_gpsRCT[df_gpsRCT$DeviceID == x, "date"])
+                })),
+                date_max = as.Date(sapply(unique(df_gpsRCT$DeviceID), function(x) {
+                    max(df_gpsRCT[df_gpsRCT$DeviceID == x, "date"])
+                })),
+                nb_days = sapply(unique(df_gpsRCT$DeviceID), function(x) {
+                    date_min <- min(df_gpsRCT[df_gpsRCT$DeviceID == x, "date"])
+                    date_max <- max(df_gpsRCT[df_gpsRCT$DeviceID == x, "date"])
+                    as.numeric(date_max) - as.numeric(date_min)
+                })
+        )
+
+        # Number point mean by day
+        df$nb_point_mean_day <- round(as.numeric(df$nb_point) / as.numeric(df$nb_days), 2)
+
+        # Number of theorical points
+        df$nb_point_theorical <- round((df$nb_point / (as.numeric(df$nb_days) * 12 * 4))*100, 2) #12 hours (18h-6h) with 4 points by hour (1 by 15 min)
+
+        # Add name of individuals if correspondence table is provided
+        if(!is.null(corresp_tab())){
+            req(corresp_tab())
+            df <- merge(df, corresp_tab(), by = "DeviceID")
+        }
+        
+        # Rename columns
+        if (nom_individu %in% colnames(df)) {
+            colnames(df) <- c(
+                "Numéro de GPS", 
+                "Nombre de points", 
+                "Date du premier point", 
+                "Date du dernier point", 
+                "Nombre de jours de suivi",
+                "Nombre de points moyen par jour",
+                "Proportion théorique de points acquise (%)",
+                "Nom de l'individu"
+            )
+        } else if (!nom_individu %in% colnames(df)) {
+            colnames(df) <- c(
+                "Numéro de GPS", 
+                "Nombre de points", 
+                "Date du premier point", 
+                "Date du dernier point", 
+                "Nombre de jours de suivi",
+                "Nombre de points moyen par jour",
+                "Proportion théorique de points acquise (%)"
+            )
+        }
+
+        return(df)
+
+    },  options = list(
+            scrollX = TRUE, pageLength = 20,
+            columnDefs = list(list(className = 'dt-center', targets = "_all"))
         ))
 
     # Analysis with PNR emprise
