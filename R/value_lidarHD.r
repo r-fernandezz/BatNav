@@ -44,11 +44,12 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
 
             if(!file.exists(here::here("data", "LidarHD", slab_name))){
 
-                print("###### Downloading main LidarHD tile... ######")
+                print("###### Downloading central LidarHD slab... ######")
 
-                # Download the raster slab
+                # Download the central raster slab
                 success <- FALSE
                 n_try <- 0
+
                 while(success == FALSE && n_try < 10){
                     try_error <- try(
                                 download.file(
@@ -64,8 +65,7 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
                         n_try <- n_try + 1
                         message(paste("Failed to download, attempt n°", n_try, "out of 10 for", slab_name))
                     }
-                    if(n_try == 10) stop("Download of LidarHD tile failed after 10 attempts")
-                    Sys.sleep(1)
+                    if(n_try == 10) stop("Download of LidarHD slab failed after 10 attempts")
                 }
 
             }
@@ -105,11 +105,12 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
 
                 if(!file.exists(here::here("data", "LidarHD", neigh_list[ii]))){
 
-                    print(paste("###### Downloading neighboring tiles... ######"))
+                    print(paste("###### Downloading neighboring slabs... ######"))
 
-                    # Download the raster slab
+                    # Download the neighboring raster slabs
                     success <- FALSE
                     n_try <- 0
+
                     while(success == FALSE && n_try < 10){
                         
                         try_error <- try(
@@ -126,21 +127,95 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
                             n_try <- n_try + 1
                             message(paste("Failed to download, attempt n°", n_try, "out of 10 for", neigh_list[ii]))
                         }
-                        if(n_try == 10) stop("Download of LidarHD tile failed after 10 attempts")
-                        Sys.sleep(1)
+                        if(n_try == 10) stop("Download of LidarHD slab failed after 10 attempts")
                     }
                 }
 
             })
 
-            print(paste("###### Extract values from the main tile (merging neighboring tiles) :", slab_name, "######"))
+            print(paste("###### Extract values from the central slab (merging neighboring slab) :", slab_name, "######"))
 
             # Load raster slab
             rast_lidar <- terra::rast(here::here("data", "LidarHD", slab_name))
+
+            # Test if the central slab is corrupted
+            error_slab <- try(mean(terra::values(rast_lidar)), silent = TRUE)
+
+            while(inherits(error_slab, "try-error")){
+
+                n_try <- 0
+                success <- FALSE
+                print(paste("Error during the merge process, removing and re-downloading the central slab :", slab_name))
+                file.remove(here::here("data", "LidarHD", slab_name))
+
+                while(success == FALSE && n_try < 10){
+
+                    try_error <- try(
+                                download.file(
+                                    lidarHD[grep(slab_name, sub(".*&FILENAME=", "\\1", lidarHD))],
+                                    destfile = here::here("data", "LidarHD", slab_name),
+                                    mode = "wb"
+                                ),
+                            silent = TRUE
+                            )
+
+                    if(!inherits(try_error, "try-error")) success <- TRUE
+                    if(success == FALSE) {
+                        n_try <- n_try + 1
+                        message(paste("Failed to download the new central slab, attempt n°", n_try, "out of 10 for", slab_name))
+                    }
+                    if(n_try == 10) stop("Download of LidarHD slab failed after 10 attempts")
+                }
+
+                # Reload the slab
+                rast_lidar <- terra::rast(here::here("data", "LidarHD", slab_name))
+                error_slab <- try(mean(terra::values(rast_lidar)), silent = TRUE)
+
+            }
+
+            # Merge with neighboring slabs
             lapply(neigh_list, function(x){
-                                slab_2 <- terra::rast(here::here("data", "LidarHD", x))
-                                rast_lidar <<- terra::merge(rast_lidar, slab_2)
-                            })
+
+                slab_2 <- terra::rast(here::here("data", "LidarHD", x))
+
+                # Test if the file is corrupted
+                error_neigh_slab <- try(mean(terra::values(slab_2)), silent = TRUE)
+
+                while(inherits(error_neigh_slab, "try-error")){
+
+                    n_try <- 0
+                    success <- FALSE
+                    print(paste("Error during the merge process, removing and re-downloading the neighboring slab :", x))
+                    file.remove(here::here("data", "LidarHD", x))
+
+                    while(success == FALSE && n_try < 10){
+
+                        try_error <- try(
+                                    download.file(
+                                        lidarHD[grep(x, sub(".*&FILENAME=", "\\1", lidarHD))],
+                                        destfile = here::here("data", "LidarHD", x),
+                                        mode = "wb"
+                                    ),
+                                silent = TRUE
+                                )
+
+                        if(!inherits(try_error, "try-error")) success <- TRUE
+                        if(success == FALSE) {
+                            n_try <- n_try + 1
+                            message(paste("Failed to download the new neighboring slab, attempt n°", n_try, "out of 10 for", x))
+                        }
+                        if(n_try == 10) stop("Download of LidarHD slab failed after 10 attempts")
+                    }
+
+                    # Reload the slab
+                    slab_2 <- terra::rast(here::here("data", "LidarHD", x))
+                    error_neigh_slab <- try(mean(terra::values(slab_2)), silent = TRUE)
+
+                }
+
+                rast_lidar <<- terra::merge(rast_lidar, slab_2)
+
+            })
 
             # Degradation of spatial resolution 0.5m->3m
             rast_lidar <- terra::aggregate(rast_lidar, fact = 6, fun = mean)
