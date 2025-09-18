@@ -275,6 +275,11 @@ ui <-  dashboardPage(
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "La colonne proportion théorique est calculé sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
                             ),
+                        br(),
+                        div(
+                            style = "text-align: center;",
+                            downloadButton("download_tab_summary", "Télécharger le tableau")
+                        ),
                         withSpinner(dataTableOutput("summaryTable")),
                         br(),
 
