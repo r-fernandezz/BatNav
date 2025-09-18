@@ -56,6 +56,8 @@ server <- function(input, output) {
         df_corresp <- read.csv(input$correspFile$datapath, header = TRUE)
         assign("df_corresp", df_corresp, envir = .GlobalEnv) #for dev
 
+        return(df_corresp)
+
     })
 
     # Update choice of individuals in selectizeInput
@@ -135,7 +137,18 @@ server <- function(input, output) {
         # Number day of tracking by individuals
         df_gpsRCT$date <- as.Date(paste(df_gpsRCT$Year, df_gpsRCT$Month, df_gpsRCT$Day, sep = "-"))
 
+        # Add name of individuals if correspondence table is provided
+        if("nom_individu" %in% colnames(df_gpsRCT)) {
+            name <<- sapply(unique(df_gpsRCT$DeviceID), function(x) {
+                unique(df_gpsRCT[df_gpsRCT$DeviceID == x, ]$nom_individu)
+            })
+        } else if (!"nom_individu" %in% colnames(df_gpsRCT)) {
+            name <<- rep(NA, length(unique(df_gpsRCT$DeviceID)))
+        }
+
+        # Create summary table
         df <- data.frame(
+                name = name,
                 DeviceID = unique(df_gpsRCT$DeviceID),
                 nb_point = sapply(unique(df_gpsRCT$DeviceID), function(x) {
                     nrow(df_gpsRCT[df_gpsRCT$DeviceID == x, ])
@@ -149,7 +162,11 @@ server <- function(input, output) {
                 nb_days = sapply(unique(df_gpsRCT$DeviceID), function(x) {
                     date_min <- min(df_gpsRCT[df_gpsRCT$DeviceID == x, "date"])
                     date_max <- max(df_gpsRCT[df_gpsRCT$DeviceID == x, "date"])
-                    as.numeric(date_max) - as.numeric(date_min)
+                    if(as.numeric(date_max) - as.numeric(date_min) == 0) {
+                        1
+                    } else {
+                        as.numeric(date_max) - as.numeric(date_min)
+                    }
                 })
         )
 
@@ -159,26 +176,9 @@ server <- function(input, output) {
         # Number of theorical points
         df$nb_point_theorical <- round((df$nb_point / (as.numeric(df$nb_days) * 12 * 4))*100, 2) #12 hours (18h-6h) with 4 points by hour (1 by 15 min)
 
-        # Add name of individuals if correspondence table is provided
-        if(!is.null(corresp_tab())){
-            req(corresp_tab())
-            df <- merge(df, corresp_tab(), by = "DeviceID")
-        }
-        
         # Rename columns
-        if (nom_individu %in% colnames(df)) {
-            colnames(df) <- c(
-                "Numéro de GPS", 
-                "Nombre de points", 
-                "Date du premier point", 
-                "Date du dernier point", 
-                "Nombre de jours de suivi",
-                "Nombre de points moyen par jour",
-                "Proportion théorique de points acquise (%)",
-                "Nom de l'individu"
-            )
-        } else if (!nom_individu %in% colnames(df)) {
-            colnames(df) <- c(
+        colnames(df) <- c(
+                "Nom de l'individu",
                 "Numéro de GPS", 
                 "Nombre de points", 
                 "Date du premier point", 
@@ -187,7 +187,6 @@ server <- function(input, output) {
                 "Nombre de points moyen par jour",
                 "Proportion théorique de points acquise (%)"
             )
-        }
 
         return(df)
 
