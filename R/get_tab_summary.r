@@ -13,7 +13,7 @@
 
 get_tab_summary <- function(df_gpsRCT) {
 
-        # Number day of tracking by individuals
+        # Create a full date column
         df_gpsRCT$date <- as.Date(paste(df_gpsRCT$Year, df_gpsRCT$Month, df_gpsRCT$Day, sep = "-"))
 
         # Add name of individuals if correspondence table is provided

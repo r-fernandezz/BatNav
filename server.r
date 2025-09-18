@@ -167,6 +167,24 @@ server <- function(input, output) {
         }
     )
 
+    # Plot histogram of number of points by year and per individual
+    output$hist_nbPtYears <- renderPlot({
+
+        req(df_gps())
+        get_hist_nbPtYears(df_gps())
+
+    })
+
+    # Download histogram of number of points by year and per individual
+    output$download_hist_nbPtYears <- downloadHandler(
+        filename = function() {
+            paste("hist_nbPtYears_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_hist_nbPtYears(df_gps()), device = "png", width = 10, height = 8)
+        }
+    )
+
     # Analysis with PNR emprise
     output$map_PNR <- renderPlot({
 

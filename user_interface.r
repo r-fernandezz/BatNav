@@ -292,6 +292,15 @@ ui <-  dashboardPage(
                                     style = "text-align: center;",
                                     downloadButton("download_plot_nbPt", "Télécharger le graphique")
                                 )
+                            ),
+                            box(
+                                title = "Nombre de points par année et individu",
+                                width = 6,
+                                withSpinner(plotOutput("hist_nbPtYears")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_hist_nbPtYears", "Télécharger le graphique")
+                                )
                             )
                         )
                         
