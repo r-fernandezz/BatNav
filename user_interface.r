@@ -264,17 +264,32 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "exploreData",
                         h1("Explorer les données importées"),
-                        
-                        h3("Résumé des données importées et filtrées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Si un filtre de vitesse est appliqué dans les paramétrages, alors les dates de déploiement seront modifiées."
+                            "Si un filtre de vitesse ou spatiale est appliqué dans l'onglet paramétrage, les résultats sur cette page seront affectés."
                             ),
+                        br(),
+
+                        h3("Résumé des données importées et filtrées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "La colonne proportion théorique est calculé sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
                             ),
-                        withSpinner(dataTableOutput("summaryTable"))
+                        withSpinner(dataTableOutput("summaryTable")),
+                        br(),
+
+                        fluidRow(
+                            box(
+                                title = "Nombre de points par individu et par jour",
+                                width = 6,
+                                withSpinner(plotOutput("plot_nbPt")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_plot_nbPt", "Télécharger le graphique")
+                                )
+                            )
+                        )
+                        
                 ),
 
                 tabItem(tabName = "VizDataPNR",

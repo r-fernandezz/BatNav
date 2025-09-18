@@ -125,7 +125,7 @@ server <- function(input, output) {
     },  options = list(
             scrollX = TRUE, pageLength = 8,
             columnDefs = list(list(className = 'dt-center', targets = "_all"))
-        ))
+    ))
 
     # Add summary table
     output$summaryTable <- renderDataTable({
@@ -193,7 +193,25 @@ server <- function(input, output) {
     },  options = list(
             scrollX = TRUE, pageLength = 20,
             columnDefs = list(list(className = 'dt-center', targets = "_all"))
-        ))
+    ))
+
+    # Plot number of points by day and per individual
+    output$plot_nbPt <- renderPlot({
+
+        req(df_gps())
+        get_plot_nbPt(df_gps())
+
+    })
+
+    # Download plot number of points by day and per individual
+    output$download_plot_nbPt <- downloadHandler(
+        filename = function() {
+            paste("plot_nbPt_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(file, plot = get_plot_nbPt(df_gps()), device = "png", width = 10, height = 8)
+        }
+    )
 
     # Analysis with PNR emprise
     output$map_PNR <- renderPlot({
