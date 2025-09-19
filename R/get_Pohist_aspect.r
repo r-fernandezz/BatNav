@@ -13,7 +13,7 @@
 
 get_Pohist_aspect <- function(df_lidar_MNT) {
 
-    df_lidar_MNT$class <- cut(df_lidar_MNT$aspect,
+    df_lidar_MNT$class <- cut(df_lidar_MNT$'Orientation LidarHD',
                                 breaks = c(0, 45, 90, 135, 180, 225, 270, 315, 360),
                                 labels = c("N", "NE", "E", "SE", "S", "SO", "O", "NO"),
                                 right = FALSE)

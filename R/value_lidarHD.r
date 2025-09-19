@@ -242,6 +242,14 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
 
     df_final <- do.call(rbind, req_list)
 
+    # Rename columns
+    colnames(df_final)[which(colnames(df_final) %in% "altMnt")] <- "Altitude LidarHD"
+    colnames(df_final)[which(colnames(df_final) %in% "slope")] <- "Pente LidarHD"
+    colnames(df_final)[which(colnames(df_final) %in% "aspect")] <- "Orientation LidarHD"
+
+    #Remove geometry column
+    df_final <- df_final[ , colnames(df_final) != "geometry"]
+
     return(df_final)
 
 }

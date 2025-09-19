@@ -32,7 +32,6 @@ get_hist_nbPtYears <- function(df_gpsRCT) {
                                     "#0000CC", "#99CCFF", "#00FFFF", "#CCFFFF", "#9900CC", "#CC99FF", "#996600",
                                     "#666600", "#666666", "#CCCCCC", "#79CC3D", "#CCCC99"
                                     )) +
-        scale_y_continuous(breaks = seq(0, max(df_count$nb_point), by = 2000)) +
         labs(x = "Années", y = "Nombre de points", fill = legend) +
         theme_minimal() +
         theme(

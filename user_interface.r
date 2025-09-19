@@ -181,7 +181,7 @@ ui <-  dashboardPage(
                     ),
                     div(
                         style = "text-align: justify; margin-left: 15px; margin-right: 15px;",
-                            p("L'application permet", style = "font-weight: bold;"),
+                            p("L'application permet..", style = "font-weight: bold;"),
                             tags$ul(
                                 style = "list-style-type: none; padding-left: 0;",
                                 tags$li("✅ Importer, filtrer et prévisualiser des données GPS."),
@@ -194,7 +194,7 @@ ui <-  dashboardPage(
                     br(),
                     div(
                             style = "text-align: justify; margin-left: 15px; margin-right: 15px;",
-                            p("Pour commencer :", style = "font-weight: bold;"),
+                            p("Pour commencer...", style = "font-weight: bold;"),
                             tags$ul(
                                 style = "list-style-type: none; padding-left: 0;",
                                 tags$li("1️⃣ Rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres de votre analyse."),
@@ -266,14 +266,14 @@ ui <-  dashboardPage(
                         h1("Explorer les données importées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Si un filtre de vitesse ou spatiale est appliqué dans l'onglet paramétrage, les résultats sur cette page seront affectés."
+                            "Si un filtre de vitesse ou spatial est appliqué dans l'onglet paramétrage, les résultats sur cette page seront affectés."
                             ),
                         br(),
 
                         h3("Résumé des données importées et filtrées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "La colonne proportion théorique est calculé sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
+                            "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
                             ),
                         br(),
                         div(
@@ -560,7 +560,12 @@ ui <-  dashboardPage(
                                     style = "text-align: center;",
                                     downloadButton("download_hist_slope", "Télécharger l'histogramme")
                                 )
-                            ),
+                            )
+                        ),
+                        br(),
+                        div(
+                            style = "text-align: center;",
+                            downloadButton("download_df_lidar_MNT", "Télécharger le tableau avec les valeurs LidarHD")
                         )
                 )
             )

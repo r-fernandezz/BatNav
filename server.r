@@ -429,7 +429,18 @@ server <- function(input, output) {
         req(df_gps())
         df_mnt <- value_lidarHD(df_gps(), lidarMNT) #with column altitude, slope, aspect
         assign("df_lidar_MNT", df_mnt, envir = .GlobalEnv) #for dev
+        return(df_mnt)
     })
+
+    # Download dataframe with LidarHD values
+    output$download_df_lidar_MNT <- downloadHandler(
+        filename = function() {
+            paste("table_LidarHD_MNT_", Sys.Date(), ".csv", sep = "")
+        },
+        content = function(file) {
+            write.csv(df_lidar_MNT(), file, row.names = FALSE)
+        }
+    )
 
     # Create histogram of altitude values
     output$hist_altitude <- renderPlot({
