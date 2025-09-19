@@ -67,6 +67,11 @@ ui <-  dashboardPage(
                     )
                 ),
 
+                menuItem(   "Reposoirs diurnes probables",
+                            tabName = "roostPrediction", 
+                            icon = icon("tent", lib = "glyphicon")
+                ),
+
                 menuItem("Hauteur de vol", icon = icon("stats", lib = "glyphicon")
 
                 ),
@@ -412,7 +417,8 @@ ui <-  dashboardPage(
                         ),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Les données des RPG peuvent varier d'une année sur l'autre."),
+                            "Les données des RPG peuvent varier d'une année sur l'autre."
+                        ),
                         fluidRow(
                             box(
                                 title = "Carte des localisations",
@@ -567,6 +573,34 @@ ui <-  dashboardPage(
                             style = "text-align: center;",
                             downloadButton("download_df_lidar_MNT", "Télécharger le tableau avec les valeurs LidarHD")
                         )
+                ),
+
+                tabItem(tabName = "roostPrediction",
+                        h1("Localisation des reposoirs diurnes probables"),
+                        p(" Cette analyse calcule la distance entre le point de fin de nuit (point maximal entre 00h et 6h) et le point de début de nuit (minimal entre 18h et 00h) pour chaque individu et chaque jour. 
+                            Si la distance entre ces deux points est inférieure à la distance maximale définie ci-dessous, le point de fin de nuit est considéré comme un reposoir diurne probable."),
+                        p(  style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "Pour réaliser cette analyse aucun filtre de vitesse ne doit être appliqué dans l'onglet paramétrage."
+                        ),
+                        br(),
+                        numericInput(  inputId = "distanceRoost",
+                                        label = "Distance maximale (en mètres) entre le premier et le dernier point pour considérer le premier point comme un reposoir diurne",
+                                        value = 20,
+                                        min = 1,
+                                        max = 100,
+                                        step = 1
+                        ),
+                        br(),
+                        div(
+                            style = "text-align: left;",
+                            actionButton("runRoostAnalysis", "Lancer l'analyse")
+                        ),
+                        h3("Visualisation des reposoirs diurnes probables"),
+                        withSpinner(leaflet::leafletOutput("map_roost", height = 600)),
+                        br(),
+                        h3("Tableau des reposoirs diurnes probables"),
+                        withSpinner(dataTableOutput("preview_tab_roost")),
                 )
             )
         )

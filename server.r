@@ -79,37 +79,37 @@ server <- function(input, output) {
             addTiles() %>%
             fitBounds(lng1 = ~min(Longitudedecimal), lat1 = ~min(Latitudedecimal), lng2 = ~max(Longitudedecimal), lat2 = ~max(Latitudedecimal), options = list())
             
-            if("nom_individu" %in% colnames(df_gps())){
-                map <- map %>% addCircleMarkers(
-                                lng = ~Longitudedecimal,
-                                lat = ~Latitudedecimal,
-                                popup = ~paste(
-                                    "<b>Nom de l'individu :</b>", nom_individu, "<br>",
-                                    "<b>Date :</b>", paste(Day, Month, Year, sep = "/"), "<br>",
-                                    "<b>Heure :</b>", paste(Hour, Minute, Second, sep = ":"), "<br>",
-                                    "<b>Vitesse :</b>", Speed, "km/h<br>"
-                                ),
-                                radius = 1,
-                                color = "red",
-                                fillOpacity = 0.8
-                            )
-            }
+        if("nom_individu" %in% colnames(df_gps())){
+            map <- map %>% addCircleMarkers(
+                            lng = ~Longitudedecimal,
+                            lat = ~Latitudedecimal,
+                            popup = ~paste(
+                                "<b>Nom de l'individu :</b>", nom_individu, "<br>",
+                                "<b>Date :</b>", paste(Day, Month, Year, sep = "/"), "<br>",
+                                "<b>Heure :</b>", paste(Hour, Minute, Second, sep = ":"), "<br>",
+                                "<b>Vitesse :</b>", Speed, "km/h<br>"
+                            ),
+                            radius = 1,
+                            color = "red",
+                            fillOpacity = 0.8
+                        )
+        }
 
-            if(!"nom_individu" %in% colnames(df_gps())){
-                map <- map %>% addCircleMarkers(
-                                lng = ~Longitudedecimal,
-                                lat = ~Latitudedecimal,
-                                popup = ~paste(
-                                    "<b>Numéro de GPS (DeviceID) :</b>", DeviceID, "<br>",
-                                    "<b>Date :</b>", paste(Day, Month, Year, sep = "/"), "<br>",
-                                    "<b>Heure :</b>", paste(Hour, Minute, Second, sep = ":"), "<br>",
-                                    "<b>Vitesse :</b>", Speed, "km/h<br>"
-                                ),
-                                radius = 1,
-                                color = "red",
-                                fillOpacity = 0.8
-                            )
-            }
+        if(!"nom_individu" %in% colnames(df_gps())){
+            map <- map %>% addCircleMarkers(
+                            lng = ~Longitudedecimal,
+                            lat = ~Latitudedecimal,
+                            popup = ~paste(
+                                "<b>Numéro de GPS (DeviceID) :</b>", DeviceID, "<br>",
+                                "<b>Date :</b>", paste(Day, Month, Year, sep = "/"), "<br>",
+                                "<b>Heure :</b>", paste(Hour, Minute, Second, sep = ":"), "<br>",
+                                "<b>Vitesse :</b>", Speed, "km/h<br>"
+                            ),
+                            radius = 1,
+                            color = "red",
+                            fillOpacity = 0.8
+                        )
+        }
         
         return(map)
 
@@ -489,6 +489,113 @@ server <- function(input, output) {
             ggsave(file, plot = get_hist_slope(df_lidar_MNT()), device = "png", width = 10, height = 8)
         }
     )
+
+    # Roost analysis
+    df_roost <- eventReactive(input$runRoostAnalysis, {
+        req(df_gps())
+        df_roost <- found_roost(df_gpsRCT = df_gps(), distance_size = input$distanceRoost)
+        assign("df_roost", df_roost, envir = .GlobalEnv) #for dev
+
+        return(df_roost)
+    })
+
+    # Table roost preview 
+    output$preview_tab_roost <- renderDataTable({
+        req(df_roost())
+        df_roostRCT <- df_roost()
+
+        # Shape dataframe for preview
+        col <- c("DeviceID", "nom_individu", "full_date", "LatitudeDecimal", "LongitudeDecimal", "roost_distance")
+        df_roostRCT <- as.data.frame(df_roostRCT)
+        df_roostRCT <- df_roostRCT[, colnames(df_roostRCT) %in% col]
+        
+
+        if("nom_individu" %in% colnames(df_roostRCT)){
+            colnames(df_roostRCT) <- c("Numéro de la balise", 
+                                    "Nom de l'individu", 
+                                    "Date d'arrivée sur le reposoir",
+                                    "Distance entre le premier et le dernier point de la nuit (m)",
+                                    "Latitude", 
+                                    "Longitude" 
+                                    )
+        }
+
+        if(!"nom_individu" %in% colnames(df_roostRCT)){
+            colnames(df_roostRCT) <- c("Numéro de la balise",
+                                    "Date d'arrivée sur le reposoir",
+                                    "Distance entre le premier et le dernier point de la nuit (m)",
+                                    "Latitude", 
+                                    "Longitude" 
+                                    )
+        }
+        
+        return(df_roostRCT)
+
+    }, options = list(
+            scrollX = TRUE, pageLength = 8,
+            columnDefs = list(list(className = 'dt-center', targets = "_all"))
+    ))
+
+    # Create map with roost points
+    output$map_roost <- renderLeaflet({
+
+        req(df_roost())
+        df_roost <- df_roost()
+
+        # Add color by individual
+        color_ind <- setNames(c(
+                                "#FF0000", "#FF9900", "#FFCC00", "#00FF00", "#6699FF", "#CC33FF", "#99991E",
+                                "#999999", "#FF00CC", "#CC0000", "#FFCCCC", "#FFFF00", "#CCFF00", "#358000",
+                                "#0000CC", "#99CCFF", "#00FFFF", "#CCFFFF", "#9900CC", "#CC99FF", "#996600",
+                                "#666600", "#666666", "#CCCCCC", "#79CC3D", "#CCCC99"
+                            ),
+                            unique(df_roost$DeviceID))
+
+        color_ind <- data.frame(DeviceID = names(color_ind), color_ind = as.character(color_ind))
+        color_ind <- na.omit(color_ind)
+        
+        df_roost <- merge(df_roost, color_ind, by = "DeviceID", all.x = TRUE)
+
+        map_roost <-    leaflet(data = df_roost) %>%
+                        addTiles() %>%
+                        fitBounds(lng1 = ~min(LongitudeDecimal), lat1 = ~min(LatitudeDecimal), lng2 = ~max(LongitudeDecimal), lat2 = ~max(LatitudeDecimal), options = list())
+
+
+        if("nom_individu" %in% colnames(df_gps())){
+            map <- map_roost %>% addCircleMarkers(
+                                            lng = ~as.numeric(LongitudeDecimal),
+                                            lat = ~as.numeric(LatitudeDecimal),
+                                            popup = ~paste(
+                                                "<b>Nom de l'individu :</b>", nom_individu, "<br>",
+                                                "<b>Date de l'arrivé sur le reposoir :</b>", full_date, "<br>",
+                                                "<b>Longitude :</b>", LongitudeDecimal, "<br>",
+                                                "<b>Latitude :</b>", LatitudeDecimal, "<br>"
+                                            ),
+                                            radius = 5,
+                                            color = ~color_ind,
+                                            fillOpacity = 0.8
+                                        )
+        }
+
+        if(!"nom_individu" %in% colnames(df_gps())){
+            map <- map_roost %>% addCircleMarkers(
+                                            lng = ~as.numeric(LongitudeDecimal),
+                                            lat = ~as.numeric(LatitudeDecimal),
+                                            popup = ~paste(
+                                                "<b>Numéro de la balise :</b>", DeviceID, "<br>",
+                                                "<b>Date de l'arrivé sur le reposoir :</b>", full_date, "<br>",
+                                                "<b>Longitude :</b>", LongitudeDecimal, "<br>",
+                                                "<b>Latitude :</b>", LatitudeDecimal, "<br>"
+                                            ),
+                                            radius = 5,
+                                            color = ~color_ind,
+                                            fillOpacity = 0.8
+                                        )
+        }
+
+        return(map)
+
+    })
 
 
 }
