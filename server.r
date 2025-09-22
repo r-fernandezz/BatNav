@@ -323,18 +323,20 @@ server <- function(input, output) {
     output$tab_RPG <- renderDataTable({
 
         req(df_gps())
-
-        df <- pt_within_poly(df_gps(), rpg_shp, arg_shp = "CODE_CULTU")
-        df_merged <- merge(df, rpgRef_tab, by.x = "type", by.y = "CODE", all.x = TRUE)
-        df_order <- df_merged[, c("LIBELLE_CULTURE","nb_point", "proportion")]
-        
-        nb_pt_ext <- nrow(df_gps()) - sum(df_order$nb_point)
-        df_order <- rbind(df_order, data.frame(LIBELLE_CULTURE = "Hors RPG", nb_point = nb_pt_ext, proportion = round(nb_pt_ext / nrow(df_gps()) * 100, 2)))
-        colnames(df_order) <- c("Types de parcelles", "Nombre de points", "Proportion")
-        
-        return(df_order)
+        tab <- get_tab_RPG(df_gps())
+        return(tab)
 
     })
+
+    # Download table RPG
+    output$download_tab_RPG <- downloadHandler(
+        filename = function() {
+            paste("table_RPG_", Sys.Date(), ".csv", sep = "")
+        },
+        content = function(file) {
+            write.csv(get_tab_RPG(df_gps()), file, row.names = FALSE)
+        }
+    )
 
     # Map with light pollution
     output$map_pollu <- renderPlot({

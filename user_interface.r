@@ -432,7 +432,11 @@ ui <-  dashboardPage(
                             box(
                                 title = "Dénombrement des localisations",
                                 width = 6,
-                                withSpinner(dataTableOutput("tab_RPG"))
+                                withSpinner(dataTableOutput("tab_RPG")),
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_tab_RPG", "Télécharger le tableau")
+                                )
                             )
                         )
                 ),
