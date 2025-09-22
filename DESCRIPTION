@@ -19,6 +19,7 @@ Imports:
     ggplot2,
     here,
     leaflet,
+    lubridate,
     sf,
     shiny,
     shinycssloaders,
