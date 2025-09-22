@@ -501,38 +501,25 @@ server <- function(input, output) {
 
     # Table roost preview 
     output$preview_tab_roost <- renderDataTable({
+
         req(df_roost())
-        df_roostRCT <- df_roost()
-
-        # Shape dataframe for preview
-        col <- c("DeviceID", "nom_individu", "full_date", "LatitudeDecimal", "LongitudeDecimal", "roost_distance")
-        df_roostRCT <- as.data.frame(df_roostRCT)
-        df_roostRCT <- df_roostRCT[, colnames(df_roostRCT) %in% col]
-        df_roostRCT$full_date <- as.character(df_roostRCT$full_date)
-
-        if("nom_individu" %in% colnames(df_roostRCT)){
-            colnames(df_roostRCT) <- c( "Numéro de la balise", 
-                                        "Nom de l'individu", 
-                                        "Date d'arrivée sur le reposoir",
-                                        "Distance entre le premier et le dernier point de la nuit (m)",
-                                        "Latitude", 
-                                        "Longitude" 
-                                    )
-        } else if (!"nom_individu" %in% colnames(df_roostRCT)) {
-            colnames(df_roostRCT) <- c( "Numéro de la balise",
-                                        "Date d'arrivée sur le reposoir",
-                                        "Distance entre le premier et le dernier point de la nuit (m)",
-                                        "Latitude", 
-                                        "Longitude" 
-                                    )
-        }
-
-        return(df_roostRCT)
+        tab <- get_tab_roost(df_roost())
+        return(tab)
 
     }, options = list(
             scrollX = TRUE, pageLength = 8,
             columnDefs = list(list(className = 'dt-center', targets = "_all"))
     ))
+
+    # Download table with roost points
+    output$download_tab_roost <- downloadHandler(
+        filename = function() {
+            paste("table_Roost_points_", Sys.Date(), ".csv", sep = "")
+        },
+        content = function(file) {
+            write.csv(get_tab_roost(df_roost()), file, row.names = FALSE)
+        }
+    )
 
     # Create map with roost points
     output$map_roost <- renderLeaflet({

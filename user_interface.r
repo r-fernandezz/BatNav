@@ -601,6 +601,10 @@ ui <-  dashboardPage(
                         br(),
                         h3("Tableau des reposoirs diurnes probables"),
                         withSpinner(dataTableOutput("preview_tab_roost")),
+                        div(
+                            style = "text-align: center;",
+                            downloadButton("download_tab_roost", "Télécharger le tableau")
+                        )
                 )
             )
         )
