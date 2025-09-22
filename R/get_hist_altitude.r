@@ -20,8 +20,14 @@ get_hist_altitude <- function(df_lidar_MNT) {
                                 right = FALSE)
 
     ggplot(df_lidar_MNT, aes(x = class)) + 
-        geom_histogram(stat = "count", fill = "lightblue", color = "black", alpha = 0.7) +
-        labs(x = "Altitude (m)", y = "Nombre de points") +
+        geom_bar(aes(y = ((..count..) / sum(..count..))*100), fill = "#9b34ca", color = "black", alpha = 0.7) +
+        geom_text(
+            stat = "count",
+            aes(label = ..count.., y = ((..count..) / sum(..count..))*100),
+            vjust = -0.5,
+            size = 3
+        ) +
+        labs(x = "Altitude (m)", y = "Pourcentage de points") +
         theme_minimal()
 
 }

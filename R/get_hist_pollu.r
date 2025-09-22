@@ -32,7 +32,16 @@ get_hist_pollu <- function(df_gpsRCT, pollu_rast) {
 
 
     ggplot(gps_sf, aes(x = class, fill = class)) +
-        geom_bar(color = "black", alpha = 0.7, show.legend = FALSE) +
+        geom_bar(aes(y = ((..count..) / sum(..count..))*100), color = "black", alpha = 0.7, show.legend = FALSE) +
+        geom_text(
+            stat = "count",
+            aes(
+                y = ((..count..) / sum(..count..)) * 100,
+                label = ..count..
+            ),
+            vjust = -0.5,
+            size = 3
+        ) +
         scale_fill_manual(
             values = c( 
                 "Grandes_villes" = "red", 
@@ -57,7 +66,7 @@ get_hist_pollu <- function(df_gpsRCT, pollu_rast) {
                 "Site_très_sombre" = "Site\ntrès sombre"
             )
         ) +
-        labs(x = NULL, y = "Nombre de points") +
+        labs(x = NULL, y = "Pourcentage de points") +
         theme_minimal() +
         theme(
             axis.title.x = element_blank(),

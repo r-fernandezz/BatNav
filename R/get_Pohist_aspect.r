@@ -20,12 +20,13 @@ get_Pohist_aspect <- function(df_lidar_MNT) {
 
     ggplot(df_lidar_MNT, aes(x = class)) +
         geom_bar(fill = "lightgreen", color = "black", alpha = 0.7) +
-        geom_text(stat = "count", aes(label = ..count.., y = ..count.. + 10), size = 4) +
         coord_polar() + 
-        labs(x = "Orientation (degrés)", y = "Nombre de points") +
+        geom_text(stat = "count", aes(label = round(((..count..) / sum(..count..))*100, 1), y = ..count.. + 10), size = 4) +
+        labs(x = "Orientation (degrés)", y = "Pourcentage de points") +
         theme_minimal() +
         theme(
-            axis.text.y = element_blank()
+            axis.text.y = element_blank(),
+            axis.text.x = element_text(face = "bold", size = 12)
         )
 
     # Calcul du nombre de points par classe
