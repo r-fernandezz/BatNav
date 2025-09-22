@@ -577,8 +577,8 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "roostPrediction",
                         h1("Localisation des reposoirs diurnes probables"),
-                        p(" Cette analyse calcule la distance entre le point de fin de nuit (point maximal entre 00h et 6h) et le point de début de nuit (minimal entre 18h et 00h) pour chaque individu et chaque jour. 
-                            Si la distance entre ces deux points est inférieure à la distance maximale définie ci-dessous, le point de fin de nuit est considéré comme un reposoir diurne probable."),
+                        p(" Cette analyse calcule la distance entre le point de fin de nuit (point avec une heure maximale entre 00h et 6h) et le point de début de nuit (point avec une heure minimale entre 18h et 00h) pour chaque individu et chaque jour. 
+                            Si la distance entre ces deux points est inférieure à la distance définie par l'utilisateur ci-dessous, le point de fin de nuit est considéré comme un reposoir diurne probable."),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "Pour réaliser cette analyse aucun filtre de vitesse ne doit être appliqué dans l'onglet paramétrage."
@@ -586,9 +586,9 @@ ui <-  dashboardPage(
                         br(),
                         numericInput(  inputId = "distanceRoost",
                                         label = "Distance maximale (en mètres) entre le premier et le dernier point pour considérer le premier point comme un reposoir diurne",
-                                        value = 20,
+                                        value = 50,
                                         min = 1,
-                                        max = 100,
+                                        max = 1000,
                                         step = 1
                         ),
                         br(),

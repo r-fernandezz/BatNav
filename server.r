@@ -508,27 +508,25 @@ server <- function(input, output) {
         col <- c("DeviceID", "nom_individu", "full_date", "LatitudeDecimal", "LongitudeDecimal", "roost_distance")
         df_roostRCT <- as.data.frame(df_roostRCT)
         df_roostRCT <- df_roostRCT[, colnames(df_roostRCT) %in% col]
-        
+        df_roostRCT$full_date <- as.character(df_roostRCT$full_date)
 
         if("nom_individu" %in% colnames(df_roostRCT)){
-            colnames(df_roostRCT) <- c("Numéro de la balise", 
-                                    "Nom de l'individu", 
-                                    "Date d'arrivée sur le reposoir",
-                                    "Distance entre le premier et le dernier point de la nuit (m)",
-                                    "Latitude", 
-                                    "Longitude" 
+            colnames(df_roostRCT) <- c( "Numéro de la balise", 
+                                        "Nom de l'individu", 
+                                        "Date d'arrivée sur le reposoir",
+                                        "Distance entre le premier et le dernier point de la nuit (m)",
+                                        "Latitude", 
+                                        "Longitude" 
+                                    )
+        } else if (!"nom_individu" %in% colnames(df_roostRCT)) {
+            colnames(df_roostRCT) <- c( "Numéro de la balise",
+                                        "Date d'arrivée sur le reposoir",
+                                        "Distance entre le premier et le dernier point de la nuit (m)",
+                                        "Latitude", 
+                                        "Longitude" 
                                     )
         }
 
-        if(!"nom_individu" %in% colnames(df_roostRCT)){
-            colnames(df_roostRCT) <- c("Numéro de la balise",
-                                    "Date d'arrivée sur le reposoir",
-                                    "Distance entre le premier et le dernier point de la nuit (m)",
-                                    "Latitude", 
-                                    "Longitude" 
-                                    )
-        }
-        
         return(df_roostRCT)
 
     }, options = list(
@@ -568,6 +566,7 @@ server <- function(input, output) {
                                             popup = ~paste(
                                                 "<b>Nom de l'individu :</b>", nom_individu, "<br>",
                                                 "<b>Date de l'arrivé sur le reposoir :</b>", full_date, "<br>",
+                                                "<b>Distance entre le premier et dernier point (m) :</b>", roost_distance, "<br>",
                                                 "<b>Longitude :</b>", LongitudeDecimal, "<br>",
                                                 "<b>Latitude :</b>", LatitudeDecimal, "<br>"
                                             ),
@@ -584,6 +583,7 @@ server <- function(input, output) {
                                             popup = ~paste(
                                                 "<b>Numéro de la balise :</b>", DeviceID, "<br>",
                                                 "<b>Date de l'arrivé sur le reposoir :</b>", full_date, "<br>",
+                                                "<b>Distance entre le premier et dernier point (m) :</b>", roost_distance, "<br>",
                                                 "<b>Longitude :</b>", LongitudeDecimal, "<br>",
                                                 "<b>Latitude :</b>", LatitudeDecimal, "<br>"
                                             ),

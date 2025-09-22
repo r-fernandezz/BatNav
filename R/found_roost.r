@@ -27,7 +27,9 @@ found_roost <- function(df_gpsRCT, distance_size = 20){
                                         paste(gps_sf_2975$Year, gps_sf_2975$Month, gps_sf_2975$Day, sep = "-"), 
                                         paste(gps_sf_2975$Hour, gps_sf_2975$Minute, gps_sf_2975$Second, sep = "-")
                                     ),
-                                    format = "%Y-%m-%d %H-%M-%S")
+                                    format = "%Y-%m-%d %H-%M-%S",
+                                    tz = "UTC"
+                                )
 
     # For each individual, find the last point of all nights
     data_roost <- lapply(unique(gps_sf_2975$DeviceID), function(x){
@@ -38,13 +40,13 @@ found_roost <- function(df_gpsRCT, distance_size = 20){
 
         df <- lapply(unique(as.Date(df_ind$full_date)), function(y){
 
-            # Keep last point of the night (max between 00h -> 6h)
+            # Keep last point of the night (max between 00h -> 6h, UTC+4)
             df_day <- df_ind[as.Date(df_ind$full_date) == y, ]
-            df_last_pt <- df_day[which(df_day$full_date <= as.POSIXct(paste(y, "06:00:00"), format = "%Y-%m-%d %H:%M:%S")), ]
+            df_last_pt <- df_day[which(df_day$full_date <= as.POSIXct(paste(y, "02:00:00"), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")), ]
             df_last_pt <- df_last_pt[df_last_pt$full_date == max(df_last_pt$full_date), ]
 
-            # Keep first point of the night (min between 18h - 00h)
-            df_first_pt <- df_day[which(df_day$full_date >= as.POSIXct(paste(y, "18:00:00"), format = "%Y-%m-%d %H:%M:%S")), ]
+            # Keep first point of the night (min between 18h - 00h, UTC+4)
+            df_first_pt <- df_day[which(df_day$full_date >= as.POSIXct(paste(y, "14:00:00"), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")), ]
             df_first_pt <- df_first_pt[df_first_pt$full_date == min(df_first_pt$full_date), ]
 
             if (nrow(df_last_pt) > 0 && nrow(df_last_pt) < 2 &&
@@ -84,6 +86,9 @@ found_roost <- function(df_gpsRCT, distance_size = 20){
     })
 
     data_roost_final <- do.call(rbind, data_roost)
+
+    # Display the date in UTC+4
+    data_roost_final$full_date <- lubridate::with_tz(data_roost_final$full_date, tzone = "Etc/GMT-4")
 
     # Remove point which are not roost
     data_roost_final <- data_roost_final[data_roost_final$roost == "Yes", ]
