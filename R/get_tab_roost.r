@@ -26,15 +26,15 @@ get_tab_roost <- function(df_roostRCT){
                                         "Nom de l'individu", 
                                         "Date d'arrivée sur le reposoir",
                                         "Distance entre le premier et le dernier point de la nuit (m)",
-                                        "Latitude", 
-                                        "Longitude" 
+                                        "Longitude",
+                                        "Latitude" 
                                     )
         } else if (!"nom_individu" %in% colnames(df_roostRCT)) {
             colnames(df_roostRCT) <- c( "Numéro de la balise",
                                         "Date d'arrivée sur le reposoir",
                                         "Distance entre le premier et le dernier point de la nuit (m)",
-                                        "Latitude", 
-                                        "Longitude" 
+                                        "Longitude", 
+                                        "Latitude" 
                                     )
         }
 
