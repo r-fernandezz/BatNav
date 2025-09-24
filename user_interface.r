@@ -244,7 +244,7 @@ ui <-  dashboardPage(
                     ),
 
                     h2("Tableaux des localisation GPS"), 
-                    p("Les points dupliqués (même numéro de balise et Date/Heure) sont automatiquement supprimés lors de l'importation."),
+                    p("Les points dupliqués (même numéro de balise et date/heure) sont automatiquement supprimés lors de l'importation."),
                     fileInput(  inputId = "BDDFile", 
                                 label = NULL,
                                 multiple = TRUE,

@@ -27,8 +27,15 @@ filterGPSdata <- function(df, DataMin, DataMax, speedZero, filterWindow, resampl
                                             paste(df_sub$Hour, df_sub$Minute, df_sub$Second, sep = ":"), 
                                     sep = " "), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
     df_sub <- df_sub[!duplicated(df_sub[, c("DeviceID", "DateTime")]), ]
-    # num <- length(unique(df_sub[duplicated(df_sub[, c("DeviceID", "DateTime")]), ]))
-    # ind <- unique(df_sub[duplicated(df_sub[, c("DeviceID", "DateTime")]), ]$DeviceID)
+
+    # Remove 5 points of device 987004 ("Dondon") outside deployment period
+    if(987004 %in% unique(df_sub$DeviceID)){
+        df_sub <- df_sub[!(df_sub$DeviceID == 987004 & as.character(df_sub$DateTime) %in% c("2018-12-05 19:11:37",
+                                                                            "2018-12-05 19:11:43",
+                                                                            "2018-12-05 19:26:49",
+                                                                            "2018-12-05 19:42:06",
+                                                                            "2018-12-05 19:56:50")), ]
+    }
     df_sub <- df_sub[ , !(colnames(df_sub) == "DateTime")]
 
     # Filter points with a windows
@@ -63,7 +70,7 @@ filterGPSdata <- function(df, DataMin, DataMax, speedZero, filterWindow, resampl
 
             df <- do.call(rbind, lapply(unique(as.Date(df_sub_ind$DateTime)), function(y){
 
-                print(paste("Processing day :", y))
+                print(paste("Resampling day :", y))
 
                 min <- as.POSIXct(paste(y, "14:00:00"), format = "%Y-%m-%d %H:%M:%S", tz = "UTC") #UTC+4
                 max <- as.POSIXct(paste(as.Date(y)+1, "02:00:00"), format = "%Y-%m-%d %H:%M:%S", tz = "UTC") #UTC+4
