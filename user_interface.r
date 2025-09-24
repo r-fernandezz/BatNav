@@ -220,21 +220,13 @@ ui <-  dashboardPage(
                     ),
 
                     h2("Tableaux des localisation GPS"), 
+                    p("Les points dupliqués (même numéro de balise et Date/Heure/Seconde) sont automatiquement supprimés lors de l'importation."),
                     fileInput(  inputId = "BDDFile", 
                                 label = NULL,
                                 multiple = TRUE,
                                 buttonLabel = "Choisir les fichiers", 
                                 placeholder = "Aucun fichier"
                     ),
-
-                    h2("Filtrage des points par la vitesse"),
-                    radioButtons(   
-                            inputId = "speedZero",
-                            label = NULL,
-                            choices = c("Conserver les points avec une vitesse de 0 km/h" = "0km/h",
-                                        "Conserver les points avec une vitesse > 0 km/h" = ">0km/h",
-                                        "Conserver tous les points" = "all")
-                        ),
 
                     h2("Filtrage des points par une emprise spatiale"),
                     radioButtons(   inputId = "filterWindow",
@@ -244,6 +236,24 @@ ui <-  dashboardPage(
                                                 "Pas de filtre spatial" = "NoFilter"
                                                 )
                     ),
+
+                    h2("Appliquer le ré-échantillonage des points GPS"),
+                    p("Lorsque qu'entre 18h et 6h la différence moyenne entre les points est inférieure à 10 minutes, un ré-échantillonage est appliqué pour ne conserver que les points toutes les 15 minutes."),
+                    switchInput(inputId = "resampleSwitch", value = FALSE, onLabel = "Oui", offLabel = "Non"),
+                    p(  style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "Ce ré-échantillonage peut être appliqué uniquement si l'échantillonnage recherché est de 1 point toutes les 15 minutes entre 6h
+                            et 18h. Ainsi que si la fréquence d'aquisition des balises ne dépasse pas 1 point toutes les 5 minutes."
+                            ),
+
+                    h2("Filtrage des points par la vitesse"),
+                    radioButtons(   
+                            inputId = "speedZero",
+                            label = NULL,
+                            choices = c("Conserver les points avec une vitesse de 0 km/h" = "0km/h",
+                                        "Conserver les points avec une vitesse > 0 km/h" = ">0km/h",
+                                        "Conserver tous les points" = "all")
+                        ),
 
                     h2("Filtrage par individu"),
                     p("Ajouter un tableau CSV avec deux colonnes 'DeviceID' et 'nom_individu' (sans accents !) pour faire la correspondance entre l'identifiant du GPS et le nom de l'individu."),

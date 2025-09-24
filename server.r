@@ -31,7 +31,8 @@ server <- function(input, output) {
                                     DataMin = input$dateRange[1], 
                                     DataMax = input$dateRange[2],
                                     speedZero = input$speedZero,
-                                    filterWindow  = input$filterWindow)
+                                    filterWindow  = input$filterWindow,
+                                    resampleSwitch = input$resampleSwitch)
 
         # If correspondence table is provided merge column "nom_individu"
         if(!is.null(input$correspFile)){
