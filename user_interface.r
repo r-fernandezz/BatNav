@@ -136,7 +136,7 @@ ui <-  dashboardPage(
 
                     /* Submenu sidebar background color */
                     .skin-blue .main-sidebar .sidebar .treeview-menu {
-                        background-color: #1C382D !important; /* Mets ici la couleur que tu veux */
+                        background-color: #1C382D !important;
                     }
 
                     /* Sidebar text color */
@@ -165,6 +165,30 @@ ui <-  dashboardPage(
                     background-color: #F1B370;
                     color: #fff;
                     }
+
+                    /* Colour of progress bar fileInput */
+                    .progress-bar {
+                    background-color: #ABC649 !important; /* couleur de la barre */
+                    }
+                    .progress {
+                    background-color: #F1B370 !important; /* couleur du fond de la barre */
+                    }
+
+                    /* Colour switchInput ON button */
+                    .bootstrap-switch .bootstrap-switch-handle-on {
+                    background: #ABC649 !important;
+                    }
+                    /* Colour switchInput OFF button */
+                    .bootstrap-switch .bootstrap-switch-handle-off {
+                    background: #F1B370 !important;
+                    }
+
+                    /* Edge of switchInput button */
+                    .bootstrap-switch {
+                    border: 1px solid #A72800 !important; 
+                    border-radius: 10px !important;
+                    }
+
                 "))
             ),
 

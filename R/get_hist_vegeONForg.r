@@ -30,7 +30,7 @@ get_hist_vegeONForg <- function(df_gpsRCT){
         labs(x = "Origine de la végétation", y = "Proportion de points") +
         scale_fill_manual(values = c(   "Anthropique" = "#fcc5ac", 
                                         "Naturelle" = "#acfcb3",
-                                        "Hors catégories" = "#acfce2"
+                                        "Hors catégories" = "#ebf7f3"
                                     )) +
         guides(fill = guide_legend(label.theme = element_text(face = "italic")))
 }
