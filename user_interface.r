@@ -312,7 +312,8 @@ ui <-  dashboardPage(
                         h3("Résumé des données importées et filtrées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
+                            "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h.
+                            Attention si vous avez appliqué un ré-échantillonage dans l'onglet paramétrage, cette colonne sera modifiée."
                             ),
                         br(),
                         div(
