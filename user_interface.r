@@ -220,7 +220,7 @@ ui <-  dashboardPage(
                     ),
 
                     h2("Tableaux des localisation GPS"), 
-                    p("Les points dupliqués (même numéro de balise et Date/Heure/Seconde) sont automatiquement supprimés lors de l'importation."),
+                    p("Les points dupliqués (même numéro de balise et Date/Heure) sont automatiquement supprimés lors de l'importation."),
                     fileInput(  inputId = "BDDFile", 
                                 label = NULL,
                                 multiple = TRUE,
@@ -243,7 +243,7 @@ ui <-  dashboardPage(
                     p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "Ce ré-échantillonage peut être appliqué uniquement si l'échantillonnage recherché est de 1 point toutes les 15 minutes entre 6h
-                            et 18h. Ainsi que si la fréquence d'aquisition des balises ne dépasse pas 1 point toutes les 5 minutes."
+                            et 18h. Ainsi que si la fréquence d'aquisition des balises n'est pas plus élevée que 1 point toutes les 5 minutes."
                             ),
 
                     h2("Filtrage des points par la vitesse"),
@@ -264,7 +264,7 @@ ui <-  dashboardPage(
                                 placeholder = "Aucun fichier"
                     ),
                     selectizeInput( inputId = "filterInd",
-                                    label = "Sectionner les individus",
+                                    label = "Supprimer les individus suivants de l'analyse :",
                                     multiple = TRUE,
                                     choices = NULL,
                     ),
@@ -309,7 +309,7 @@ ui <-  dashboardPage(
                                 )
                             ),
                             box(
-                                title = "Nombre de points par année et individu",
+                                title = "Nombre de points par individu et par année",
                                 width = 6,
                                 withSpinner(plotOutput("hist_nbPtYears")),
                                 div(

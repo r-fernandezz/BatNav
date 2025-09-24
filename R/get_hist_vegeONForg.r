@@ -21,16 +21,16 @@ get_hist_vegeONForg <- function(df_gpsRCT){
     ggplot(df, aes(x = `Origine de la végétation`, y = `Proportion`, fill = `Origine de la végétation`)) +
         geom_bar(stat = "identity") +
         geom_text(
-            aes(x = `Origine de la végétation`, y = `Proportion`, label = `Nombre de points`),
+            aes(x = `Origine de la végétation`, y = Proportion + 2, label = `Nombre de points`),
             size = 2.5,
             fontface = "italic"
         ) +
         theme_minimal() +
         theme(legend.position = "none") +
         labs(x = "Origine de la végétation", y = "Proportion de points") +
-        scale_fill_manual(values = c(   "Anthropique" = "#5a5a5a", 
-                                        "Naturelle" = "#5a5a5a",
-                                        "Hors catégories" = "#5a5a5a"
+        scale_fill_manual(values = c(   "Anthropique" = "#fcc5ac", 
+                                        "Naturelle" = "#acfcb3",
+                                        "Hors catégories" = "#acfce2"
                                     )) +
         guides(fill = guide_legend(label.theme = element_text(face = "italic")))
 }

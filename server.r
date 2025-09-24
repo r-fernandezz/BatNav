@@ -38,12 +38,14 @@ server <- function(input, output) {
         if(!is.null(input$correspFile)){
             req(corresp_tab())
             df_filter <- merge(df_filter, corresp_tab(), by = "DeviceID", all.x = TRUE)
+            colOrder <- c("nom_individu", colnames(df_filter)[!colnames(df_filter) %in% "nom_individu"])
+            df_filter <- df_filter[, colOrder]
             assign("df_merge", df_filter, envir = .GlobalEnv) #for dev
         }
 
         if(length(input$filterInd) > 0){
             req(input$filterInd)
-            df_filter <- df_filter[df_filter$nom_individu %in% input$filterInd, ]
+            df_filter <- df_filter[!df_filter$nom_individu %in% input$filterInd, ]
         }
 
         return(df_filter)
