@@ -51,11 +51,9 @@ get_tab_summary <- function(df_gpsRCT, distanceAnalysis) {
                 nb_days = sapply(unique(df_gpsRCT$DeviceID), function(x) {
                     date_min <- min(df_gpsRCT[df_gpsRCT$DeviceID == x, ]$date)
                     date_max <- max(df_gpsRCT[df_gpsRCT$DeviceID == x, ]$date)
-                    if(as.numeric(date_max) - as.numeric(date_min) == 0) {
-                        1
-                    } else {
-                        as.numeric(date_max) - as.numeric(date_min)
-                    }
+                    
+                    (as.numeric(date_max) - as.numeric(date_min))+1
+                    
                 }),
 
                 speedMean = sapply(unique(df_gpsRCT$DeviceID), function(x) {

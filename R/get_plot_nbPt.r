@@ -81,8 +81,8 @@ get_plot_nbPt <- function(df_gpsRCT, fixYear = TRUE, deviceID = NULL) {
         }else {
 
             plot <- ggplot(df_count, aes(x = FixYear2014, y = nb_points, fill = as.character(DeviceID))) +
-                    geom_point(color = "black", size = 0.5) +
                     geom_line(color = "lightgreen", linewidth = 1) +
+                    geom_point(color = "black", size = 1) +
                     scale_fill_manual(values = "lightgreen") +
                     scale_x_continuous( breaks = as.numeric(seq.Date(as.Date(min(df_count$FixYear2014), origin = "1970-01-01"), 
                                                                     as.Date(max(df_count$FixYear2014), origin = "1970-01-01"), 
@@ -128,8 +128,8 @@ get_plot_nbPt <- function(df_gpsRCT, fixYear = TRUE, deviceID = NULL) {
         }else {
 
             plot <- ggplot(df_count, aes(x = FixYear2014, y = nb_points, fill = as.character(nom_individu))) +
-                    geom_point(color = "black", size = 0.5) +
                     geom_line(color = "lightgreen", linewidth = 1) +
+                    geom_point(color = "black", size = 1) +
                     scale_fill_manual(values = "lightgreen") +
                     scale_x_continuous( breaks = as.numeric(seq.Date(as.Date(min(df_count$FixYear2014), origin = "1970-01-01"), 
                                                                     as.Date(max(df_count$FixYear2014), origin = "1970-01-01"), 

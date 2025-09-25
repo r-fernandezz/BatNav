@@ -129,11 +129,16 @@ server <- function(input, output) {
     ))
 
     # Add summary table
+    summaryTable <- reactive({
+        req(df_gps())
+        get_tab_summary(df_gpsRCT = df_gps(), distanceAnalysis = input$distanceAnalysis)
+    })
+
+    # Preview summary table
     output$summaryTable <- renderDataTable({
 
-        req(df_gps())
-
-        get_tab_summary(df_gpsRCT = df_gps(), distanceAnalysis = input$distanceAnalysis)
+        req(summaryTable())
+        summaryTable()
 
     },  options = list(
             scrollX = TRUE, pageLength = 20,
