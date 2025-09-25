@@ -128,6 +128,16 @@ server <- function(input, output) {
             columnDefs = list(list(className = 'dt-center', targets = "_all"))
     ))
 
+    # Download location database
+    output$downloadBDD <- downloadHandler(
+        filename = function() {
+            paste("Database_gps_points_", Sys.Date(), ".csv", sep = "")
+        },
+        content = function(file) {
+            write.csv(df_gps(), file, row.names = FALSE)
+        }
+    )
+
     # Add summary table
     summaryTable <- reactive({
         req(df_gps())

@@ -294,6 +294,10 @@ ui <-  dashboardPage(
                     ),
 
                     h2("Vérification des données importées"),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("downloadBDD", "Télécharger le tableau")
+                    ),
                     withSpinner(dataTableOutput(outputId = "previewBDD")),
 
                     h2("Visualisation des données importées"),
