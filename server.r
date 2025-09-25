@@ -146,7 +146,7 @@ server <- function(input, output) {
             paste("summary_table_", Sys.Date(), ".csv", sep = "")
         },
         content = function(file) {
-            write.csv(get_tab_summary(df_gps()), file, row.names = FALSE)
+            write.csv(summaryTable(), file, row.names = FALSE)
         }
     )
 
