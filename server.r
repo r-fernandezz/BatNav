@@ -133,7 +133,7 @@ server <- function(input, output) {
 
         req(df_gps())
 
-        get_tab_summary(df_gpsRCT = df_gps())
+        get_tab_summary(df_gpsRCT = df_gps(), distanceAnalysis = input$distanceAnalysis)
 
     },  options = list(
             scrollX = TRUE, pageLength = 20,

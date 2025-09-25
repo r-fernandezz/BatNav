@@ -305,16 +305,18 @@ ui <-  dashboardPage(
                         h1("Explorer les données importées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Si un filtre de vitesse ou spatial est appliqué dans l'onglet paramétrage, les résultats sur cette page seront affectés."
+                            "Les paramétrages appliqués dans l'onglet précédent affecteront les résultats sur cette page."
                             ),
                         br(),
 
                         h3("Résumé des données importées et filtrées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h.
-                            Attention si vous avez appliqué un ré-échantillonage dans l'onglet paramétrage, cette colonne sera modifiée."
+                            "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
                             ),
+                        p("Ajouter la distance parcourue au tableau (processus long)"),
+                        switchInput(inputId = "distanceAnalysis", value = FALSE, onLabel = "Oui", offLabel = "Non"),
+                        
                         br(),
                         div(
                             style = "text-align: center;",
