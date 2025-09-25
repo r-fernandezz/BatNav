@@ -313,7 +313,7 @@ ui <-  dashboardPage(
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
-                            ),
+                        ),
                         p("Ajouter la distance parcourue au tableau (processus long)"),
                         switchInput(inputId = "distanceAnalysis", value = FALSE, onLabel = "Oui", offLabel = "Non"),
                         
@@ -344,6 +344,10 @@ ui <-  dashboardPage(
                                     downloadButton("download_hist_nbPtYears", "Télécharger le graphique")
                                 )
                             )
+                        ),
+                        fluidPage(
+                            h3("Nombre de points par jour et par individu"),
+                            withSpinner(uiOutput("plots_nbPtInd"))
                         )
                         
                 ),

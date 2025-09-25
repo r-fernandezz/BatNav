@@ -158,6 +158,22 @@ server <- function(input, output) {
 
     })
 
+    # Plot number point by day with individual graphics
+    output$plots_nbPtInd <- renderUI({
+        req(df_gps())
+
+        plot_list <- lapply(unique(df_gps()$DeviceID), function(x){
+            plotname <- paste0("plot_", x) 
+            output[[plotname]] <- renderPlot({
+                                    get_plot_nbPt(df_gpsRCT = df_gps(), fixYear = FALSE, deviceID = x)
+                                })
+            plotOutput(plotname, height = 300, width = "100%")
+        })
+
+        do.call(tagList, plot_list)
+
+    })
+
     # Download plot number of points by day and per individual
     output$download_plot_nbPt <- downloadHandler(
         filename = function() {
