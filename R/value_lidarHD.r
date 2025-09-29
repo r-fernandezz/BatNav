@@ -17,6 +17,10 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
 
     df_gpsRCT_WGS84 <- st_as_sf(df_gpsRCT, coords = c("Longitudedecimal", "Latitudedecimal"), crs = st_crs(paste0("EPSG:4326")))
 
+    # Change SCR of GPS points
+    df_gpsRCT_2975 <- st_transform(df_gpsRCT_WGS84, "EPSG:2975")
+    df_gpsRCT_2975 <- cbind(df_gpsRCT_2975, st_coordinates(df_gpsRCT_2975))
+
     req_list <- lapply(1:length(lidarHD), function(i){
 
         # Check bbox of the first slab
@@ -31,10 +35,6 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
 
         # Create slab name
         slab_name <- sub(".*&FILENAME=", "\\1", lidarHD[i])
-
-        # Change SCR of GPS points
-        df_gpsRCT_2975 <- st_transform(df_gpsRCT_WGS84, "EPSG:2975")
-        df_gpsRCT_2975 <- cbind(df_gpsRCT_2975, st_coordinates(df_gpsRCT_2975))
 
         # Check if there are points in the slab
         df_extract_2975 <- subset(  df_gpsRCT_2975,
@@ -241,14 +241,44 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
     })
 
     df_final <- do.call(rbind, req_list)
+    # assign("df_final", df_final, envir = .GlobalEnv) #for dev
+    # assign("df_gpsRCT_2975", df_gpsRCT_2975, envir = .GlobalEnv) #for dev
+    # print("Variables extracted") #for dev
 
     # Rename columns
     colnames(df_final)[which(colnames(df_final) %in% "altMnt")] <- "Altitude LidarHD"
     colnames(df_final)[which(colnames(df_final) %in% "slope")] <- "Pente LidarHD"
     colnames(df_final)[which(colnames(df_final) %in% "aspect")] <- "Orientation LidarHD"
 
-    #Remove geometry column
+    # Remove geometry column
     df_final <- df_final[ , colnames(df_final) != "geometry"]
+
+    # Add point outside MNT emprise with NA values
+    df_gpsRCT_2975 <- as.data.frame(df_gpsRCT_2975)
+    df_gpsRCT_2975 <- df_gpsRCT_2975[ , colnames(df_gpsRCT_2975) != "geometry"]
+    
+    df_final$mergeNA <- paste0( df_final$DeviceID, "_", 
+                                df_final$Year, "-", df_final$Month, "-", df_final$Day, " ", 
+                                df_final$Hour, ":", df_final$Minute, ":", df_final$Second
+                        )
+    df_gpsRCT_2975$mergeNA <- paste0(   df_gpsRCT_2975$DeviceID, "_", 
+                                        df_gpsRCT_2975$Year, "-", df_gpsRCT_2975$Month, "-", df_gpsRCT_2975$Day, " ", 
+                                        df_gpsRCT_2975$Hour, ":", df_gpsRCT_2975$Minute, ":", df_gpsRCT_2975$Second
+                                )
+    line_outside <- dplyr::anti_join(df_gpsRCT_2975, df_final, by = "mergeNA")
+
+    if(nrow(line_outside) > 0){
+        line_outside$`Altitude LidarHD` <- NA
+        line_outside$`Pente LidarHD` <- NA
+        line_outside$`Orientation LidarHD` <- NA
+
+        df_final <- rbind(df_final, line_outside)
+    }else {
+        print("None points outside of the LidarHD emprise")
+    }
+
+    # Remove columns of the merge
+    df_final <- df_final[ , colnames(df_final) != "mergeNA"]
 
     return(df_final)
 

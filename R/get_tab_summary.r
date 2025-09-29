@@ -98,12 +98,12 @@ get_tab_summary <- function(df_gpsRCT, distanceAnalysis) {
                     "Nombre de points", 
                     "Date du premier point", 
                     "Date du dernier point", 
-                    "Nombre de jours de suivi",
+                    "Nombre de nuits de suivi",
                     "Vitesse moyenne de déplacement (km/h)",
                     "Vitesse maximale (km/h)",
                     "Distance totale parcourue (km)",
-                    "Distance moyenne par jour (km)",
-                    "Nombre de points moyen par jour",
+                    "Distance moyenne par nuit (km)",
+                    "Nombre de points moyen par nuit",
                     "Proportion théorique de points acquise (%)"
                 )
         } else{
@@ -113,10 +113,10 @@ get_tab_summary <- function(df_gpsRCT, distanceAnalysis) {
                     "Nombre de points", 
                     "Date du premier point", 
                     "Date du dernier point", 
-                    "Nombre de jours de suivi",
+                    "Nombre de nuits de suivi",
                     "Vitesse moyenne de déplacement (km/h)",
                     "Vitesse maximale (km/h)",
-                    "Nombre de points moyen par jour",
+                    "Nombre de points moyen par nuit",
                     "Proportion théorique de points acquise (%)"
                 )
         }

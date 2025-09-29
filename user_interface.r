@@ -331,7 +331,7 @@ ui <-  dashboardPage(
 
                         fluidRow(
                             box(
-                                title = "Nombre de points par individu et par jour",
+                                title = "Nombre de points par individu et par nuit",
                                 width = 6,
                                 withSpinner(plotOutput("plot_nbPt")),
                                 div(
@@ -573,7 +573,9 @@ ui <-  dashboardPage(
                                 href = "https://cartes.gouv.fr/catalogue/dataset/IGNF_MNT-LIDAR-HD", 
                                 target = "_blank"
                             )),
-                        p("Ces données ont été dégradées à une résolution de 3m (produit brut à 0.5m)."),
+                        p(" Ces données ont été dégradées à une résolution de 3m (produit brut à 0.5m). 
+                            Les points qualifiés de 'NA' sont ceux hors de l'emprise du levé LidarHD ou avec des valeurs négatives d'altitude.
+                            Les points sur l'eau ont généralement des valeurs négatives (mais peuvent avoir des valeurs positives)."),
                         p(  
                             style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
