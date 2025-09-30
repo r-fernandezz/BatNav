@@ -618,5 +618,58 @@ server <- function(input, output) {
 
     })
 
+    # Database filtered for flight height analysis
+    df_flyFilter <- reactive({
+        req(df_gps())
+        df_flyFilter <- subset(df_gps(),   Hdop <= input$param_hdop & 
+                                            Vdop <= input$param_vdop & 
+                                            Satellites >= input$param_nbsat & 
+                                            Speed >= input$param_speed)
+    })
+
+    # Plot altitude Hdop
+    output$plot_altiHdop <- renderPlot({
+        req(df_flyFilter())
+        get_plot_altiDop(df_flyFilter(), dop = "Hdop")
+    })
+
+    # Plot altitude Vdop
+    output$plot_altiVdop <- renderPlot({
+        req(df_flyFilter())
+        get_plot_altiDop(df_flyFilter(), dop = "Vdop")
+    })
+
+    # Plot number of satellites
+    output$plot_nbSat <- renderPlot({
+        req(df_flyFilter())
+        get_plot_nbSat(df_flyFilter())
+    })
+
+    # Plot speed
+    output$plot_speed <- renderPlot({
+        req(df_flyFilter())
+        get_plot_speed(df_flyFilter())
+    })
+
+    # Preview database for altitude analysis
+    output$preview_tab_flyFilter <- renderDataTable({
+        req(df_flyFilter())
+        df_flyFilter()
+    }, options = list(
+            scrollX = TRUE, pageLength = 10,
+            columnDefs = list(list(className = 'dt-center', targets = "_all"))
+    ))
+
+    # Download database for altitude analysis
+    output$download_tab_flyFilter <- downloadHandler(
+        filename = function() {
+            paste("table_flight_height_filtered_", Sys.Date(), ".csv", sep = "")
+        },
+        content = function(file) {
+            write.csv(df_flyFilter(), file, row.names = FALSE)
+        }
+    )
+
+
 
 }

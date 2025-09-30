@@ -72,8 +72,9 @@ ui <-  dashboardPage(
                             icon = icon("tent", lib = "glyphicon")
                 ),
 
-                menuItem("Hauteur de vol", icon = icon("stats", lib = "glyphicon")
-
+                menuItem(   "Hauteur de vol", 
+                            tabName = "flightHeight",
+                            icon = icon("stats", lib = "glyphicon")
                 ),
 
                 menuItem("Distribution spatio-temporelle", icon = icon("screenshot", lib = "glyphicon")
@@ -656,6 +657,51 @@ ui <-  dashboardPage(
                             style = "text-align: center;",
                             downloadButton("download_tab_roost", "Télécharger le tableau")
                         )
+                ),
+
+                tabItem(tabName = "flightHeight",
+
+                    h1("Exploration de la hauteur de vol"),
+                    p("Les graphiques ci-dessous permettent d'ajuster les valeurs de hdop, vdop, vitesse et du nombre de satellite. Un seuil pour chacun de ces paramètres doit être déterminé pour filtrer les points qui ne doivent pas être considérés dans l'analyse."),
+                    p(  
+                        style = "color: red;", 
+                        icon("exclamation-triangle", lib = "font-awesome"),
+                        "Les données dans cette section sont affectées par les paramétrages appliqués dans l'onglet 'Paramétrage des données GPS'."
+                    ),
+                    box(
+                        title = "Dilution de la précision horizontale (Hdop)",
+                        width = 6,
+                        withSpinner(plotOutput("plot_altiHdop")),
+                        numericInput(inputId = "param_hdop", label = "Les points doivent avoir une valeur maximale de Hdop de...", value = 100, min = 0, max = 100, step = 1)
+                    ),
+                    
+                    box(
+                        title = "Dilution de la précision verticale (Vdop)",
+                        width = 6,
+                        withSpinner(plotOutput("plot_altiVdop")),
+                        numericInput(inputId = "param_vdop", label = "Les points doivent avoir une valeur maximale de Vdop de...", value = 100, min = 0, max = 100, step = 1)
+                    ),
+                    box(
+                        title = "Nombre de satellites",
+                        width = 6,
+                        withSpinner(plotOutput("plot_nbSat")),
+                        numericInput(inputId = "param_nbsat", label = "Les points doivent avoir un nombre de satellites minimum de...", value = 0, min = 0, max = 100, step = 1)
+                    ),
+                    box(
+                        title = "Vitesse",
+                        width = 6,
+                        withSpinner(plotOutput("plot_speed")),
+                        numericInput(inputId = "param_speed", label = "Les points doivent avoir une vitesse minimum de...", value = 0, min = 0, max = 100, step = 1)
+                    ),
+                    h3("Aperçu des données pour l'analyse"),
+                    withSpinner(dataTableOutput("preview_tab_flyFilter")),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_tab_flyFilter", "Télécharger le tableau")
+                    ),
+
+                    h3("Résultats de l'analyse de la hauteur de vol")
+
                 )
             )
         )
