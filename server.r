@@ -621,10 +621,14 @@ server <- function(input, output) {
     # Database filtered for flight height analysis
     df_flyFilter <- reactive({
         req(df_gps())
+
         df_flyFilter <- subset(df_gps(),   Hdop <= input$param_hdop & 
                                             Vdop <= input$param_vdop & 
                                             Satellites >= input$param_nbsat & 
                                             Speed >= input$param_speed)
+
+        return(df_flyFilter)
+
     })
 
     # Plot altitude Hdop
@@ -663,13 +667,43 @@ server <- function(input, output) {
     # Download database for altitude analysis
     output$download_tab_flyFilter <- downloadHandler(
         filename = function() {
-            paste("table_flight_height_filtered_", Sys.Date(), ".csv", sep = "")
+            paste("table_fly_height_filtered_", Sys.Date(), ".csv", sep = "")
         },
         content = function(file) {
             write.csv(df_flyFilter(), file, row.names = FALSE)
         }
     )
 
+    # Flight height analysis
+    df_fly <- eventReactive(input$runFlyAltiAnalysis, {
+        req(df_flyFilter())
+        df_fly <- altiProcess(df_flyFilter())
+        assign("df_fly", df_fly, envir = .GlobalEnv) #for dev
+        return(df_fly)
+    })
 
+    # Plot distribution of flight height
+    output$hist_flyHeight <- renderPlot({
+        req(df_fly())
+        get_hist_flyHeight(df_fly(), inter = input$inter_hist_flyHeight)
+    })
+
+    # Download distribution of flight height
+    output$download_hist_flyHeight <- downloadHandler(
+        filename = function() {
+            paste(  "hist_fly_height_", 
+                    "inter=", input$inter_hist_flyHeight, "_", 
+                    "hdop=", input$param_hdop, "_", 
+                    "vdop=", input$param_vdop, "_", 
+                    "nbsat=", input$param_nbsat, "_", 
+                    "speed=", input$param_speed, "_", 
+                    Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            png(file)
+            print(get_hist_flyHeight(df_fly(), inter = input$inter_hist_flyHeight))
+            dev.off()
+        }
+    )
 
 }

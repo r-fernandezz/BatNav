@@ -6,6 +6,8 @@
 #'
 #' @param df_gpsRCT Dataframe with GPS points
 #' @param lidarHD Text file with LidarHD slabs URLs
+#' @param parm_slope Logical. If TRUE slope is calculated.
+#' @param param_aspect Logical. If TRUE aspect is calculated.
 #'
 #' @return Dataframe with altitude, slope and aspect values for each GPS point
 #'
@@ -13,7 +15,7 @@
 #' 
 #' 
 
-value_lidarHD <- function(df_gpsRCT, lidarHD){
+value_lidarHD <- function(df_gpsRCT, lidarHD, parm_slope = TRUE, parm_aspect = TRUE){
 
     df_gpsRCT_WGS84 <- st_as_sf(df_gpsRCT, coords = c("Longitudedecimal", "Latitudedecimal"), crs = st_crs(paste0("EPSG:4326")))
 
@@ -224,15 +226,18 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
             altMnt <- terra::extract(rast_lidar, df_extract_2975)
             df_extract_2975$altMnt <- altMnt[ , 2]
 
-            # Extract slope value
-            slope <- terra::terrain(rast_lidar, v = "slope", unit = "degrees")
-            slope_val <- terra::extract(slope, df_extract_2975)
-            df_extract_2975$slope <- slope_val[ ,2]
-
-            # Extract orientation value
-            aspect <- terra::terrain(rast_lidar, v = "aspect", unit = "degrees")
-            aspect_val <- terra::extract(aspect, df_extract_2975)
-            df_extract_2975$aspect <- aspect_val[ ,2]
+            if(parm_slope == TRUE){
+                # Extract slope value
+                slope <- terra::terrain(rast_lidar, v = "slope", unit = "degrees")
+                slope_val <- terra::extract(slope, df_extract_2975)
+                df_extract_2975$slope <- slope_val[ ,2]
+            }
+            if(parm_aspect == TRUE){
+                # Extract orientation value
+                aspect <- terra::terrain(rast_lidar, v = "aspect", unit = "degrees")
+                aspect_val <- terra::extract(aspect, df_extract_2975)
+                df_extract_2975$aspect <- aspect_val[ ,2]
+            }
 
             return(as.data.frame(df_extract_2975))
 
@@ -247,8 +252,8 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
 
     # Rename columns
     colnames(df_final)[which(colnames(df_final) %in% "altMnt")] <- "Altitude LidarHD"
-    colnames(df_final)[which(colnames(df_final) %in% "slope")] <- "Pente LidarHD"
-    colnames(df_final)[which(colnames(df_final) %in% "aspect")] <- "Orientation LidarHD"
+    if(parm_slope == TRUE) colnames(df_final)[which(colnames(df_final) %in% "slope")] <- "Pente LidarHD"
+    if(parm_aspect == TRUE) colnames(df_final)[which(colnames(df_final) %in% "aspect")] <- "Orientation LidarHD"
 
     # Remove geometry column
     df_final <- df_final[ , colnames(df_final) != "geometry"]
@@ -269,8 +274,8 @@ value_lidarHD <- function(df_gpsRCT, lidarHD){
 
     if(nrow(line_outside) > 0){
         line_outside$`Altitude LidarHD` <- NA
-        line_outside$`Pente LidarHD` <- NA
-        line_outside$`Orientation LidarHD` <- NA
+        if(parm_slope == TRUE) line_outside$`Pente LidarHD` <- NA
+        if(parm_aspect == TRUE) line_outside$`Orientation LidarHD` <- NA
 
         df_final <- rbind(df_final, line_outside)
     }else {

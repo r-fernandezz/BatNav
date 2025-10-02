@@ -668,6 +668,8 @@ ui <-  dashboardPage(
                         icon("exclamation-triangle", lib = "font-awesome"),
                         "Les données dans cette section sont affectées par les paramétrages appliqués dans l'onglet 'Paramétrage des données GPS'."
                     ),
+                    h3("Appliquer les filtres pour l'analyse de la hauteur de vol"),
+                    br(),
                     box(
                         title = "Dilution de la précision horizontale (Hdop)",
                         width = 6,
@@ -700,8 +702,30 @@ ui <-  dashboardPage(
                         downloadButton("download_tab_flyFilter", "Télécharger le tableau")
                     ),
 
-                    h3("Résultats de l'analyse de la hauteur de vol")
-
+                    h3("Résultats de l'analyse de la hauteur de vol"),
+                    div(
+                        style = "text-align: center;",
+                        actionButton("runFlyAltiAnalysis", "Lancer l'analyse de hauteur de vol")
+                    ),
+                    br(),
+                    fluidPage(
+                        box(   
+                            title = "Hauteurs de vol au-dessus du sol (m)",
+                            width = 12,
+                            withSpinner(plotOutput("hist_flyHeight")),
+                            sliderInput( inputId = "inter_hist_flyHeight",
+                                        label = "Intervalle des classes de l'histogramme (en m)",
+                                        min = 10,
+                                        max = 1000,
+                                        value = 500,
+                                        step = 10
+                            ),
+                            div(
+                                style = "text-align: center;",
+                                downloadButton("download_hist_flyHeight", "Télécharger l'histogramme")
+                            )
+                        )
+                    )
                 )
             )
         )

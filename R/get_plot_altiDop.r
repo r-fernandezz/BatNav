@@ -29,8 +29,8 @@ get_plot_altiDop <- function(df_gpsRCT, dop) {
     if(dop == "Hdop") ggplot <- ggplot + geom_histogram(stat = "count", fill = "blue", color = "black") 
     if(dop == "Vdop") ggplot <- ggplot + geom_histogram(stat = "count", fill = "green", color = "black")
 
-    if(dop == "Hdop") ggplot <- ggplot + labs(x = "Dillution horizontale (Hdop)", y = "Nombre de points")
-    if(dop == "Vdop") ggplot <- ggplot + labs(x = "Dillution verticale (Vdop)", y = "Nombre de points")
+    if(dop == "Hdop") ggplot <- ggplot + labs(x = "Dilution horizontale (Hdop)", y = "Nombre de points")
+    if(dop == "Vdop") ggplot <- ggplot + labs(x = "Dilution verticale (Vdop)", y = "Nombre de points")
     
     ggplot <- ggplot + theme_minimal()
 
