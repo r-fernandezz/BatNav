@@ -700,7 +700,7 @@ server <- function(input, output) {
                     Sys.Date(), ".png", sep = "")
         },
         content = function(file) {
-            png(file)
+            png(file, width = 2000, height = 600, res = 150)
             print(get_hist_flyHeight(df_fly(), inter = input$inter_hist_flyHeight))
             dev.off()
         }
