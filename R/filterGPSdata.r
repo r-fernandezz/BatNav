@@ -85,7 +85,7 @@ filterGPSdata <- function(df, DataMin, DataMax, speedZero, filterWindow, resampl
                                                     units = "mins")
                                                     )
 
-                    if(mean(diffs) < 10){ #resample only if more than one point every 15 minutes (1 point by 5min)
+                    #if(mean(diffs) < 10){ #resample only if more than one point every 15 minutes (1 point by 5min)
 
                         time_seq <- seq(from = min, to = max, by = "15 min")
 
@@ -108,7 +108,7 @@ filterGPSdata <- function(df, DataMin, DataMax, speedZero, filterWindow, resampl
 
                         df_sub_day <- df_sub_day_resample
 
-                    }
+                    #}
 
                 }else{
                     print("No point for this day between 18:00 and 6:00 the next day")
