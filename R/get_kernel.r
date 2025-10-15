@@ -77,7 +77,7 @@ get_kernel_ind <- function(bdd, path_export = NULL, name_file = Sys.Date()){
 
         }
 
-        return(list(DeviceID = id_tag, bdd.ctmm = tel, models = mod, UDs = ud, svf = svf, sum_mod = sum_mod, sum_ud = sum_ud))
+        return(list(DeviceID = id_tag, bdd.ctmm = tel_sub, models = mod, UDs = ud, svf = svf, sum_mod = sum_mod, sum_ud = sum_ud))
 
     })
 
