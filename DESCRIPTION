@@ -14,13 +14,16 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.0
 Imports: 
     bslib,
+    ctmm,
     desc,
     dplyr,
     DT,
     ggplot2,
+    ggspatial,
     here,
     leaflet,
     lubridate,
+    prettymapr,
     sf,
     shiny,
     shinycssloaders,

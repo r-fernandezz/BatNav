@@ -706,4 +706,128 @@ server <- function(input, output) {
         }
     )
 
+    # Create individual mouvement models (or import RDS file)
+    k_ind <- eventReactive(input$runKDE, {
+        
+        if (input$k_ind_source == "create") {
+
+            req(df_gps())
+            req(input$k_ind_file)
+
+            message("Creation of 'k_ind' file")
+            dir.create(here::here("output", "kernel_analysis"), recursive = TRUE, showWarnings = FALSE)
+            k_ind <- get_kernel_ind(df_gps(), path_export = here::here("output", "kernel_analysis"))
+            saveRDS(k_ind, file = here::here("output", "kernel_analysis", "k_ind.rds"))
+
+            return(k_ind)
+
+        } else if(input$k_ind_source == "import") {
+
+            req(input$k_ind_file)
+
+            message("Importation of 'k_ind' file from user")
+            k_ind <- readRDS(input$k_ind_file$datapath)
+
+            return(k_ind)
+
+        }
+
+    })
+
+    # Plot results of kernel density estimation
+    output$plot_kMod <- renderUI({
+
+        req(k_ind())
+
+        lapply(k_ind(), function(x){
+            
+            output[[paste0("plot_svf_", x$DeviceID)]] <- renderPlot({
+                ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
+            })
+
+            output[[paste0("plot_kernel_", x$DeviceID)]] <- renderPlot({
+                #ctmm::plot(x$bdd.ctmm, UD = x$UDs, level = 0.5, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
+                get_kernel_plot(bdd = x$bdd.ctmm, UD = x$UDs, deviceID = x$DeviceID, level.UD = input$kernel_lvl, level.IC = 0.95)
+            })
+
+        })
+
+        plot_list <- lapply(k_ind(), function(x) {
+            fluidRow(
+                column(6, plotOutput(outputId = paste0("plot_svf_", x$DeviceID))),
+                column(6, plotOutput(outputId = paste0("plot_kernel_", x$DeviceID)))
+            )
+        })
+
+        do.call(tagList, plot_list)
+
+    })
+
+    # Download plots of kernel density estimation
+    output$download_kMod <- downloadHandler(
+        filename = function() {
+            paste("kernel_", input$kernel_lvl*100, "_ind_plots_", Sys.Date(), ".pdf", sep = "")
+        },
+        content = function(file) {
+            req(k_ind())
+            pdf(file, width = 10, height = 8)
+            lapply(k_ind(), function(x) {
+                plot <- get_kernel_plot(
+                            bdd = x$bdd.ctmm, 
+                            UD = x$UDs, 
+                            deviceID = x$DeviceID, 
+                            level.UD = input$kernel_lvl, 
+                            level.IC = 0.95)
+                print(plot)
+            })
+            dev.off()
+        }
+    )
+
+    # Download variogram plots
+    output$download_svf <- downloadHandler(
+        filename = function() {
+            paste("variogram_ind_plots_kernel_", input$kernel_lvl*100, "_", Sys.Date(), ".pdf", sep = "")
+        },
+        content = function(file) {
+            req(k_ind())
+            pdf(file, width = 10, height = 8)
+            lapply(k_ind(), function(x) {
+                ctmm::plot(
+                        x$svf, 
+                        CTMM = x$models, 
+                        level = input$kernel_lvl, 
+                        level.UD = 0.95, 
+                        main = paste0("Individu n°", x$DeviceID)
+                )
+            })
+            dev.off()
+        }
+    )
+
+    # Create mean kernel density estimation with individual kernels
+    k_mean <- eventReactive(input$runKDEmean, {
+
+        if(file.exists(here::here("output", "kernel_analysis", "k_ind.rds")) == TRUE){
+
+            message("Fichier 'k_ind.rds' trouvé dans le dossier 'output/kernel_analysis'. Utilisation de ce fichier pour calculer le kernel moyen.")
+            k_ind <- readRDS(here::here("output", "kernel_analysis", "k_ind.rds"))
+            k_mean <- get_kernel_mean(k_analysis = k_ind, path_export = here::here("output", "kernel_analysis"))
+
+            return(k_mean)
+
+        }else {
+            message("Aucun fichier 'k_ind.rds' trouvé dans le dossier 'output/kernel_analysis'. 
+                    Ajouter ce fichier ou le générer en calculant les kernels individuels.")
+        }
+
+    })
+
+    # Plot mean kernel density estimation
+    output$plot_kMean <- renderPlot({
+        req(k_mean())
+        plot(k_mean())
+    })
+
+
 }

@@ -1,6 +1,7 @@
 data/*
 output/*
 settings.json
+rosm.cache
 
 # Renv environment
 renv/*

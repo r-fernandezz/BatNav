@@ -30,7 +30,8 @@ ui <-  dashboardPage(
                             icon = icon("zoom-in", lib = "glyphicon")
                 ),
 
-                menuItem("Croisement couches SIG", icon = icon("book", lib = "glyphicon"),
+                menuItem(   "Croisement couches SIG", 
+                            icon = icon("book", lib = "glyphicon"),
                 
                     menuSubItem("Parc National de La Réunion",
                                 tabName = "VizDataPNR",
@@ -77,7 +78,18 @@ ui <-  dashboardPage(
                             icon = icon("stats", lib = "glyphicon")
                 ),
 
-                menuItem("Distribution spatio-temporelle", icon = icon("screenshot", lib = "glyphicon")
+                menuItem(   "Distribution", 
+                            icon = icon("screenshot", lib = "glyphicon"),
+
+                    menuSubItem("Kernels individuels et moyen",
+                                tabName = "modIndKernel",
+                                icon = icon("wrench", lib = "glyphicon")
+                    ),
+
+                    menuSubItem("Autres kernels",
+                                tabName = "kernelother",
+                                icon = icon("cloud-download", lib = "glyphicon")
+                    )
 
                 ),
 
@@ -726,6 +738,83 @@ ui <-  dashboardPage(
                             )
                         )
                     )
+                ), 
+                
+                tabItem(tabName = "modIndKernel",
+
+                    h1("Créer les modèles de mouvement individuels"),
+                    p(  style = "color: red;", 
+                        icon("exclamation-triangle", lib = "font-awesome"),
+                        "Le calcul des modèles de mouvement pour chaque individu est un processus long."
+                    ),
+                    p(  icon("floppy-disk", lib = "font-awesome"),
+                        "Les résultats de ce processus sont sauvegardés dans un fichier 'k_ind.rds' pour être réutilisés dans les étapes suivantes.
+                        Les couches shapefiles des kernels individuels (associé à leurs intervalles de confiance) sont également exportées dans le dossier 'BatNav/output/kernel_analysis/'."
+                    ),
+                    radioButtons(
+                        inputId = "k_ind_source",
+                        label = "Comment débuter l'analyse :",
+                        choices = c("Modéliser à partir des données" = "create", "Importer un fichier RDS déjà existant" = "import"),
+                        selected = "create"
+                    ),
+                    fileInput(
+                        inputId = "k_ind_file",
+                        label = "Importer le fichier RDS (si choix n°2)",
+                        accept = ".rds"
+                    ),
+                    div(
+                        style = "text-align: center;",
+                        actionButton("runKDE", "Lancer le calcul des kernels individuels")
+                    ),
+
+                    h1("Résultats des modèles de mouvement individuels"),
+                    fluidPage(
+                        numericInput(  
+                            inputId = "kernel_lvl",
+                            label = "Niveau de contour du kernel (en %)",
+                            value = 0.50,
+                            min = 0.01,
+                            max = 1,
+                            step = 0.01
+                        ),
+                        withSpinner(uiOutput("plot_kMod")),
+                        br(),
+                        column( 6,
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_svf", "Télécharger tous les variogrammes dans un fichier PDF")
+                                )
+                        ),
+                        column( 6,
+                                div(
+                                    style = "text-align: center;",
+                                    downloadButton("download_kMod", "Télécharger tous les kernels dans un fichier PDF")
+                                )
+                        )
+                    ),
+
+                    h1("Moyenner les modèles de mouvement individuels"),
+                    p("Ce processus qui est réalisé avec le fichier 'k_ind.rds' généré précédemment."),
+                    p(  icon("floppy-disk", lib = "font-awesome"),
+                        "La couche shapefile du kernel moyen (associé à son intervalle de confiance) est exportée dans le dossier 'BatNav/output/kernel_analysis/'."
+                    ),
+                    br(),
+                    div(
+                        style = "text-align: center;",
+                        actionButton("runKDEmean", "Lancer le calcul du kernel moyen")
+                    ),
+                    br(),
+                    withSpinner(plotOutput("plot_kMean"))
+                ),
+
+                tabItem(tabName = "kernelother",
+
+                    h3("Distribution spatio-temporelle de tous les individus (par saisons et mois)"),
+
+                    h3("Distribution spatio-temporelle des individus suivis plusieurs années"),
+
+                    h3("Distribution spatio-temporelle par individus (par saisons et mois)")
+
                 )
             )
         )
