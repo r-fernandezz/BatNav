@@ -765,7 +765,7 @@ ui <-  dashboardPage(
                     textInput(
                         inputId = "k_ind_name",
                         label = "Si choix n°1 : Renommer le fichier de sauvegarde RDS (sans accents ni espaces)",
-                        value = "model_par_individus"
+                        value = "model_par_individus.rds"
                     ),
                     fileInput(
                         inputId = "k_ind_file",
@@ -812,7 +812,8 @@ ui <-  dashboardPage(
                     ),
 
                     h1("Moyenner les modèles de mouvement individuels"),
-                    p("Ce processus qui est réalisé avec le fichier 'k_ind.rds' généré précédemment."),
+                    p(  "Ce processus qui est réalisé avec le fichier de sauvegarde RDS généré durant la modélisation (choix 1 ou 2).
+                        Le niveau de contour de kernel peut être modifié dans l'étape précédente."),
                     br(),
                     div(
                         style = "text-align: center;",

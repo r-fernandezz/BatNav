@@ -836,26 +836,43 @@ server <- function(input, output) {
 
     # Create mean kernel density estimation with individual kernels
     k_mean <- eventReactive(input$runKDEmean, {
+        
+        # RDS file name
+        if(input$k_ind_source == "create") {
+            path_name <- here::here("output", "kernel_analysis", input$k_ind_name) 
+        } else if(input$k_ind_source == "import") {
+            path_name <- input$k_ind_file$datapath #temporal path of uploaded file
+        }
 
-        if(file.exists(here::here("output", "kernel_analysis", "k_ind.rds")) == TRUE){
+        # Create mean model
+        if(file.exists(path_name) == TRUE){
 
-            message("Fichier 'k_ind.rds' trouvé dans le dossier 'output/kernel_analysis'. Utilisation de ce fichier pour calculer le kernel moyen.")
-            k_ind <- readRDS(here::here("output", "kernel_analysis", "k_ind.rds"))
-            k_mean <- get_kernel_mean(k_analysis = k_ind, path_export = here::here("output", "kernel_analysis"))
+            k_ind <- readRDS(path_name)
+            k_mean <- get_kernel_mean(k_analysis = k_ind)
 
             return(k_mean)
 
         }else {
-            message("Aucun fichier 'k_ind.rds' trouvé dans le dossier 'output/kernel_analysis'. 
-                    Ajouter ce fichier ou le générer en calculant les kernels individuels.")
+            message("Cannot find RDS file into 'output/kernel_analysis'. Add the file or create model with your data.")
         }
+
+        assign("k_mean", k_mean, envir = .GlobalEnv) #for dev
 
     })
 
     # Plot mean kernel density estimation
     output$plot_kMean <- renderPlot({
+
         req(k_mean())
-        plot(k_mean())
+        message("Plot mean kernel density estimation")
+        plot <- get_kernel_plot(bdd = NULL, 
+                        UD = k_mean(), 
+                        deviceID = NULL, 
+                        level.UD = input$kernel_lvl, 
+                        level.IC = 0.95, 
+                        osm.lvl = 12)
+        return(plot)
+
     })
 
 

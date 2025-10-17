@@ -79,15 +79,13 @@ get_kernel_ind <- function(bdd){
 #' @param k_analysis List. Output from get_kernel_ind function.
 #' @param method Character. Method to calculate mean kernel, either "mean" or "pkde". 
 #' "mean" use the mean function from ctmm package, "pkde" use the pKDE function from ctmm package.
-#' @param path_export Character. Default NULL. Folder path if would like to export mean kernel shapefiles.
-#' @param name_file Character. Default NULL. Add pattern to the shapefile name, if path_export is not NULL.
 #'
 #' @return Name Variable
 #'
 #' @export shapefiles if you want to export mean kernel shapefiles
 
 
-get_kernel_mean <- function(k_analysis, method = "mean", path_export = NULL, name_file = Sys.Date()){
+get_kernel_mean <- function(k_analysis, method = "mean"){
 
     # Mean UD individuals
     ud_list <- lapply(k_analysis, function(x) x$UDs)
@@ -102,16 +100,8 @@ get_kernel_mean <- function(k_analysis, method = "mean", path_export = NULL, nam
         stop("Error with method name used, see argument 'method'")
     }
 
-    if(is.null(path_export) == FALSE){
-        ctmm::writeVector(
-            ud_mean, 
-            filename = paste0(path_export, "/", "Kernel_mean_", name_file, ".shp"),
-            overwrite = TRUE
-        )
-        message("Mean kernel exported!")
-    }
-
     return(ud_mean)
+
 }
 
 #' get_kernel_plot
@@ -132,7 +122,7 @@ get_kernel_mean <- function(k_analysis, method = "mean", path_export = NULL, nam
 #' 
 #' 
 
-get_kernel_plot <- function(bdd, UD, deviceID, level.UD = input$kernel_lvl, level.IC = 0.95, osm.lvl = 11){
+get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD = input$kernel_lvl, level.IC = 0.95, osm.lvl = 11){
 
     # Plot with ggplot2 in Rshiny
     ud <- sf::st_as_sf(ctmm::SpatialPolygonsDataFrame.UD(UD, level.UD = level.UD, level = level.IC))
@@ -142,29 +132,43 @@ get_kernel_plot <- function(bdd, UD, deviceID, level.UD = input$kernel_lvl, leve
     ud$name[grep(ud$name, pattern = "low")] <- paste0("kernel ", level.UD*100, "% borne basse")
     ud$name[grep(ud$name, pattern = "high")] <- paste0("kernel ", level.UD*100, "% borne haute")
 
-    points_sf <- ctmm::SpatialPointsDataFrame.telemetry(bdd)
-    points_sf <- sf::st_as_sf(points_sf, coords = c("longitude", "latitude"), crs = 2975)
+    if(!is.null(bdd)){
+        points_sf <- ctmm::SpatialPointsDataFrame.telemetry(bdd)
+        points_sf <- sf::st_as_sf(points_sf, coords = c("longitude", "latitude"), crs = 2975)
+    }
 
     # Create plot
-    ggplot() +
-            ggspatial::annotation_map_tile(type = "osm", zoom = osm.lvl) +
+    plot <- ggplot() +
+            ggspatial::annotation_map_tile(type = "osm", zoom = osm.lvl)
+
+    if(!is.null(bdd)){
+        plot <- plot + 
             geom_sf(data = points_sf, aes(color = "Points GPS"), fill = NA, size = 0.5) +
+            scale_color_manual(values = c("Points GPS" = "blue"))
+    }
+
+    plot <- plot +
             geom_sf(data = ud[grep(ud$name, pattern = "%$"), ], aes(fill = name), color = NA, alpha = 0.8) +
             geom_sf(data = ud[grep(ud$name, pattern = "haute"), ], aes(linetype = "Borne haute"), fill = NA, color = "black", alpha = 1) +
             geom_sf(data = ud[grep(ud$name, pattern = "basse"), ], aes(linetype = "Borne basse"), fill = NA, color = "black", alpha = 1) +
             scale_linetype_manual(values = c("Borne haute" = "dashed", "Borne basse" = "solid")) +
-            scale_color_manual(values = c("Points GPS" = "blue")) +
             guides(
                 fill = guide_legend(order = 2, title = NULL),
                 color = guide_legend(order = 1, title = NULL),
                 linetype = guide_legend(order = 3, title = paste0("IC à ", level.IC*100, "%"))
-            ) + 
-            ggtitle(paste0("Individu n°", deviceID)) +
-            theme(
-                legend.position = "right",
-                axis.line.x.bottom = element_line(),
-                axis.line.y.left = element_line(),
-                axis.text.y = element_text(angle = 90, hjust = 0.5),
-            )
+            ) 
+    
+    if(!is.null(deviceID)){
+        plot <- plot + ggtitle(paste0("Individu n°", deviceID))
+    }
+
+    plot <- plot + theme(
+                        legend.position = "bottom",
+                        axis.line.x.bottom = element_line(),
+                        axis.line.y.left = element_line(),
+                        axis.text.y = element_text(angle = 90, hjust = 0.5),
+                    )
+
+    return(plot)
 
 }
