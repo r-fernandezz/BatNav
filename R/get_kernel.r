@@ -4,8 +4,6 @@
 #'
 #'
 #' @param bdd DataFrame. The input data containing GPS coordinates.
-#' @param path_export Character. Default NULL. Folder path if would like to export individual kernel shapefiles.
-#' @param name_file Character. Default NULL. Add pattern to the shapefile name, if path_export is not NULL.
 #'
 #' @return list with deviceID, models and UD for each individual
 #'
@@ -13,7 +11,7 @@
 #' 
 #' 
 
-get_kernel_ind <- function(bdd, path_export = NULL, name_file = Sys.Date()){
+get_kernel_ind <- function(bdd){
 
     # Use Timestamp
     bdd$Timestamp <- as.POSIXct(paste(paste(bdd$Year, bdd$Month, bdd$Day, sep = "-"), 
@@ -54,28 +52,16 @@ get_kernel_ind <- function(bdd, path_export = NULL, name_file = Sys.Date()){
         message("## Start modeling for individual ", id_tag, " (", x, "/", length(tel), ")")
         svf <- ctmm::variogram(tel_sub)
 
-        # Found best model
-        message("#### Found best model for individual ", id_tag)
-        guessMod <- ctmm::ctmm.guess(tel_sub, interactive = FALSE)
-        mod <- ctmm::ctmm.select(tel_sub, guessMod, method = 'pHREML')
+        # Initialize and found the best model
+        message("#### Initialize and found the best model for individual ", id_tag)
+        guessMod <- ctmm::ctmm.guess(tel_sub, CTMM = ctmm(), variogram = NULL, name = "GUESS", interactive = TRUE)
+        mod <- ctmm::ctmm.select(tel_sub, guessMod, verbose = TRUE, method = 'pHREML')
         sum_mod <- summary(mod)
 
         # Calculate kernel to remove bias with common grid
         message("#### Calculate kernel for individual ", id_tag)
-        ud <- ctmm::akde(tel_sub, mod, grid = common_grid, weights = FALSE)
+        ud <- ctmm::akde(tel_sub, mod, grid = common_grid, debias = TRUE, weights = TRUE)
         sum_ud <- summary(ud)
-
-        if(is.null(path_export) == FALSE){
-
-            message("#### Export kernel for individual ", id_tag)
-            ctmm::writeVector(
-                ud, 
-                filename = paste0(path_export, "/", "Kernel_individuel_", id_tag, "_", name_file, ".shp"),
-                overwrite = TRUE
-            )
-            message(paste0("Kernel for individual ", id_tag, " exported !"))
-
-        }
 
         return(list(DeviceID = id_tag, bdd.ctmm = tel_sub, models = mod, UDs = ud, svf = svf, sum_mod = sum_mod, sum_ud = sum_ud))
 

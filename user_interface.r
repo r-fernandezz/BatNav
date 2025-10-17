@@ -228,7 +228,7 @@ ui <-  dashboardPage(
                                 style = "list-style-type: none; padding-left: 0;",
                                 tags$li("✅ Importer, filtrer et prévisualiser des données GPS."),
                                 tags$li("✅ Croiser les données GPS avec plusieurs couches SIG."),
-                                tags$li("✅ Analyser la hauteur de vol des individus."),
+                                tags$li("✅ Explorer la hauteur de vol des individus."),
                                 tags$li("✅ Analyser la distribution spatio-temporelle des individus."),
                                 tags$li("✅ Visualiser les résultats et les exporter si besoin.")
                             )
@@ -247,6 +247,10 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "readData", 
                     h1("Importer les données GPS pour votre analyse"),
+                    p(  style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "Les paramétrages appliqués dans cet onglet affecteront les résultats dans l'ensemble des onglets."
+                    ),
 
                     h2("Période de déploiement des GPS"),
                     dateRangeInput(inputId = "dateRange",
@@ -319,14 +323,7 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "exploreData",
-                        h1("Explorer les données importées"),
-                        p(  style = "color: red;", 
-                            icon("exclamation-triangle", lib = "font-awesome"),
-                            "Les paramétrages appliqués dans l'onglet précédent affecteront les résultats sur cette page."
-                            ),
-                        br(),
-
-                        h3("Résumé des données importées et filtrées"),
+                        h1("Résumé des données importées et filtrées"),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
@@ -590,11 +587,11 @@ ui <-  dashboardPage(
                             Les points qualifiés de 'NA' sont ceux hors de l'emprise du levé LidarHD ou avec des valeurs négatives d'altitude.
                             Les points sur l'eau ont généralement des valeurs négatives (mais peuvent avoir des valeurs positives)."),
                         p(  
-                            style = "color: red;", 
-                            icon("exclamation-triangle", lib = "font-awesome"),
+                            style = "color: orange;", 
+                            icon("hourglass", lib = "font-awesome"),
                             "Cette analyse télécharge les dalles MNT dans lesquelles des points sont trouvés à l'intérieur (et les 8 dalles voisines). 
-                            Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur. 
-                            Cette analyse peut donc être longue si les dalles n'ont jamais été téléchargées auparavant."
+                            Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur.
+                            Cette analyse peut donc prendre plusieurs heures si les dalles n'ont jamais été téléchargées auparavant."
                         ),
                         br(),
                         div(
@@ -715,6 +712,10 @@ ui <-  dashboardPage(
                     ),
 
                     h3("Résultats de l'analyse de la hauteur de vol"),
+                    p(  style = "color: orange;", 
+                        icon("hourglass", lib = "font-awesome"),
+                        "Ce processus peut prendre plusieurs heures."
+                    ),
                     div(
                         style = "text-align: center;",
                         actionButton("runFlyAltiAnalysis", "Lancer l'analyse de hauteur de vol")
@@ -743,18 +744,22 @@ ui <-  dashboardPage(
                 tabItem(tabName = "modIndKernel",
 
                     h1("Créer les modèles de mouvement individuels"),
+                    p(  style = "color: orange;", 
+                        icon("hourglass", lib = "font-awesome"),
+                        "Le calcul des modèles de mouvement pour chaque individu peut prendre plusieurs heures."
+                    ),
                     p(  style = "color: red;", 
                         icon("exclamation-triangle", lib = "font-awesome"),
-                        "Le calcul des modèles de mouvement pour chaque individu est un processus long."
+                        "Ne pas appliquer de filtre de vitesse dans l'onglet 'Paramétrage des données GPS' pour cette analyse."
                     ),
                     p(  icon("floppy-disk", lib = "font-awesome"),
-                        "Les résultats de ce processus sont sauvegardés dans un fichier 'k_ind.rds' pour être réutilisés dans les étapes suivantes.
-                        Les couches shapefiles des kernels individuels (associé à leurs intervalles de confiance) sont également exportées dans le dossier 'BatNav/output/kernel_analysis/'."
+                        "Les résultats de ce processus sont sauvegardés dans 'output/kernel_analysis/k_ind.rds' pour être réutilisés dans les étapes suivantes."
                     ),
                     radioButtons(
                         inputId = "k_ind_source",
                         label = "Comment débuter l'analyse :",
-                        choices = c("Modéliser à partir des données" = "create", "Importer un fichier RDS déjà existant" = "import"),
+                        choices = c("Modéliser à partir des données (choix n°1)" = "create", 
+                                    "Importer un fichier RDS déjà existant (choix n°2)" = "import"),
                         selected = "create"
                     ),
                     fileInput(
@@ -764,12 +769,12 @@ ui <-  dashboardPage(
                     ),
                     div(
                         style = "text-align: center;",
-                        actionButton("runKDE", "Lancer le calcul des kernels individuels")
+                        actionButton("runKDE", "Lancer la modélisation")
                     ),
 
-                    h1("Résultats des modèles de mouvement individuels"),
-                    fluidPage(
-                        numericInput(  
+                    h1("Exporter les couches shapefiles des kernels individuels"),
+                    p("Après avoir lancer la modélisation et avant d'exporter vos couches shapefiles, attendez que les graphiques apparaissent dans la partie résulats ci-dessous."),
+                    numericInput(  
                             inputId = "kernel_lvl",
                             label = "Niveau de contour du kernel (en %)",
                             value = 0.50,
@@ -777,6 +782,14 @@ ui <-  dashboardPage(
                             max = 1,
                             step = 0.01
                         ),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_UD", "Télécharger les couches shapefiles")
+                    ),
+
+
+                    h1("Résultats des modèles de mouvement individuels"),
+                    fluidPage(
                         withSpinner(uiOutput("plot_kMod")),
                         br(),
                         column( 6,
@@ -795,9 +808,6 @@ ui <-  dashboardPage(
 
                     h1("Moyenner les modèles de mouvement individuels"),
                     p("Ce processus qui est réalisé avec le fichier 'k_ind.rds' généré précédemment."),
-                    p(  icon("floppy-disk", lib = "font-awesome"),
-                        "La couche shapefile du kernel moyen (associé à son intervalle de confiance) est exportée dans le dossier 'BatNav/output/kernel_analysis/'."
-                    ),
                     br(),
                     div(
                         style = "text-align: center;",

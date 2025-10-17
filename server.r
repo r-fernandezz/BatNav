@@ -766,7 +766,7 @@ server <- function(input, output) {
     # Download plots of kernel density estimation
     output$download_kMod <- downloadHandler(
         filename = function() {
-            paste("kernel_", input$kernel_lvl*100, "_ind_plots_", Sys.Date(), ".pdf", sep = "")
+            paste("kernel_individual_maps_UDlvl=", input$kernel_lvl*100, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
             req(k_ind())
@@ -787,7 +787,7 @@ server <- function(input, output) {
     # Download variogram plots
     output$download_svf <- downloadHandler(
         filename = function() {
-            paste("variogram_ind_plots_kernel_", input$kernel_lvl*100, "_", Sys.Date(), ".pdf", sep = "")
+            paste("variogram_individual_plots_UDlvl=", input$kernel_lvl*100, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
             req(k_ind())
@@ -803,6 +803,35 @@ server <- function(input, output) {
             })
             dev.off()
         }
+    )
+
+    # Download shapefile UD
+    output$download_UD <- downloadHandler(
+            filename = function() {
+                paste0("Kernel", input$kernel_lvl*100, "_",  Sys.Date(), ".zip")
+            },
+            content = function(file){
+                req(k_ind())
+                message("#### Export individual kernels into zip file")
+                dir.create(here::here("temp")) # create temporary folder to create zip
+
+                lapply(k_ind(), function(x){
+
+                    file_name <- paste0("Individuel_", x$DeviceID, "_", "kernel", input$kernel_lvl*100, "_",  Sys.Date(), ".shp")
+                    file_path <- here::here("temp", file_name)
+
+                    # Select UD and IC level
+                    ctmm::writeVector(
+                        x$UDs, 
+                        filename = file_path,
+                        overwrite = TRUE
+                    )
+                })
+
+                zip::zip(zipfile = file, files = list.files(here::here("temp"), pattern = ".*\\.(shp|shx|dbf|prj)$", full.names = TRUE), mode = "cherry-pick")
+                unlink(here::here("temp"), recursive = TRUE, force = TRUE) #remove temporary folder
+                message(paste0("Individual kernels exported!"))
+            }
     )
 
     # Create mean kernel density estimation with individual kernels

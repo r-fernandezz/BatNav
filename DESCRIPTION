@@ -30,4 +30,5 @@ Imports:
     shinydashboard,
     shinyWidgets,
     stringr,
-    terra
+    terra,
+    zip
