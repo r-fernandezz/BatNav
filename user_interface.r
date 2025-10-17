@@ -753,18 +753,23 @@ ui <-  dashboardPage(
                         "Ne pas appliquer de filtre de vitesse dans l'onglet 'Paramétrage des données GPS' pour cette analyse."
                     ),
                     p(  icon("floppy-disk", lib = "font-awesome"),
-                        "Les résultats de ce processus sont sauvegardés dans 'output/kernel_analysis/k_ind.rds' pour être réutilisés dans les étapes suivantes."
+                        "Les résultats de la modélisation sont sauvegardés dans un fichier 'model_par_individus.rds' (renommage du fichier optionnel) à l'emplacement 'output/kernel_analysis'. De nouvelles exportations de résultats peuvent être générées sans devoir recalculer les modèles."
                     ),
                     radioButtons(
                         inputId = "k_ind_source",
                         label = "Comment débuter l'analyse :",
-                        choices = c("Modéliser à partir des données (choix n°1)" = "create", 
-                                    "Importer un fichier RDS déjà existant (choix n°2)" = "import"),
+                        choices = c("Choix n°1 : Modéliser à partir des données" = "create", 
+                                    "Choix n°2 : Importer un fichier RDS déjà existant" = "import"),
                         selected = "create"
+                    ),
+                    textInput(
+                        inputId = "k_ind_name",
+                        label = "Si choix n°1 : Renommer le fichier de sauvegarde RDS (sans accents ni espaces)",
+                        value = "model_par_individus"
                     ),
                     fileInput(
                         inputId = "k_ind_file",
-                        label = "Importer le fichier RDS (si choix n°2)",
+                        label = "Si choix n°2 : importer le fichier RDS",
                         accept = ".rds"
                     ),
                     div(

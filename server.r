@@ -717,7 +717,7 @@ server <- function(input, output) {
             message("Creation of 'k_ind' file")
             dir.create(here::here("output", "kernel_analysis"), recursive = TRUE, showWarnings = FALSE)
             k_ind <- get_kernel_ind(df_gps(), path_export = here::here("output", "kernel_analysis"))
-            saveRDS(k_ind, file = here::here("output", "kernel_analysis", "k_ind.rds"))
+            saveRDS(k_ind, file = here::here("output", "kernel_analysis", input$k_ind_name))
 
             return(k_ind)
 
