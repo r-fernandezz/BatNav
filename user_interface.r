@@ -782,10 +782,10 @@ ui <-  dashboardPage(
                     numericInput(  
                             inputId = "kernel_lvl",
                             label = "Niveau de contour du kernel (en %)",
-                            value = 0.50,
-                            min = 0.01,
-                            max = 1,
-                            step = 0.01
+                            value = 50,
+                            min = 1,
+                            max = 100,
+                            step = 1
                         ),
                     div(
                         style = "text-align: center;",
@@ -820,7 +820,11 @@ ui <-  dashboardPage(
                         actionButton("runKDEmean", "Lancer le calcul du kernel moyen")
                     ),
                     br(),
-                    withSpinner(plotOutput("plot_kMean"))
+                    withSpinner(plotOutput("plot_kMean")),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_kMean", "Télécharger la carte du kernel moyen")
+                    )
                 ),
 
                 tabItem(tabName = "kernelother",

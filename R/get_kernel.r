@@ -13,6 +13,8 @@
 
 get_kernel_ind <- function(bdd){
 
+    set.seed(123)
+
     # Use Timestamp
     bdd$Timestamp <- as.POSIXct(paste(paste(bdd$Year, bdd$Month, bdd$Day, sep = "-"), 
                                             paste(bdd$Hour, bdd$Minute, bdd$Second, sep = ":"), 
@@ -87,6 +89,8 @@ get_kernel_ind <- function(bdd){
 
 get_kernel_mean <- function(k_analysis, method = "mean"){
 
+    set.seed(123)
+
     # Mean UD individuals
     ud_list <- lapply(k_analysis, function(x) x$UDs)
     message("#### Calculate kernel with mean model")
@@ -122,7 +126,7 @@ get_kernel_mean <- function(k_analysis, method = "mean"){
 #' 
 #' 
 
-get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD = input$kernel_lvl, level.IC = 0.95, osm.lvl = 11){
+get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD = input$kernel_lvl/100, level.IC = 0.95, osm.lvl = 11){
 
     # Plot with ggplot2 in Rshiny
     ud <- sf::st_as_sf(ctmm::SpatialPolygonsDataFrame.UD(UD, level.UD = level.UD, level = level.IC))
@@ -148,10 +152,11 @@ get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD = input$ke
     }
 
     plot <- plot +
-            geom_sf(data = ud[grep(ud$name, pattern = "%$"), ], aes(fill = name), color = NA, alpha = 0.8) +
+            geom_sf(data = ud[grep(ud$name, pattern = "%$"), ], aes(fill = "kernel"), color = NA, alpha = 0.8) +
             geom_sf(data = ud[grep(ud$name, pattern = "haute"), ], aes(linetype = "Borne haute"), fill = NA, color = "black", alpha = 1) +
             geom_sf(data = ud[grep(ud$name, pattern = "basse"), ], aes(linetype = "Borne basse"), fill = NA, color = "black", alpha = 1) +
             scale_linetype_manual(values = c("Borne haute" = "dashed", "Borne basse" = "solid")) +
+            scale_fill_manual(values = c("kernel" = "#ff00dd"), labels = paste("Kernel ", level.UD*100)) +
             guides(
                 fill = guide_legend(order = 2, title = NULL),
                 color = guide_legend(order = 1, title = NULL),

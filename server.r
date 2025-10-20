@@ -742,12 +742,12 @@ server <- function(input, output) {
         lapply(k_ind(), function(x){
             
             output[[paste0("plot_svf_", x$DeviceID)]] <- renderPlot({
-                ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
+                ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
             })
 
             output[[paste0("plot_kernel_", x$DeviceID)]] <- renderPlot({
                 #ctmm::plot(x$bdd.ctmm, UD = x$UDs, level = 0.5, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
-                get_kernel_plot(bdd = x$bdd.ctmm, UD = x$UDs, deviceID = x$DeviceID, level.UD = input$kernel_lvl, level.IC = 0.95)
+                get_kernel_plot(bdd = x$bdd.ctmm, UD = x$UDs, deviceID = x$DeviceID, level.UD = input$kernel_lvl/100, level.IC = 0.95)
             })
 
         })
@@ -766,7 +766,7 @@ server <- function(input, output) {
     # Download plots of kernel density estimation
     output$download_kMod <- downloadHandler(
         filename = function() {
-            paste("kernel_individual_maps_UDlvl=", input$kernel_lvl*100, "_", Sys.Date(), ".pdf", sep = "")
+            paste("kernel_individual_maps_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
             req(k_ind())
@@ -776,7 +776,7 @@ server <- function(input, output) {
                             bdd = x$bdd.ctmm, 
                             UD = x$UDs, 
                             deviceID = x$DeviceID, 
-                            level.UD = input$kernel_lvl, 
+                            level.UD = input$kernel_lvl/100, 
                             level.IC = 0.95)
                 print(plot)
             })
@@ -787,7 +787,7 @@ server <- function(input, output) {
     # Download variogram plots
     output$download_svf <- downloadHandler(
         filename = function() {
-            paste("variogram_individual_plots_UDlvl=", input$kernel_lvl*100, "_", Sys.Date(), ".pdf", sep = "")
+            paste("variogram_individual_plots_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
             req(k_ind())
@@ -796,7 +796,7 @@ server <- function(input, output) {
                 ctmm::plot(
                         x$svf, 
                         CTMM = x$models, 
-                        level = input$kernel_lvl, 
+                        level = input$kernel_lvl/100, 
                         level.UD = 0.95, 
                         main = paste0("Individu n°", x$DeviceID)
                 )
@@ -808,7 +808,7 @@ server <- function(input, output) {
     # Download shapefile UD
     output$download_UD <- downloadHandler(
             filename = function() {
-                paste0("Kernel", input$kernel_lvl*100, "_",  Sys.Date(), ".zip")
+                paste0("Kernel", input$kernel_lvl, "_",  Sys.Date(), ".zip")
             },
             content = function(file){
                 req(k_ind())
@@ -817,7 +817,7 @@ server <- function(input, output) {
 
                 lapply(k_ind(), function(x){
 
-                    file_name <- paste0("Individuel_", x$DeviceID, "_", "kernel", input$kernel_lvl*100, "_",  Sys.Date(), ".shp")
+                    file_name <- paste0("Individuel_", x$DeviceID, "_", "kernel", input$kernel_lvl, "_",  Sys.Date(), ".shp")
                     file_path <- here::here("temp", file_name)
 
                     # Select UD and IC level
@@ -865,15 +865,40 @@ server <- function(input, output) {
 
         req(k_mean())
         message("Plot mean kernel density estimation")
-        plot <- get_kernel_plot(bdd = NULL, 
+        plot <- get_kernel_plot(
+                        bdd = NULL, 
                         UD = k_mean(), 
                         deviceID = NULL, 
-                        level.UD = input$kernel_lvl, 
+                        level.UD = input$kernel_lvl/100, 
                         level.IC = 0.95, 
-                        osm.lvl = 12)
+                        osm.lvl = 12
+                )
         return(plot)
 
     })
+
+    # Download mean kernel density estimation
+    output$download_kMean <- downloadHandler(
+        filename = function() {
+            paste("kernel_mean_map_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            req(k_mean())
+            ggsave(
+                file, 
+                plot = get_kernel_plot(
+                            bdd = NULL, 
+                            UD = k_mean(), 
+                            deviceID = NULL, 
+                            level.UD = input$kernel_lvl/100, 
+                            level.IC = 0.95, 
+                            osm.lvl = 12
+                ), 
+                device = "png", 
+                width = 10,
+                height = 8)
+        }
+    )
 
 
 }
