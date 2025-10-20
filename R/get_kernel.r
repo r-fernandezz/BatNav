@@ -57,7 +57,7 @@ get_kernel_ind <- function(bdd){
         # Initialize and found the best model
         message("#### Initialize and found the best model for individual ", id_tag)
         guessMod <- ctmm::ctmm.guess(tel_sub, CTMM = ctmm(), variogram = NULL, name = "GUESS", interactive = TRUE)
-        mod <- ctmm::ctmm.select(tel_sub, guessMod, verbose = TRUE, method = 'pHREML')
+        mod <- ctmm::ctmm.select(tel_sub, guessMod, verbose = FALSE, method = 'pHREML')
         sum_mod <- summary(mod)
 
         # Calculate kernel to remove bias with common grid
