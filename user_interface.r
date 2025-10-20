@@ -753,7 +753,7 @@ ui <-  dashboardPage(
                         "Ne pas appliquer de filtre de vitesse dans l'onglet 'Paramétrage des données GPS' pour cette analyse."
                     ),
                     p(  icon("floppy-disk", lib = "font-awesome"),
-                        "Les résultats de la modélisation sont sauvegardés dans un fichier 'model_par_individus.rds' (renommage du fichier optionnel) à l'emplacement 'output/kernel_analysis'. De nouvelles exportations de résultats peuvent être générées sans devoir recalculer les modèles."
+                        "Les résultats de la modélisation sont sauvegardés dans un fichier 'model_par_individus.rds' (renommage du fichier optionnel) à l'emplacement 'BatNav/output/kernel_analysis'. De nouvelles exportations de résultats peuvent être générées avec ce fichier sans devoir recalculer les modèles."
                     ),
                     radioButtons(
                         inputId = "k_ind_source",

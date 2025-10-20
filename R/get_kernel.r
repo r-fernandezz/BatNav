@@ -20,8 +20,8 @@ get_kernel_ind <- function(bdd){
                                             paste(bdd$Hour, bdd$Minute, bdd$Second, sep = ":"), 
                                     sep = " "), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 
-    bdd_sub <- bdd[, c("DeviceID", "Longitudedecimal", "Latitudedecimal", "Timestamp")]
-    colnames(bdd_sub) <- c("ID", "longitude", "latitude", "timestamp")
+    bdd_sub <- bdd[, c("DeviceID", "Longitudedecimal", "Latitudedecimal", "Timestamp", "Hdop")]
+    colnames(bdd_sub) <- c("ID", "longitude", "latitude", "timestamp", "HDOP")
 
     tel <- ctmm::as.telemetry(bdd_sub, projection = "EPSG:2975", datum = "WGS84")
 
