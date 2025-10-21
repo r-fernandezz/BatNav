@@ -167,7 +167,7 @@ get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD = input$ke
             ) 
     
     if(!is.null(deviceID)){
-        plot <- plot + ggtitle(paste0("Individu n°", deviceID))
+        plot <- plot + ggtitle(paste0("Individu ", deviceID))
     }
 
     plot <- plot + theme(

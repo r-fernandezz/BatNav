@@ -741,7 +741,7 @@ server <- function(input, output) {
         lapply(k_ind(), function(x){
             
             output[[paste0("plot_svf_", x$DeviceID)]] <- renderPlot({
-                ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
+                ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
             })
 
             output[[paste0("plot_kernel_", x$DeviceID)]] <- renderPlot({
