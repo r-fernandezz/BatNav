@@ -100,7 +100,7 @@ get_kernel_mean <- function(k_analysis, method = "mean"){
 
     if(method == "mean"){
         message("#### Method : mean")
-        ud_mean <- mean(ud_list)
+        ud_mean <- mean(ud_list, sample = TRUE)
     } else if(method == "pkde") {
         #ud_mean <- ctmm::pkde(k_analysis$bdd.ctmm, ud_list)
     } else {
