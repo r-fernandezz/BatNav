@@ -4,6 +4,7 @@
 #'
 #'
 #' @param bdd DataFrame. The input data containing GPS coordinates.
+#' @param hdop_error Logical. If TRUE, include location error in the model.
 #'
 #' @return list with deviceID, models and UD for each individual
 #'
@@ -11,7 +12,7 @@
 #' 
 #' 
 
-get_kernel_ind <- function(bdd){
+get_kernel_ind <- function(bdd, hdop_error){
 
     set.seed(123)
 
@@ -56,7 +57,7 @@ get_kernel_ind <- function(bdd){
 
         # Initialize and found the best model
         message("#### Initialize and found the best model for individual ", id_tag)
-        guessMod <- ctmm::ctmm.guess(tel_sub, CTMM = ctmm(), variogram = NULL, name = "GUESS", interactive = TRUE)
+        guessMod <- ctmm::ctmm.guess(tel_sub, CTMM = ctmm(error = hdop_error), variogram = NULL, name = "GUESS", interactive = FALSE)
         mod <- ctmm::ctmm.select(tel_sub, guessMod, verbose = FALSE, method = 'pHREML')
         sum_mod <- summary(mod)
 

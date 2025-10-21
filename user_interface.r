@@ -767,6 +767,14 @@ ui <-  dashboardPage(
                         label = "Si choix n°1 : Renommer le fichier de sauvegarde RDS (sans accents ni espaces)",
                         value = "model_par_individus.rds"
                     ),
+                    br(),
+                    p(strong("Si choix 1 : Considérer l'erreur de positionnement dans les modèles de mouvement individuels")),
+                    switchInput(inputId = "hdop_error", value = FALSE, onLabel = "Oui", offLabel = "Non"),
+                    p(  style = "color: red;", 
+                        icon("exclamation-triangle", lib = "font-awesome"),
+                        "Rallonge considérablement le temps de calcul."
+                    ),
+                    br(),
                     fileInput(
                         inputId = "k_ind_file",
                         label = "Si choix n°2 : importer le fichier RDS",
