@@ -707,27 +707,27 @@ server <- function(input, output) {
     )
 
     # Create individual mouvement models (or import RDS file)
-    k_ind <- eventReactive(input$runKDE, {
+    moveMod <- eventReactive(input$runKDE, {
         
-        if (input$k_ind_source == "create") {
+        if (input$moveMod_source == "create") {
 
             req(df_gps())
 
-            message("'k_ind' variable creation")
+            message("'moveMod' variable creation")
             dir.create(here::here("output", "kernel_analysis"), recursive = TRUE, showWarnings = FALSE)
-            k_ind <- get_kernel_ind(df_gps(), hdop_error = input$hdop_error, corresp_tab = corresp_tab())
-            saveRDS(k_ind, file = here::here("output", "kernel_analysis", input$k_ind_name))
+            moveMod <- get_moveMod(df_gps(), hdop_error = input$hdop_error, corresp_tab = corresp_tab())
+            saveRDS(moveMod, file = here::here("output", "kernel_analysis", input$moveMod_name))
 
-            return(k_ind)
+            return(moveMod)
 
-        } else if(input$k_ind_source == "import") {
+        } else if(input$moveMod_source == "import") {
 
-            req(input$k_ind_file)
+            req(input$moveMod_file)
 
-            message("Importation of 'k_ind' file from user")
-            k_ind <- readRDS(input$k_ind_file$datapath)
+            message("Importation of 'moveMod' file from user")
+            moveMod <- readRDS(input$moveMod_file$datapath)
 
-            return(k_ind)
+            return(moveMod)
 
         }
 
@@ -736,9 +736,9 @@ server <- function(input, output) {
     # Plot results of kernel density estimation
     output$plot_kMod <- renderUI({
 
-        req(k_ind())
+        req(moveMod())
 
-        lapply(k_ind(), function(x){
+        lapply(moveMod(), function(x){
             
             output[[paste0("plot_svf_", x$DeviceID)]] <- renderPlot({
                 ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
@@ -751,7 +751,7 @@ server <- function(input, output) {
 
         })
 
-        plot_list <- lapply(k_ind(), function(x) {
+        plot_list <- lapply(moveMod(), function(x) {
             fluidRow(
                 column(6, plotOutput(outputId = paste0("plot_svf_", x$DeviceID))),
                 column(6, plotOutput(outputId = paste0("plot_kernel_", x$DeviceID)))
@@ -768,9 +768,9 @@ server <- function(input, output) {
             paste("kernel_individual_maps_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
-            req(k_ind())
+            req(moveMod())
             pdf(file, width = 10, height = 8)
-            lapply(k_ind(), function(x) {
+            lapply(moveMod(), function(x) {
                 plot <- get_kernel_plot(
                             bdd = x$bdd.ctmm, 
                             UD = x$UDs, 
@@ -789,9 +789,9 @@ server <- function(input, output) {
             paste("variogram_individual_plots_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
-            req(k_ind())
+            req(moveMod())
             pdf(file, width = 10, height = 8)
-            lapply(k_ind(), function(x) {
+            lapply(moveMod(), function(x) {
                 ctmm::plot(
                         x$svf, 
                         CTMM = x$models, 
@@ -810,11 +810,11 @@ server <- function(input, output) {
                 paste0("Kernel", input$kernel_lvl, "_",  Sys.Date(), ".zip")
             },
             content = function(file){
-                req(k_ind())
+                req(moveMod())
                 message("#### Export individual kernels into zip file")
                 dir.create(here::here("temp")) # create temporary folder to create zip
 
-                lapply(k_ind(), function(x){
+                lapply(moveMod(), function(x){
 
                     file_name <- paste0("Individuel_", x$DeviceID, "_", "kernel", input$kernel_lvl, "_",  Sys.Date(), ".shp")
                     file_path <- here::here("temp", file_name)
@@ -837,17 +837,17 @@ server <- function(input, output) {
     k_mean <- eventReactive(input$runKDEmean, {
         
         # RDS file name
-        if(input$k_ind_source == "create") {
-            path_name <- here::here("output", "kernel_analysis", input$k_ind_name) 
-        } else if(input$k_ind_source == "import") {
-            path_name <- input$k_ind_file$datapath #temporal path of uploaded file
+        if(input$moveMod_source == "create") {
+            path_name <- here::here("output", "kernel_analysis", input$moveMod_name) 
+        } else if(input$moveMod_source == "import") {
+            path_name <- input$moveMod_file$datapath
         }
 
         # Create mean model
         if(file.exists(path_name) == TRUE){
 
-            k_ind <- readRDS(path_name)
-            k_mean <- get_kernel_mean(k_analysis = k_ind)
+            moveMod <- readRDS(path_name)
+            k_mean <- get_kernel_mean(k_analysis = moveMod)
 
             return(k_mean)
 

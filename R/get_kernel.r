@@ -1,6 +1,6 @@
-#' get_kernel_ind
+#' get_moveMod
 #'
-#' @description Calculate kernel individual with CTMM package
+#' @description Calculate movement models with CTMM package
 #'
 #'
 #' @param bdd DataFrame. The input data containing GPS coordinates.
@@ -13,7 +13,7 @@
 #' 
 #' 
 
-get_kernel_ind <- function(bdd, hdop_error, corresp_tab){
+get_moveMod <- function(bdd, hdop_error, corresp_tab){
 
     set.seed(123)
 
@@ -81,7 +81,7 @@ get_kernel_ind <- function(bdd, hdop_error, corresp_tab){
 #' @description Calculate mean kernel with CTMM package
 #'
 #'
-#' @param k_analysis List. Output from get_kernel_ind function.
+#' @param k_analysis List. Output from get_moveMod function.
 #' @param method Character. Method to calculate mean kernel, either "mean" or "pkde". 
 #' "mean" use the mean function from ctmm package, "pkde" use the pKDE function from ctmm package.
 #'
@@ -113,11 +113,11 @@ get_kernel_mean <- function(k_analysis, method = "mean"){
 
 #' get_kernel_plot
 #'
-#' @description Plot kernels create with get_kernel_ind and get_kernel_mean.
+#' @description Plot kernels create with get_moveMod and get_kernel_mean functions.
 #'
 #'
 #' @param bdd DataFrame. GPS points used to create the kernel.
-#' @param UD UD object. Kernel utput from get_kernel_ind or get_kernel_mean function.
+#' @param UD UD object. Kernel utput from get_moveMod or get_kernel_mean function.
 #' @param deviceID Character. Individual ID.
 #' @param level.UD Numeric. Level of the UD to plot (for exemple 0.5 or 0.95).
 #' @param level.IC Numeric. Confidence level to plot the IC of kernel.

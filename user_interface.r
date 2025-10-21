@@ -762,7 +762,7 @@ ui <-  dashboardPage(
                     ),
                     br(),
                     radioButtons(
-                        inputId = "k_ind_source",
+                        inputId = "moveMod_source",
                         label = "Comment débuter l'analyse :",
                         choices = c("Choix n°1 : Modéliser à partir des données" = "create", 
                                     "Choix n°2 : Importer un fichier RDS déjà existant" = "import"),
@@ -770,7 +770,7 @@ ui <-  dashboardPage(
                     ),
                     br(),
                     textInput(
-                        inputId = "k_ind_name",
+                        inputId = "moveMod_name",
                         label = "Si choix n°1 : Renommer le fichier de sauvegarde RDS (sans accents ni espaces)",
                         value = "model_par_individus.rds"
                     ),
@@ -783,7 +783,7 @@ ui <-  dashboardPage(
                     ),
                     br(),
                     fileInput(
-                        inputId = "k_ind_file",
+                        inputId = "moveMod_file",
                         label = "Si choix n°2 : importer le fichier RDS",
                         accept = ".rds"
                     ),
