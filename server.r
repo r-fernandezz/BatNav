@@ -715,7 +715,7 @@ server <- function(input, output) {
 
             message("'k_ind' variable creation")
             dir.create(here::here("output", "kernel_analysis"), recursive = TRUE, showWarnings = FALSE)
-            k_ind <- get_kernel_ind(df_gps(), hdop_error = input$hdop_error)
+            k_ind <- get_kernel_ind(df_gps(), hdop_error = input$hdop_error, corresp_tab = corresp_tab())
             saveRDS(k_ind, file = here::here("output", "kernel_analysis", input$k_ind_name))
 
             return(k_ind)

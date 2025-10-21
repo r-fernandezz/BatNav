@@ -5,6 +5,7 @@
 #'
 #' @param bdd DataFrame. The input data containing GPS coordinates.
 #' @param hdop_error Logical. If TRUE, include location error in the model.
+#' @param corresp_tab DataFrame. Correspondence table for DeviceID and individual names.
 #'
 #' @return list with deviceID, models and UD for each individual
 #'
@@ -12,7 +13,7 @@
 #' 
 #' 
 
-get_kernel_ind <- function(bdd, hdop_error){
+get_kernel_ind <- function(bdd, hdop_error, corresp_tab){
 
     set.seed(123)
 
@@ -51,6 +52,7 @@ get_kernel_ind <- function(bdd, hdop_error){
 
         tel_sub <- tel[[x]]
         id_tag <- tel[[x]]@info$identity
+        id_tag <- corresp_tab[corresp_tab$DeviceID == id_tag, "nom_individu"] # get the individual name
 
         message("## Start modeling for individual ", id_tag, " (", x, "/", length(tel), ")")
         svf <- ctmm::variogram(tel_sub)
