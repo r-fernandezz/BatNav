@@ -81,14 +81,19 @@ ui <-  dashboardPage(
                 menuItem(   "Distribution", 
                             icon = icon("screenshot", lib = "glyphicon"),
 
-                    menuSubItem("Kernels individuels et moyen",
-                                tabName = "modIndKernel",
-                                icon = icon("wrench", lib = "glyphicon")
+                    menuSubItem("Sur l'ensemble des données",
+                                tabName = "modKernelAll",
+                                icon = icon("filter", lib = "glyphicon")
                     ),
 
-                    menuSubItem("Autres kernels",
-                                tabName = "kernelother",
-                                icon = icon("cloud-download", lib = "glyphicon")
+                    menuSubItem("En fonction des saisons",
+                                tabName = "modKernelSeason",
+                                icon = icon("filter", lib = "glyphicon")
+                    ),
+
+                    menuSubItem("En fonction des mois",
+                                tabName = "modKernelMonth",
+                                icon = icon("filter", lib = "glyphicon")
                     )
 
                 ),
@@ -278,7 +283,7 @@ ui <-  dashboardPage(
                                                 )
                     ),
 
-                    h2("Appliquer le ré-échantillonage des points GPS"),
+                    h2("Appliquer le ré-échantillonnage des points GPS"),
                     p("Lorsque qu'entre 18h et 6h la différence moyenne entre les points est inférieure à 10 minutes, un ré-échantillonage est appliqué pour ne conserver que les points toutes les 15 minutes."),
                     switchInput(inputId = "resampleSwitch", value = FALSE, onLabel = "Oui", offLabel = "Non"),
                     p(  style = "color: red;", 
@@ -741,7 +746,7 @@ ui <-  dashboardPage(
                     )
                 ), 
                 
-                tabItem(tabName = "modIndKernel",
+                tabItem(tabName = "modKernelAll",
 
                     h1("Créer les modèles de mouvement individuels"),
                     p(  style = "color: orange;", 
@@ -755,6 +760,7 @@ ui <-  dashboardPage(
                     p(  icon("floppy-disk", lib = "font-awesome"),
                         "Les résultats de la modélisation sont sauvegardés dans un fichier 'model_par_individus.rds' (renommage du fichier optionnel) à l'emplacement 'BatNav/output/kernel_analysis'. De nouvelles exportations de résultats peuvent être générées avec ce fichier sans devoir recalculer les modèles."
                     ),
+                    br(),
                     radioButtons(
                         inputId = "k_ind_source",
                         label = "Comment débuter l'analyse :",
@@ -762,6 +768,7 @@ ui <-  dashboardPage(
                                     "Choix n°2 : Importer un fichier RDS déjà existant" = "import"),
                         selected = "create"
                     ),
+                    br(),
                     textInput(
                         inputId = "k_ind_name",
                         label = "Si choix n°1 : Renommer le fichier de sauvegarde RDS (sans accents ni espaces)",
@@ -835,14 +842,10 @@ ui <-  dashboardPage(
                     )
                 ),
 
-                tabItem(tabName = "kernelother",
+                tabItem(tabName = "modKernelSeason"
+                ),
 
-                    h3("Distribution spatio-temporelle de tous les individus (par saisons et mois)"),
-
-                    h3("Distribution spatio-temporelle des individus suivis plusieurs années"),
-
-                    h3("Distribution spatio-temporelle par individus (par saisons et mois)")
-
+                tabItem(tabName = "modKernelMonth"
                 )
             )
         )
