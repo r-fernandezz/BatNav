@@ -733,7 +733,62 @@ server <- function(input, output) {
 
     })
 
-    # Plot results of kernel density estimation
+    # Plot SVF, dt.plot and periodogram for each individual
+    output$plot_viz_modKer <- renderUI({
+        req(df_gps())
+
+        message("Getting data for variogram, periodogram and dt.plot")
+        viz <- get_data_eval(bdd = df_gps(), corresp_tab = corresp_tab())
+
+        message("Plotting variogram, periodogram and dt.plot for each individual")
+        lapply(viz, function(x){
+            
+            output[[paste0("plot_svf_", x$DeviceID)]] <- renderPlot({
+                ctmm::plot(x$svf, CTMM = NULL, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
+            })
+
+            output[[paste0("plot_periodogram_", x$DeviceID)]] <- renderPlot({
+                ctmm::plot(x$prdg, diagnostic = TRUE, main = paste0("Individu ", x$DeviceID))
+            })
+
+            output[[paste0("plot_dtPlot_", x$DeviceID)]] <- renderPlot({
+                dt.plot(x$bdd.ctmm, main = paste0("Individu ", x$DeviceID))
+            })
+
+        })
+
+        plot_list <- lapply(viz, function(x) {
+            fluidRow(
+                column(4, plotOutput(outputId = paste0("plot_svf_", x$DeviceID))),
+                column(4, plotOutput(outputId = paste0("plot_periodogram_", x$DeviceID))),
+                column(4, plotOutput(outputId = paste0("plot_dtPlot_", x$DeviceID)))
+            )
+        })
+
+        do.call(tagList, plot_list)
+    })
+
+    # Download SVF, dt.plot and periodogram plots
+    output$download_viz_modKer <- downloadHandler(
+        filename = function() {
+            paste("evaluation_data_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
+        },
+        content = function(file) {
+            req(df_gps())
+            viz <- get_data_eval(bdd = df_gps(), corresp_tab = corresp_tab())
+
+            pdf(file, width = 14, height = 8)
+            lapply(viz, function(x) {
+                par(mfrow = c(3, 1))
+                ctmm::plot(x$svf, CTMM = NULL, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
+                ctmm::plot(x$prdg, diagnostic = TRUE, main = paste0("Individu ", x$DeviceID))
+                dt.plot(x$bdd.ctmm, main = paste0("Individu ", x$DeviceID))
+            })
+            dev.off()
+        }
+    )
+
+    # Plot variogram and kernel density estimation
     output$plot_kMod <- renderUI({
 
         req(moveMod())
@@ -804,7 +859,7 @@ server <- function(input, output) {
         }
     )
 
-    # Download shapefile UD
+    # Download shapefile kernel density estimation
     output$download_UD <- downloadHandler(
             filename = function() {
                 paste0("Kernel", input$kernel_lvl, "_",  Sys.Date(), ".zip")

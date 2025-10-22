@@ -1,3 +1,52 @@
+#' get_data_eval
+#'
+#' @description Data evaluation before creating mouvement models
+#'
+#'
+#' @param bdd DataFrame. The input data containing GPS coordinates.
+#' @param corresp_tab DataFrame. Correspondence table for DeviceID and individual names.
+#'
+#' @return Name Variable
+#'
+#' @export 
+
+
+get_data_eval <- function(bdd, corresp_tab = NULL){
+
+    # Use Timestamp
+    bdd$Timestamp <- as.POSIXct(paste(paste(bdd$Year, bdd$Month, bdd$Day, sep = "-"), 
+                                            paste(bdd$Hour, bdd$Minute, bdd$Second, sep = ":"), 
+                                    sep = " "), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+
+    bdd_sub <- bdd[, c("DeviceID", "Longitudedecimal", "Latitudedecimal", "Timestamp", "Hdop")]
+    colnames(bdd_sub) <- c("ID", "longitude", "latitude", "timestamp", "HDOP")
+
+    tel <- ctmm::as.telemetry(bdd_sub, projection = "EPSG:2975", datum = "WGS84")
+    
+    # Create several plot by 
+    viz_data <- lapply(c(1:length(tel)), function(x){
+
+        tel_sub <- tel[[x]]
+        id_tag <- tel[[x]]@info$identity
+        if(!is.null(corresp_tab)){
+            id_tag <- corresp_tab[corresp_tab$DeviceID == id_tag, "nom_individu"] # get the individual name
+        }
+
+        # Create variogram
+        message("## Start modeling for individual ", id_tag, " (", x, "/", length(tel), ")")
+        svf <- ctmm::variogram(tel_sub)
+
+        # Create periodogram
+        prdg <- ctmm::periodogram(tel_sub)
+
+        return(list(DeviceID = id_tag, bdd.ctmm = tel_sub, svf = svf, prdg = prdg))
+
+    })
+
+    return(viz_data)
+
+}
+
 #' get_moveMod
 #'
 #' @description Calculate movement models with CTMM package
@@ -13,7 +62,7 @@
 #' 
 #' 
 
-get_moveMod <- function(bdd, hdop_error, corresp_tab){
+get_moveMod <- function(bdd, hdop_error, corresp_tab = NULL){
 
     set.seed(123)
 
@@ -52,7 +101,9 @@ get_moveMod <- function(bdd, hdop_error, corresp_tab){
 
         tel_sub <- tel[[x]]
         id_tag <- tel[[x]]@info$identity
-        id_tag <- corresp_tab[corresp_tab$DeviceID == id_tag, "nom_individu"] # get the individual name
+        if(!is.null(corresp_tab)){
+            id_tag <- corresp_tab[corresp_tab$DeviceID == id_tag, "nom_individu"] # get the individual name
+        }
 
         message("## Start modeling for individual ", id_tag, " (", x, "/", length(tel), ")")
         svf <- ctmm::variogram(tel_sub)

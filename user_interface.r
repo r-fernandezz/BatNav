@@ -81,6 +81,11 @@ ui <-  dashboardPage(
                 menuItem(   "Distribution", 
                             icon = icon("screenshot", lib = "glyphicon"),
 
+                    menuSubItem("Evaluation des données",
+                                tabName = "EvalDataMoveMod",
+                                icon = icon("ok-circle", lib = "glyphicon")
+                    ),
+
                     menuSubItem("Sur l'ensemble des données",
                                 tabName = "modKernelAll",
                                 icon = icon("filter", lib = "glyphicon")
@@ -745,6 +750,51 @@ ui <-  dashboardPage(
                         )
                     )
                 ), 
+
+                tabItem(tabName = "EvalDataMoveMod",
+                
+                    h1("Evaluer la qualité des données avant la modélisation"),
+                    p("Cette évaluatione est basé sur les données entrées dans l'onglet 'Paramétrage des données GPS'"),
+                    p(  style = "color: red;", 
+                        icon("exclamation-triangle", lib = "font-awesome"),
+                        "Ne pas appliquer de filtre de vitesse dans l'onglet 'Paramétrage des données GPS' pour cette analyse."
+                    ),
+                    numericInput(  
+                            inputId = "kernel_lvl",
+                            label = "Niveau de contour du kernel (en %)",
+                            value = 50,
+                            min = 1,
+                            max = 100,
+                            step = 1
+                    ),
+                    fluidPage(
+                        column( 4,
+                                div(
+                                    style = "text-align: center;",
+                                    p(strong("Variogrammes"))
+                                ),
+                        ),
+                        column( 4,
+                                div(
+                                    style = "text-align: center;",
+                                    p(strong("Périodogrammes"))
+                                ),
+                        ),
+                        column( 4,
+                                div(
+                                    style = "text-align: center;",
+                                    p(strong("Temporalité des données"))
+                                ),
+                        ),
+                        withSpinner(uiOutput("plot_viz_modKer"))
+                    ),
+                    br(),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_viz_modKer", "Télécharger tous les graphiques dans un fichier PDF")
+                    )
+
+                ),
                 
                 tabItem(tabName = "modKernelAll",
 
@@ -752,10 +802,6 @@ ui <-  dashboardPage(
                     p(  style = "color: orange;", 
                         icon("hourglass", lib = "font-awesome"),
                         "Le calcul des modèles de mouvement pour chaque individu peut prendre plusieurs heures."
-                    ),
-                    p(  style = "color: red;", 
-                        icon("exclamation-triangle", lib = "font-awesome"),
-                        "Ne pas appliquer de filtre de vitesse dans l'onglet 'Paramétrage des données GPS' pour cette analyse."
                     ),
                     p(  icon("floppy-disk", lib = "font-awesome"),
                         "Les résultats de la modélisation sont sauvegardés dans un fichier 'model_par_individus.rds' (renommage du fichier optionnel) à l'emplacement 'BatNav/output/kernel_analysis'. De nouvelles exportations de résultats peuvent être générées avec ce fichier sans devoir recalculer les modèles."
@@ -794,14 +840,6 @@ ui <-  dashboardPage(
 
                     h1("Exporter les couches shapefiles des kernels individuels"),
                     p("Après avoir lancer la modélisation et avant d'exporter vos couches shapefiles, attendez que les graphiques apparaissent dans la partie résulats ci-dessous."),
-                    numericInput(  
-                            inputId = "kernel_lvl",
-                            label = "Niveau de contour du kernel (en %)",
-                            value = 50,
-                            min = 1,
-                            max = 100,
-                            step = 1
-                        ),
                     div(
                         style = "text-align: center;",
                         downloadButton("download_UD", "Télécharger les couches shapefiles")
