@@ -801,7 +801,7 @@ server <- function(input, output) {
 
             output[[paste0("plot_kernel_", x$DeviceID)]] <- renderPlot({
                 #ctmm::plot(x$bdd.ctmm, UD = x$UDs, level = 0.5, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
-                get_kernel_plot(bdd = x$bdd.ctmm, UD = x$UDs, deviceID = x$DeviceID, level.UD = input$kernel_lvl/100, level.IC = 0.95)
+                get_kernel_plot(bdd = x$bdd.ctmm, UD = x$UDs, deviceID = x$DeviceID, level.UD = input$kernel_lvl/100, level.IC = 0.95, osm.lvl = input$zoomOSM1)
             })
 
         })
@@ -831,7 +831,8 @@ server <- function(input, output) {
                             UD = x$UDs, 
                             deviceID = x$DeviceID, 
                             level.UD = input$kernel_lvl/100, 
-                            level.IC = 0.95)
+                            level.IC = 0.95,
+                            osm.lvl = input$zoomOSM1)
                 print(plot)
             })
             dev.off()
@@ -888,6 +889,50 @@ server <- function(input, output) {
             }
     )
 
+    # Plot surface of kernel density estimation
+    output$surf_kInd <- renderPlot({
+
+        req(moveMod())
+        get_surfKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100)
+
+    })
+
+    # Plot localisation of kernel density estimation
+    output$loc_kInd <- renderPlot({
+
+        req(moveMod())
+
+        get_locKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100, osm.lvl = input$zoomOSM2)
+
+    })
+
+    # Download surface
+    output$download_surf_kInd <- downloadHandler(
+        filename = function() {
+            paste("surface_kernels_individuals_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            png(file, width = 900, height = 900)
+            get_surfKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100)
+            dev.off()
+        }
+    )
+
+    # Download localisation kernel individuals
+    output$download_loc_kInd <- downloadHandler(
+        filename = function() {
+            paste("localisation_kernels_individuals_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".png", sep = "")
+        },
+        content = function(file) {
+            ggsave(
+                file, 
+                plot = get_locKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100, osm.lvl = input$zoomOSM2), 
+                device = "png", 
+                width = 10,
+                height = 8)
+        }
+    )
+    
     # Create mean kernel density estimation with individual kernels
     k_mean <- eventReactive(input$runKDEmean, {
         
@@ -919,15 +964,14 @@ server <- function(input, output) {
 
         req(k_mean())
         message("Plot mean kernel density estimation")
-        plot <- get_kernel_plot(
-                        bdd = NULL, 
-                        UD = k_mean(), 
-                        deviceID = NULL, 
-                        level.UD = input$kernel_lvl/100, 
-                        level.IC = 0.95, 
-                        osm.lvl = 12
-                )
-        return(plot)
+        get_kernel_plot(
+            bdd = NULL, 
+            UD = k_mean(), 
+            deviceID = NULL, 
+            level.UD = input$kernel_lvl/100, 
+            level.IC = 0.95, 
+            osm.lvl = input$zoomOSM3
+        )
 
     })
 

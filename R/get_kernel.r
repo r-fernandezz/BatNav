@@ -54,7 +54,7 @@ get_data_eval <- function(bdd, corresp_tab = NULL){
 #'
 #' @param bdd DataFrame. The input data containing GPS coordinates.
 #' @param hdop_error Logical. If TRUE, include location error in the model.
-#' @param corresp_tab DataFrame. Correspondence table for DeviceID and individual names.
+#' @param corresp_tab DataFrame. Correspondence table to change the DeviceID number by the name of individual.
 #'
 #' @return list with deviceID, models and UD for each individual
 #'
@@ -170,7 +170,7 @@ get_kernel_mean <- function(k_analysis, method = "mean"){
 #' @param bdd DataFrame. GPS points used to create the kernel.
 #' @param UD UD object. Kernel utput from get_moveMod or get_kernel_mean function.
 #' @param deviceID Character. Individual ID.
-#' @param level.UD Numeric. Level of the UD to plot (for exemple 0.5 or 0.95).
+#' @param level.UD Numeric. Level of the UD to plot (for exemple 50 or 95).
 #' @param level.IC Numeric. Confidence level to plot the IC of kernel.
 #' @param osm.lvl Numeric. Level of zoom for the OSM background.
 #'
@@ -180,7 +180,7 @@ get_kernel_mean <- function(k_analysis, method = "mean"){
 #' 
 #' 
 
-get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD = input$kernel_lvl/100, level.IC = 0.95, osm.lvl = 11){
+get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD, level.IC = 0.95, osm.lvl){
 
     # Plot with ggplot2 in Rshiny
     ud <- sf::st_as_sf(ctmm::SpatialPolygonsDataFrame.UD(UD, level.UD = level.UD, level = level.IC))
@@ -230,4 +230,117 @@ get_kernel_plot <- function(bdd = NULL, UD, deviceID = NULL, level.UD = input$ke
 
     return(plot)
 
+}
+
+
+#' get_locKer_plot
+#'
+#' @description Together plot of all individual kernels create with get_moveMod function.
+#'
+#'
+#' @param k_analysis List. Output from get_moveMod function.
+#' @param level.UD Numeric. Level of the UD to plot (for exemple 50 or 95).
+#' @param level.IC Numeric. Confidence level to plot the IC of kernel.
+#' @param osm.lvl Numeric. Level of zoom for the OSM background.
+#' 
+#' @return ggplot object
+#'
+#' @export NULL
+#' 
+#' 
+
+get_locKer_plot <- function(k_analysis, level.UD, level.IC = 0.95, osm.lvl) {
+
+    list_ud <- lapply(k_analysis, function(x) {x$UDs})
+    deviceID <- sapply(k_analysis, function(x) {x$DeviceID})
+    col <- ctmm::color(list_ud, by = "individual")
+
+    # Create list by kernel and IC
+    sf_kernel <- do.call(rbind, lapply(seq_along(list_ud), function(i){
+
+        ud <- sf::st_as_sf(ctmm::SpatialPolygonsDataFrame.UD(list_ud[[i]], level.UD = level.UD, level = level.IC))
+        ud$name[grep(ud$name, pattern = "est")] <- paste0("kernel ", level.UD*100, "%")
+
+        ud_mean <- ud[grep(ud$name, pattern = "%$"), ]
+        ud_mean$deviceID <- deviceID[i] #add deviceID column for ggplot aes fill
+        ud_mean
+
+    }))
+
+    # sf_ic_low <- do.call(rbind, lapply(seq_along(list_ud), function(i){
+
+    #     ud <- sf::st_as_sf(ctmm::SpatialPolygonsDataFrame.UD(list_ud[[i]], level.UD = level.UD, level = level.IC))
+    #     ud$name[grep(ud$name, pattern = "low")] <- paste0("kernel ", level.UD*100, "% borne basse")
+
+    #     ud[grep(ud$name, pattern = "basse"), ]
+
+    # }))
+
+    # sf_ic_high <- do.call(rbind, lapply(seq_along(list_ud), function(i){
+
+    #     ud <- sf::st_as_sf(ctmm::SpatialPolygonsDataFrame.UD(list_ud[[i]], level.UD = level.UD, level = level.IC))
+    #     ud$name[grep(ud$name, pattern = "high")] <- paste0("kernel ", level.UD*100, "% borne haute")
+
+    #     ud[grep(ud$name, pattern = "haute"), ]
+
+    # }))
+
+    plot <- ggplot() +
+            ggspatial::annotation_map_tile(type = "osm", zoom = osm.lvl) +
+            geom_sf(data = sf_kernel, fill = NA, aes(color = deviceID), linewidth = 1, alpha = 0.8) +
+            #geom_sf(data = sf_ic_high, aes(linetype = "Borne haute"), fill = NA, color = col, alpha = 1) +
+            #geom_sf(data = sf_ic_low, aes(linetype = "Borne basse"), fill = NA, color = col, alpha = 1) +
+            #scale_linetype_manual(values = c("Borne haute" = "dashed", "Borne basse" = "solid")) +
+            scale_color_manual(values = col) +
+            guides(
+                fill = guide_legend(order = 2, title = NULL),
+                color = guide_legend(order = 1, title = NULL),
+                linetype = guide_legend(order = 3, title = paste0("IC à ", level.IC*100, "%"))
+            ) + theme(
+                        legend.position = "bottom",
+                        axis.line.x.bottom = element_line(),
+                        axis.line.y.left = element_line(),
+                        axis.text.y = element_text(angle = 90, hjust = 0.5),
+                    )
+
+    return(plot)
+
+}
+
+#' get_surfKer_plot
+#'
+#' @description Calculate surface kernel plot with CTMM package
+#'
+#'
+#' @param k_analysis List. Output from get_moveMod function.
+#' @param level.UD Numeric. Level of the UD to plot (for exemple 50 or 95).
+#' @param level.IC Numeric. Confidence level to plot the IC of kernel.
+#' 
+#' @return ctmm plot
+#'
+#' @export NULL
+#' 
+#' 
+
+get_surfKer_plot <- function(k_analysis, level.UD, level.IC = 0.95){  
+
+    list_ud <- lapply(k_analysis, function(x) {x$UDs})
+    col <- ctmm::color(list_ud, by = "individual")
+    deviceID <- sapply(k_analysis, function(x) {x$DeviceID})
+
+    # Change number ID by the name of individual
+    list_ud <- lapply(1:length(list_ud), function(x) {
+        list_ud[[x]]@info$identity <- deviceID[x]
+        return(list_ud[[x]])
+    })
+
+    ctmm::meta(   
+                list_ud,
+                col = c(col, "black"),
+                level.UD = level.UD,
+                level = level.IC,
+                verbose = TRUE,
+                sort = TRUE,
+                mean = TRUE
+            )
 }

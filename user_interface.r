@@ -308,6 +308,10 @@ ui <-  dashboardPage(
 
                     h2("Filtrage par individu"),
                     p("Ajouter un tableau CSV avec deux colonnes 'DeviceID' et 'nom_individu' (sans accents !) pour faire la correspondance entre l'identifiant du GPS et le nom de l'individu."),
+                    p(  style = "color: orange;", 
+                        icon("exclamation-triangle", lib = "font-awesome"),
+                        "Charger le tableau de correspondance pour améliorer la visualisation dans certaines analyses."
+                    ),
                     fileInput(  inputId = "correspFile", 
                                 label = NULL,
                                 multiple = FALSE,
@@ -838,15 +842,18 @@ ui <-  dashboardPage(
                         actionButton("runKDE", "Lancer la modélisation")
                     ),
 
-                    h1("Exporter les couches shapefiles des kernels individuels"),
-                    p("Après avoir lancer la modélisation et avant d'exporter vos couches shapefiles, attendez que les graphiques apparaissent dans la partie résulats ci-dessous."),
-                    div(
-                        style = "text-align: center;",
-                        downloadButton("download_UD", "Télécharger les couches shapefiles")
-                    ),
-
-
                     h1("Résultats des modèles de mouvement individuels"),
+                    p(  style = "color: orange;", 
+                        icon("wrench", lib = "font-awesome"),
+                        "Les résultats ci-dessous sont générés en fonction du niveau de contour du kernel sélectionné dans l'onglet 'Evaluation des données', qui peut être modifié."
+                    ),
+                    sliderInput(inputId = "zoomOSM1",
+                                label = "Détails du fond de carte OpenStreetMap",
+                                min = 1,
+                                max = 13,
+                                value = 11,
+                                step = 1
+                    ),
                     fluidPage(
                         withSpinner(uiOutput("plot_kMod")),
                         br(),
@@ -864,6 +871,50 @@ ui <-  dashboardPage(
                         )
                     ),
 
+                    h1("Exporter les couches shapefiles des kernels individuels"),
+                    p("Avant d'exporter vos couches shapefiles, lancez la modélisation et attendez que les résultats apparaissent dans la partie résulats ci-dessus."),
+                    p(  style = "color: orange;", 
+                        icon("wrench", lib = "font-awesome"),
+                        "Les couches seront exportées en fonction du niveau de contour du kernel sélectionné dans l'onglet 'Evaluation des données', qui peut être modifié."
+                    ),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_UD", "Télécharger les couches shapefiles")
+                    ),
+
+                    h1("Surface des kernels individuels"),
+                    p(  style = "color: orange;", 
+                        icon("wrench", lib = "font-awesome"),
+                        "Les résultats ci-dessous sont générés en fonction du niveau de contour du kernel sélectionné dans l'onglet 'Evaluation des données', qui peut être modifié."
+                    ),
+                    box(
+                        title = "Surface des kernels individuels",
+                        width = 6,
+                        plotOutput("surf_kInd"),
+                        br(),
+                        div(
+                            style = "text-align: center;",
+                            downloadButton("download_surf_kInd", "Télécharger le graphique")
+                        )
+                    ),
+                    box(
+                        title = "Localisation des kernels individuels",
+                        width = 6,
+                        sliderInput(inputId = "zoomOSM2",
+                                    label = "Détails du fond de carte OpenStreetMap",
+                                    min = 1,
+                                    max = 13,
+                                    value = 11,
+                                    step = 1
+                        ),
+                        plotOutput("loc_kInd"),
+                        br(),
+                        div(
+                            style = "text-align: center;",
+                            downloadButton("download_loc_kInd", "Télécharger le graphique")
+                        )
+                    ),
+
                     h1("Moyenner les modèles de mouvement individuels"),
                     p(  "Ce processus qui est réalisé avec le fichier de sauvegarde RDS généré durant la modélisation (choix 1 ou 2).
                         Le niveau de contour de kernel peut être modifié dans l'étape précédente."),
@@ -873,7 +924,19 @@ ui <-  dashboardPage(
                         actionButton("runKDEmean", "Lancer le calcul du kernel moyen")
                     ),
                     br(),
-                    withSpinner(plotOutput("plot_kMean")),
+                    box(
+                        title = "Kernel moyen des individus",
+                        width = 12,
+                        sliderInput(inputId = "zoomOSM3",
+                                label = "Choisir le niveau de détail du fond de carte OpenStreetMap",
+                                min = 1,
+                                max = 13,
+                                value = 11,
+                                step = 1
+                        ),
+                        withSpinner(plotOutput("plot_kMean")),
+                    ),
+                    br(),
                     div(
                         style = "text-align: center;",
                         downloadButton("download_kMean", "Télécharger la carte du kernel moyen")
