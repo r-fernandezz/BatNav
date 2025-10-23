@@ -870,7 +870,7 @@ ui <-  dashboardPage(
                         column( 6,
                                 div(
                                     style = "text-align: center;",
-                                    downloadButton("download_kMod", "Télécharger tous les kernels dans un fichier PDF")
+                                    downloadButton("download_kMod", "Télécharger toutes les cartes dans un fichier PDF")
                                 )
                         )
                     ),
@@ -915,7 +915,7 @@ ui <-  dashboardPage(
                         br(),
                         div(
                             style = "text-align: center;",
-                            downloadButton("download_loc_kInd", "Télécharger le graphique")
+                            downloadButton("download_loc_kInd", "Télécharger la carte")
                         )
                     ),
 
@@ -946,7 +946,8 @@ ui <-  dashboardPage(
                     br(),
                     div(
                         style = "text-align: center;",
-                        downloadButton("download_kMean", "Télécharger la carte du kernel moyen")
+                        downloadButton("download_kMean_map", "Télécharger la carte du kernel moyen"),
+                        downloadButton("download_UDMean", "Télécharger la couche shapefile du kernel moyen")
                     )
                 ),
 

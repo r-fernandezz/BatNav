@@ -868,7 +868,7 @@ server <- function(input, output) {
     # Download shapefile kernel density estimation
     output$download_UD <- downloadHandler(
             filename = function() {
-                paste0("Kernel", input$kernel_lvl2, "_",  Sys.Date(), ".zip")
+                paste0("Kernel", input$kernel_lvl2, "_individual_",  Sys.Date(), ".zip")
             },
             content = function(file){
                 req(moveMod())
@@ -877,7 +877,7 @@ server <- function(input, output) {
 
                 lapply(moveMod(), function(x){
 
-                    file_name <- paste0("Individuel_", x$DeviceID, "_", "kernel", input$kernel_lvl2, "_",  Sys.Date(), ".shp")
+                    file_name <- paste0("Individual_", x$DeviceID, "_", "kernel", input$kernel_lvl2, "_",  Sys.Date(), ".shp")
                     file_path <- here::here("temp", file_name)
 
                     # Select UD and IC level
@@ -981,9 +981,9 @@ server <- function(input, output) {
     })
 
     # Download mean kernel density estimation
-    output$download_kMean <- downloadHandler(
+    output$download_kMean_map <- downloadHandler(
         filename = function() {
-            paste("kernel_mean_map_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".png", sep = "")
+            paste("kernel_mean_map_UDlvl=", input$kernel_lvl2, "_", Sys.Date(), ".png", sep = "")
         },
         content = function(file) {
             req(k_mean())
@@ -1000,6 +1000,32 @@ server <- function(input, output) {
                 device = "png", 
                 width = 10,
                 height = 8)
+        }
+    )
+
+    # Download mean kernel density estimation shapefile
+    output$download_UDMean <- downloadHandler(
+        filename = function() {
+            paste0("Kernel", input$kernel_lvl2, "_mean_",  Sys.Date(), ".zip")
+        },
+        content = function(file){
+            req(k_mean())
+            message("#### Export individual kernels mean into zip file")
+            dir.create(here::here("temp")) # create temporary folder to create zip
+
+            file_name <- paste0("Kernel", input$kernel_lvl2, "_mean_",  Sys.Date(), ".shp")
+            file_path <- here::here("temp", file_name)
+
+            # Select UD and IC level
+            ctmm::writeVector(
+                k_mean(), 
+                filename = file_path,
+                overwrite = TRUE
+            )
+
+            zip::zip(zipfile = file, files = list.files(here::here("temp"), pattern = ".*\\.(shp|shx|dbf|prj)$", full.names = TRUE), mode = "cherry-pick")
+            unlink(here::here("temp"), recursive = TRUE, force = TRUE) #remove temporary folder
+            message(paste0("Mean kernel exported!"))
         }
     )
 
