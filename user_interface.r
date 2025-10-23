@@ -758,13 +758,13 @@ ui <-  dashboardPage(
                 tabItem(tabName = "EvalDataMoveMod",
                 
                     h1("Evaluer la qualité des données avant la modélisation"),
-                    p("Cette évaluatione est basé sur les données entrées dans l'onglet 'Paramétrage des données GPS'"),
+                    p("Cette évaluatione est basée sur les données entrées dans l'onglet 'Paramétrage des données GPS'"),
                     p(  style = "color: red;", 
                         icon("exclamation-triangle", lib = "font-awesome"),
                         "Ne pas appliquer de filtre de vitesse dans l'onglet 'Paramétrage des données GPS' pour cette analyse."
                     ),
                     numericInput(  
-                            inputId = "kernel_lvl",
+                            inputId = "kernel_lvl1",
                             label = "Niveau de contour du kernel (en %)",
                             value = 50,
                             min = 1,
@@ -843,9 +843,13 @@ ui <-  dashboardPage(
                     ),
 
                     h1("Résultats des modèles de mouvement individuels"),
-                    p(  style = "color: orange;", 
-                        icon("wrench", lib = "font-awesome"),
-                        "Les résultats ci-dessous sont générés en fonction du niveau de contour du kernel sélectionné dans l'onglet 'Evaluation des données', qui peut être modifié."
+                    numericInput(  
+                            inputId = "kernel_lvl2",
+                            label = "Niveau de contour du kernel (en %)",
+                            value = 50,
+                            min = 1,
+                            max = 100,
+                            step = 1
                     ),
                     sliderInput(inputId = "zoomOSM1",
                                 label = "Détails du fond de carte OpenStreetMap",
@@ -875,7 +879,7 @@ ui <-  dashboardPage(
                     p("Avant d'exporter vos couches shapefiles, lancez la modélisation et attendez que les résultats apparaissent dans la partie résulats ci-dessus."),
                     p(  style = "color: orange;", 
                         icon("wrench", lib = "font-awesome"),
-                        "Les couches seront exportées en fonction du niveau de contour du kernel sélectionné dans l'onglet 'Evaluation des données', qui peut être modifié."
+                        "Les couches seront exportées en fonction du niveau de contour du kernel sélectionné plus haut."
                     ),
                     div(
                         style = "text-align: center;",
@@ -885,7 +889,7 @@ ui <-  dashboardPage(
                     h1("Surface des kernels individuels"),
                     p(  style = "color: orange;", 
                         icon("wrench", lib = "font-awesome"),
-                        "Les résultats ci-dessous sont générés en fonction du niveau de contour du kernel sélectionné dans l'onglet 'Evaluation des données', qui peut être modifié."
+                        "Les résultats ci-dessous sont générés en fonction du niveau de contour du kernel sélectionné plus haut."
                     ),
                     box(
                         title = "Surface des kernels individuels",
@@ -916,8 +920,11 @@ ui <-  dashboardPage(
                     ),
 
                     h1("Moyenner les modèles de mouvement individuels"),
-                    p(  "Ce processus qui est réalisé avec le fichier de sauvegarde RDS généré durant la modélisation (choix 1 ou 2).
-                        Le niveau de contour de kernel peut être modifié dans l'étape précédente."),
+                    p(  "Ce processus qui est réalisé avec le fichier de sauvegarde RDS généré durant la modélisation (choix 1 ou 2)."),
+                    p(  style = "color: orange;", 
+                        icon("wrench", lib = "font-awesome"),
+                        "Les résultats ci-dessous sont générés en fonction du niveau de contour du kernel sélectionné plus haut."
+                    ),
                     br(),
                     div(
                         style = "text-align: center;",

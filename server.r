@@ -733,18 +733,23 @@ server <- function(input, output) {
 
     })
 
+    # Get data evaluation for variogram, periodogram and dt.plot
+    viz_kEval <- reactive({
+        req(df_gps())
+        message("Getting data for variogram, periodogram and dt.plot")
+        viz_kEval <- get_data_eval(bdd = df_gps(), corresp_tab = corresp_tab())
+        return(viz_kEval)
+    })
+
     # Plot SVF, dt.plot and periodogram for each individual
     output$plot_viz_modKer <- renderUI({
-        req(df_gps())
-
-        message("Getting data for variogram, periodogram and dt.plot")
-        viz <- get_data_eval(bdd = df_gps(), corresp_tab = corresp_tab())
+        req(viz_kEval())
 
         message("Plotting variogram, periodogram and dt.plot for each individual")
-        lapply(viz, function(x){
+        lapply(viz_kEval(), function(x){
             
             output[[paste0("plot_svf_", x$DeviceID)]] <- renderPlot({
-                ctmm::plot(x$svf, CTMM = NULL, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
+                ctmm::plot(x$svf, CTMM = NULL, level = input$kernel_lvl1/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
             })
 
             output[[paste0("plot_periodogram_", x$DeviceID)]] <- renderPlot({
@@ -757,7 +762,7 @@ server <- function(input, output) {
 
         })
 
-        plot_list <- lapply(viz, function(x) {
+        plot_list <- lapply(viz_kEval(), function(x) {
             fluidRow(
                 column(4, plotOutput(outputId = paste0("plot_svf_", x$DeviceID))),
                 column(4, plotOutput(outputId = paste0("plot_periodogram_", x$DeviceID))),
@@ -771,16 +776,16 @@ server <- function(input, output) {
     # Download SVF, dt.plot and periodogram plots
     output$download_viz_modKer <- downloadHandler(
         filename = function() {
-            paste("evaluation_data_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
+            paste("evaluation_data_UDlvl=", input$kernel_lvl1, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
             req(df_gps())
-            viz <- get_data_eval(bdd = df_gps(), corresp_tab = corresp_tab())
+            req(viz_kEval())
 
             pdf(file, width = 14, height = 8)
-            lapply(viz, function(x) {
+            lapply(viz_kEval(), function(x) {
                 par(mfrow = c(3, 1))
-                ctmm::plot(x$svf, CTMM = NULL, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
+                ctmm::plot(x$svf, CTMM = NULL, level = input$kernel_lvl1/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
                 ctmm::plot(x$prdg, diagnostic = TRUE, main = paste0("Individu ", x$DeviceID))
                 dt.plot(x$bdd.ctmm, main = paste0("Individu ", x$DeviceID))
             })
@@ -795,20 +800,20 @@ server <- function(input, output) {
 
         lapply(moveMod(), function(x){
             
-            output[[paste0("plot_svf_", x$DeviceID)]] <- renderPlot({
-                ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
+            output[[paste0("plot_SVF_", x$DeviceID)]] <- renderPlot({
+                ctmm::plot(x$svf, CTMM = x$models, level = input$kernel_lvl2/100, level.UD = 0.95, main = paste0("Individu ", x$DeviceID))
             })
 
             output[[paste0("plot_kernel_", x$DeviceID)]] <- renderPlot({
                 #ctmm::plot(x$bdd.ctmm, UD = x$UDs, level = 0.5, level.UD = 0.95, main = paste0("Individu n°", x$DeviceID))
-                get_kernel_plot(bdd = x$bdd.ctmm, UD = x$UDs, deviceID = x$DeviceID, level.UD = input$kernel_lvl/100, level.IC = 0.95, osm.lvl = input$zoomOSM1)
+                get_kernel_plot(bdd = x$bdd.ctmm, UD = x$UDs, deviceID = x$DeviceID, level.UD = input$kernel_lvl2/100, level.IC = 0.95, osm.lvl = input$zoomOSM1)
             })
 
         })
 
         plot_list <- lapply(moveMod(), function(x) {
             fluidRow(
-                column(6, plotOutput(outputId = paste0("plot_svf_", x$DeviceID))),
+                column(6, plotOutput(outputId = paste0("plot_SVF_", x$DeviceID))),
                 column(6, plotOutput(outputId = paste0("plot_kernel_", x$DeviceID)))
             )
         })
@@ -820,7 +825,7 @@ server <- function(input, output) {
     # Download plots of kernel density estimation
     output$download_kMod <- downloadHandler(
         filename = function() {
-            paste("kernel_individual_maps_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
+            paste("kernel_individual_maps_UDlvl=", input$kernel_lvl2, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
             req(moveMod())
@@ -830,7 +835,7 @@ server <- function(input, output) {
                             bdd = x$bdd.ctmm, 
                             UD = x$UDs, 
                             deviceID = x$DeviceID, 
-                            level.UD = input$kernel_lvl/100, 
+                            level.UD = input$kernel_lvl2/100, 
                             level.IC = 0.95,
                             osm.lvl = input$zoomOSM1)
                 print(plot)
@@ -842,7 +847,7 @@ server <- function(input, output) {
     # Download variogram plots
     output$download_svf <- downloadHandler(
         filename = function() {
-            paste("variogram_individual_plots_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".pdf", sep = "")
+            paste("variogram_individual_plots_UDlvl=", input$kernel_lvl2, "_", Sys.Date(), ".pdf", sep = "")
         },
         content = function(file) {
             req(moveMod())
@@ -851,7 +856,7 @@ server <- function(input, output) {
                 ctmm::plot(
                         x$svf, 
                         CTMM = x$models, 
-                        level = input$kernel_lvl/100, 
+                        level = input$kernel_lvl2/100, 
                         level.UD = 0.95, 
                         main = paste0("Individu n°", x$DeviceID)
                 )
@@ -863,7 +868,7 @@ server <- function(input, output) {
     # Download shapefile kernel density estimation
     output$download_UD <- downloadHandler(
             filename = function() {
-                paste0("Kernel", input$kernel_lvl, "_",  Sys.Date(), ".zip")
+                paste0("Kernel", input$kernel_lvl2, "_",  Sys.Date(), ".zip")
             },
             content = function(file){
                 req(moveMod())
@@ -872,7 +877,7 @@ server <- function(input, output) {
 
                 lapply(moveMod(), function(x){
 
-                    file_name <- paste0("Individuel_", x$DeviceID, "_", "kernel", input$kernel_lvl, "_",  Sys.Date(), ".shp")
+                    file_name <- paste0("Individuel_", x$DeviceID, "_", "kernel", input$kernel_lvl2, "_",  Sys.Date(), ".shp")
                     file_path <- here::here("temp", file_name)
 
                     # Select UD and IC level
@@ -893,7 +898,7 @@ server <- function(input, output) {
     output$surf_kInd <- renderPlot({
 
         req(moveMod())
-        get_surfKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100)
+        get_surfKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl2/100)
 
     })
 
@@ -902,18 +907,18 @@ server <- function(input, output) {
 
         req(moveMod())
 
-        get_locKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100, osm.lvl = input$zoomOSM2)
+        get_locKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl2/100, osm.lvl = input$zoomOSM2)
 
     })
 
     # Download surface
     output$download_surf_kInd <- downloadHandler(
         filename = function() {
-            paste("surface_kernels_individuals_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".png", sep = "")
+            paste("surface_kernels_individuals_UDlvl=", input$kernel_lvl2, "_", Sys.Date(), ".png", sep = "")
         },
         content = function(file) {
             png(file, width = 900, height = 900)
-            get_surfKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100)
+            get_surfKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl2/100)
             dev.off()
         }
     )
@@ -921,12 +926,12 @@ server <- function(input, output) {
     # Download localisation kernel individuals
     output$download_loc_kInd <- downloadHandler(
         filename = function() {
-            paste("localisation_kernels_individuals_UDlvl=", input$kernel_lvl, "_", Sys.Date(), ".png", sep = "")
+            paste("localisation_kernels_individuals_UDlvl=", input$kernel_lvl2, "_", Sys.Date(), ".png", sep = "")
         },
         content = function(file) {
             ggsave(
                 file, 
-                plot = get_locKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl/100, osm.lvl = input$zoomOSM2), 
+                plot = get_locKer_plot(k_analysis = moveMod(), level.UD = input$kernel_lvl2/100, osm.lvl = input$zoomOSM2), 
                 device = "png", 
                 width = 10,
                 height = 8)
@@ -968,7 +973,7 @@ server <- function(input, output) {
             bdd = NULL, 
             UD = k_mean(), 
             deviceID = NULL, 
-            level.UD = input$kernel_lvl/100, 
+            level.UD = input$kernel_lvl2/100, 
             level.IC = 0.95, 
             osm.lvl = input$zoomOSM3
         )
@@ -988,9 +993,9 @@ server <- function(input, output) {
                             bdd = NULL, 
                             UD = k_mean(), 
                             deviceID = NULL, 
-                            level.UD = input$kernel_lvl/100, 
+                            level.UD = input$kernel_lvl2/100, 
                             level.IC = 0.95, 
-                            osm.lvl = 12
+                            osm.lvl = input$zoomOSM3
                 ), 
                 device = "png", 
                 width = 10,

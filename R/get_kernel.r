@@ -1,6 +1,6 @@
 #' get_data_eval
 #'
-#' @description Data evaluation before creating mouvement models
+#' @description Create list to evaluate data before creating mouvement models
 #'
 #'
 #' @param bdd DataFrame. The input data containing GPS coordinates.
