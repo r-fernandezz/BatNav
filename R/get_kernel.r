@@ -18,22 +18,41 @@ get_data_eval <- function(bdd, corresp_tab = NULL){
                                             paste(bdd$Hour, bdd$Minute, bdd$Second, sep = ":"), 
                                     sep = " "), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 
+    # Stock the number of individuals for later if you work with one individual only
+    number_ind <- unique(bdd$DeviceID)
+
     bdd_sub <- bdd[, c("DeviceID", "Longitudedecimal", "Latitudedecimal", "Timestamp", "Hdop")]
     colnames(bdd_sub) <- c("ID", "longitude", "latitude", "timestamp", "HDOP")
 
     tel <- ctmm::as.telemetry(bdd_sub, projection = "EPSG:2975", datum = "WGS84")
     
-    # Create several plot by 
-    viz_data <- lapply(c(1:length(tel)), function(x){
+    # Check if list of individuals or only one individual
+    dimTel <- dim(tel) 
+    if(is.null(dimTel)){ # if NULL list of individuals
+        step <- c(1:length(tel))
+    }else {
+        step <- 1 # only one individual
+    }
 
-        tel_sub <- tel[[x]]
-        id_tag <- tel[[x]]@info$identity
+    # Create several plot by 
+    viz_data <- lapply(step, function(x){
+
+        if(is.null(dimTel)){
+            tel_sub <- tel[[x]]
+            id_tag <- tel[[x]]@info$identity
+            nb_all <- length(tel)
+        }else {
+            tel_sub <- tel
+            id_tag <- number_ind
+            nb_all <- 1
+        }
+
         if(!is.null(corresp_tab)){
             id_tag <- corresp_tab[corresp_tab$DeviceID == id_tag, "nom_individu"] # get the individual name
         }
 
         # Create variogram
-        message("## Start modeling for individual ", id_tag, " (", x, "/", length(tel), ")")
+        message("## Start plot creation for individual ", id_tag, " (", x, "/", nb_all, ")")
         svf <- ctmm::variogram(tel_sub)
 
         # Create periodogram
@@ -71,6 +90,9 @@ get_moveMod <- function(bdd, hdop_error, corresp_tab = NULL){
                                             paste(bdd$Hour, bdd$Minute, bdd$Second, sep = ":"), 
                                     sep = " "), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
 
+    # Stock the number of individuals for later if you work with one individual only
+    number_ind <- unique(bdd$DeviceID)
+
     bdd_sub <- bdd[, c("DeviceID", "Longitudedecimal", "Latitudedecimal", "Timestamp", "Hdop")]
     colnames(bdd_sub) <- c("ID", "longitude", "latitude", "timestamp", "HDOP")
 
@@ -96,16 +118,32 @@ get_moveMod <- function(bdd, hdop_error, corresp_tab = NULL){
     common_grid <- raster::raster(here::here("grille_100m_WGS84.tif"))
     file.remove(here::here("grille_100m_WGS84.tif"))
 
-    # Create all individual kernel
-    k_analysis <- lapply(c(1:length(tel)), function(x){
+    # Check if list of individuals or only one individual
+    dimTel <- dim(tel) 
+    if(is.null(dimTel)){ # if NULL list of individuals
+        step <- c(1:length(tel))
+    }else {
+        step <- 1 # only one individual
+    }
 
-        tel_sub <- tel[[x]]
-        id_tag <- tel[[x]]@info$identity
+    # Create all individual kernel
+    k_analysis <- lapply(step, function(x){
+
+        if(is.null(dimTel)){
+            tel_sub <- tel[[x]]
+            id_tag <- tel[[x]]@info$identity
+            nb_all <- length(tel)
+        }else {
+            tel_sub <- tel
+            id_tag <- number_ind
+            nb_all <- 1
+        }
+
         if(!is.null(corresp_tab)){
             id_tag <- corresp_tab[corresp_tab$DeviceID == id_tag, "nom_individu"] # get the individual name
         }
 
-        message("## Start modeling for individual ", id_tag, " (", x, "/", length(tel), ")")
+        message("## Start modeling for individual ", id_tag, " (", x, "/", nb_all, ")")
         svf <- ctmm::variogram(tel_sub)
 
         # Initialize and found the best model

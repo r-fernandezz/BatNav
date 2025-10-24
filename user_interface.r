@@ -270,8 +270,11 @@ ui <-  dashboardPage(
                                     separator = "à"
                     ),
 
-                    h2("Tableaux des localisation GPS"), 
+                    h2("Tableaux des localisations GPS"), 
                     p("Les points dupliqués (même numéro de balise et date/heure) sont automatiquement supprimés lors de l'importation."),
+                    p(style = "color: green;",
+                        icon("fast-forward", lib = "font-awesome"),
+                        "Pour accelerer le filtrage des données, charger les tableaux après avoir sélectionné tous les paramètres de cette page."),
                     fileInput(  inputId = "BDDFile", 
                                 label = NULL,
                                 multiple = TRUE,
@@ -295,7 +298,7 @@ ui <-  dashboardPage(
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "Ce ré-échantillonage peut être appliqué uniquement si l'échantillonnage recherché est de 1 point toutes les 15 minutes entre 6h
                             et 18h. Ainsi que si la fréquence d'aquisition des balises n'est pas plus élevée que 1 point toutes les 5 minutes."
-                            ),
+                    ),
 
                     h2("Filtrage des points par la vitesse"),
                     radioButtons(   
@@ -855,7 +858,7 @@ ui <-  dashboardPage(
                     ),
                     div(
                         style = "text-align: center;",
-                        actionButton("runKDE", "Lancer la modélisation")
+                        actionButton("runKDE", "Lancer la modélisation", icon = icon("play"))
                     )
 
                 ),

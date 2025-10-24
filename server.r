@@ -7,6 +7,7 @@ server <- function(input, output) {
         req(input$dateRange)
         req(input$speedZero)
         req(input$filterWindow)
+        req(input$filterMoveMod)
         
         df_ls <- lapply(input$BDDFile$datapath, read.csv, header = TRUE)
         df_ls <- lapply(df_ls, subset, select = c(  "name", "DeviceID", "Year", 
@@ -47,7 +48,7 @@ server <- function(input, output) {
         }
 
         # Filter by months for movement model (distribution part)
-        df_filter <- df_filter[df_filter$Month %in% input$filterMoveMod[1]:input$filterMoveMod[2], ]
+        df_filter <- df_filter[df_filter$Month %in% input$filterMoveMod, ]
 
         return(df_filter)
 
@@ -709,33 +710,6 @@ server <- function(input, output) {
         }
     )
 
-    # Create individual mouvement models (or import RDS file)
-    moveMod <- eventReactive(input$runKDE, {
-        
-        if (input$moveMod_source == "create") {
-
-            req(df_gps())
-
-            message("'moveMod' variable creation")
-            dir.create(here::here("output", "kernel_analysis"), recursive = TRUE, showWarnings = FALSE)
-            moveMod <- get_moveMod(df_gps(), hdop_error = input$hdop_error, corresp_tab = corresp_tab())
-            saveRDS(moveMod, file = here::here("output", "kernel_analysis", input$moveMod_name))
-
-            return(moveMod)
-
-        } else if(input$moveMod_source == "import") {
-
-            req(input$moveMod_file)
-
-            message("Importation of 'moveMod' file from user")
-            moveMod <- readRDS(input$moveMod_file$datapath)
-
-            return(moveMod)
-
-        }
-
-    })
-
     # Get data evaluation for variogram, periodogram and dt.plot
     viz_kEval <- reactive({
         req(df_gps())
@@ -795,6 +769,39 @@ server <- function(input, output) {
             dev.off()
         }
     )
+
+    # Create individual mouvement models (or import RDS file)
+    moveMod <- eventReactive(input$runKDE, {
+
+        if (input$moveMod_source == "create") {
+
+            req(df_gps())
+            req(input$moveMod_name)
+
+            message("'moveMod' variable creation")
+            dir.create(here::here("output", "kernel_analysis"), recursive = TRUE, showWarnings = FALSE)
+            moveMod <- get_moveMod(df_gps(), hdop_error = input$hdop_error, corresp_tab = corresp_tab())
+            saveRDS(moveMod, file = here::here("output", "kernel_analysis", input$moveMod_name))
+
+            return(moveMod)
+
+        } else if(input$moveMod_source == "import") {
+
+            req(input$moveMod_file)
+
+            message("Importation of 'moveMod' file from user")
+            moveMod <- readRDS(input$moveMod_file$datapath)
+
+            return(moveMod)
+
+        }
+
+    })
+
+    observe({ # Trigger moveMod when button is clicked
+        req(input$runKDE)  
+        moveMod() 
+    })
 
     # Plot variogram and kernel density estimation
     output$plot_kMod <- renderUI({
