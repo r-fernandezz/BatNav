@@ -81,24 +81,24 @@ ui <-  dashboardPage(
                 menuItem(   "Distribution", 
                             icon = icon("screenshot", lib = "glyphicon"),
 
+                    menuSubItem("Filtrage des données GPS",
+                                tabName = "filterDataMoveMod",
+                                icon = icon("filter", lib = "glyphicon")
+                    ),
+
                     menuSubItem("Evaluation des données",
-                                tabName = "EvalDataMoveMod",
+                                tabName = "EvalDataMoveMod", 
                                 icon = icon("ok-circle", lib = "glyphicon")
                     ),
 
-                    menuSubItem("Sur l'ensemble des données",
-                                tabName = "modKernelAll",
-                                icon = icon("filter", lib = "glyphicon")
+                    menuSubItem("Création des modèles",
+                                tabName = "MoveMod",
+                                icon = icon("cog", lib = "glyphicon")
                     ),
 
-                    menuSubItem("En fonction des saisons",
-                                tabName = "modKernelSeason",
-                                icon = icon("filter", lib = "glyphicon")
-                    ),
-
-                    menuSubItem("En fonction des mois",
-                                tabName = "modKernelMonth",
-                                icon = icon("filter", lib = "glyphicon")
+                    menuSubItem("Résultats des modèles",
+                                tabName = "resultMoveMod",
+                                icon = icon("list-alt", lib = "glyphicon")
                     )
 
                 ),
@@ -755,6 +755,22 @@ ui <-  dashboardPage(
                     )
                 ), 
 
+                tabItem(tabName = "filterDataMoveMod",
+                
+                    h1("Filtrer les données pour la modélisation du mouvement"),
+                    p("Si vous souhaitez conserver uniquement un individu spécifique et/ou une période sur la durée du suivi. La table de données chargé et filtrer dans l'onglet 'Paramétrage des données GPS' sera à nouveau filtrée selon les mois sélectionnés ci-dessous."),
+                    checkboxGroupInput(
+                        inputId = "filterMoveMod",
+                        label = "Sélectionner les mois à conserver :",
+                        choices = list(
+                                "Janvier" = 1, "Février" = 2, "Mars" = 3, "Avril" = 4, "Mai" = 5, "Juin" = 6,
+                                "Juillet" = 7, "Août" = 8, "Septembre" = 9, "Octobre" = 10, "Novembre" = 11, "Décembre" = 12
+                        ),
+                        selected = c(1:12)
+                    )
+                
+                ),
+
                 tabItem(tabName = "EvalDataMoveMod",
                 
                     h1("Evaluer la qualité des données avant la modélisation"),
@@ -800,7 +816,7 @@ ui <-  dashboardPage(
 
                 ),
                 
-                tabItem(tabName = "modKernelAll",
+                tabItem(tabName = "MoveMod",
 
                     h1("Créer les modèles de mouvement individuels"),
                     p(  style = "color: orange;", 
@@ -840,7 +856,11 @@ ui <-  dashboardPage(
                     div(
                         style = "text-align: center;",
                         actionButton("runKDE", "Lancer la modélisation")
-                    ),
+                    )
+
+                ),
+
+                tabItem(tabName = "resultMoveMod",
 
                     h1("Résultats des modèles de mouvement individuels"),
                     numericInput(  
@@ -949,12 +969,6 @@ ui <-  dashboardPage(
                         downloadButton("download_kMean_map", "Télécharger la carte du kernel moyen"),
                         downloadButton("download_UDMean", "Télécharger la couche shapefile du kernel moyen")
                     )
-                ),
-
-                tabItem(tabName = "modKernelSeason"
-                ),
-
-                tabItem(tabName = "modKernelMonth"
                 )
             )
         )

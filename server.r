@@ -46,6 +46,9 @@ server <- function(input, output) {
             df_filter <- df_filter[!df_filter$nom_individu %in% input$filterInd, ]
         }
 
+        # Filter by months for movement model (distribution part)
+        df_filter <- df_filter[df_filter$Month %in% input$filterMoveMod[1]:input$filterMoveMod[2], ]
+
         return(df_filter)
 
     })
