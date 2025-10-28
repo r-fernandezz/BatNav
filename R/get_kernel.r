@@ -374,7 +374,7 @@ get_surfKer_plot <- function(k_analysis, level.UD, level.IC = 0.95){
 
     ctmm::meta(   
                 list_ud,
-                col = c(col, "black"),
+                col = "black",
                 level.UD = level.UD,
                 level = level.IC,
                 verbose = TRUE,
