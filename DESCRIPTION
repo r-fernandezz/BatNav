@@ -16,8 +16,10 @@ Imports:
     bslib,
     ctmm,
     desc,
+    devtools,
     dplyr,
     DT,
+    gganimate,
     ggplot2,
     ggspatial,
     here,
@@ -31,4 +33,7 @@ Imports:
     shinyWidgets,
     stringr,
     terra,
-    zip
+    zip,
+    zoo
+Remotes:
+    16EAGLE/moveVis

@@ -103,6 +103,11 @@ ui <-  dashboardPage(
 
                 ),
 
+                menuItem(   "Animation des déplacements",
+                            tabName = "aniMove",
+                            icon = icon("film", lib = "glyphicon")
+                ),
+
                 div(
                     "Romain Fernandez - BatNav v1.0.0 (2025)",
                     br(),
@@ -613,7 +618,7 @@ ui <-  dashboardPage(
                         br(),
                         div(
                             style = "text-align: center;",
-                            actionButton("runMNT_analysis", "Lancer l'analyse")
+                            actionButton("runMNT_analysis", "Lancer l'analyse", icon = icon("play"))
                         ),
                         br(),
                         br(),
@@ -672,7 +677,7 @@ ui <-  dashboardPage(
                         br(),
                         div(
                             style = "text-align: left;",
-                            actionButton("runRoostAnalysis", "Lancer l'analyse")
+                            actionButton("runRoostAnalysis", "Lancer l'analyse", icon = icon("play"))
                         ),
                         h3("Visualisation des reposoirs diurnes probables"),
                         withSpinner(leaflet::leafletOutput("map_roost", height = 600)),
@@ -735,7 +740,7 @@ ui <-  dashboardPage(
                     ),
                     div(
                         style = "text-align: center;",
-                        actionButton("runFlyAltiAnalysis", "Lancer l'analyse de hauteur de vol")
+                        actionButton("runFlyAltiAnalysis", "Lancer l'analyse de hauteur de vol", icon = icon("play"))
                     ),
                     br(),
                     fluidPage(
@@ -778,9 +783,9 @@ ui <-  dashboardPage(
                 
                     h1("Evaluer la qualité des données avant la modélisation"),
                     p("Cette évaluatione est basée sur les données entrées dans l'onglet 'Paramétrage des données GPS'"),
-                    p(  style = "color: red;", 
+                    p(  style = "color: orange;", 
                         icon("exclamation-triangle", lib = "font-awesome"),
-                        "Ne pas appliquer de filtre de vitesse dans l'onglet 'Paramétrage des données GPS' pour cette analyse."
+                        "Les résultats de cet onglet doivent être correctement interprétés afin de garantir la fiabilité des modèles générés dans l'étape suivante."
                     ),
                     numericInput(  
                             inputId = "kernel_lvl1",
@@ -951,7 +956,7 @@ ui <-  dashboardPage(
                     br(),
                     div(
                         style = "text-align: center;",
-                        actionButton("runKDEmean", "Lancer le calcul du kernel moyen")
+                        actionButton("runKDEmean", "Lancer le calcul du kernel moyen", icon = icon("play"))
                     ),
                     br(),
                     box(
@@ -971,6 +976,60 @@ ui <-  dashboardPage(
                         style = "text-align: center;",
                         downloadButton("download_kMean_map", "Télécharger la carte du kernel moyen"),
                         downloadButton("download_UDMean", "Télécharger la couche shapefile du kernel moyen")
+                    )
+                ),
+
+                tabItem(tabName = "aniMove",
+                    h1("Créer une animation des déplacements"),
+                    p("Cette animation est réalisée avec les données GPS entrée dans l'onglet 'Paramétrage des données GPS'."),
+                    p(  style = "color: orange;", 
+                        icon("hourglass", lib = "font-awesome"),
+                        "Attention la création puis le téléchargement de l'animation peut prendre plusieurs heures."
+                    ),
+                    textInput(
+                        inputId = "title_anim",
+                        label = "Titre de l'animation",
+                        value = "Tracking de la Roussette noire sur l'île de La Réunion"
+                    ),
+                    textInput(
+                        inputId = "subtitle_anim",
+                        label = "Sous-titre de l'animation",
+                        value = "Groupe Chiroptères Océan Indien - BatNav"
+                    ),
+                    sliderInput( 
+                        inputId = "res_background_anim",
+                        label = "Résolution du fond de carte",
+                        min = 0.1,
+                        max = 1,
+                        value = 0.2,
+                        step = 0.1
+                    ),
+                    p(  style = "color: orange;",
+                        icon("info-circle", lib = "font-awesome"),
+                        "Plus la carte à une emprise grande et plus la résolution doit être proche de 0."
+                    ),
+                    sliderInput( 
+                        inputId = "fps_anim",
+                        label = "Nombre d'images par seconde",
+                        min = 1,
+                        max = 1000,
+                        value = 200,
+                        step = 1
+                    ),
+                    p(  style = "color: orange;",
+                        icon("info-circle", lib = "font-awesome"),
+                        "Plus le nombre d'images par seconde est élevé, plus l'animation est courte."
+                    ),
+                    actionButton("generate_frames", "Générer les images de l'animation"),
+                    h3("Visualiser l'une des images de l'animation avant son téléchargement"),
+                    p("Corriger les images de l'animation si nécessaire avant de la créer, en modifiant les paramètres ci-dessus puis en cliquant à nouveau sur 'Générer les images de l'animation'."),
+                    fluidPage(
+                        withSpinner(plotOutput("animation_preview"))
+                    ),
+                    br(),
+                    div(
+                        style = "text-align: center;",
+                        downloadButton("download_anim", "Créer et télécharger l'animation")
                     )
                 )
             )

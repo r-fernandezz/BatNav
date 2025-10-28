@@ -19,3 +19,4 @@ rpgRef_tab <- read.csv2(here::here("data", "RPG_2024", "REF_CULTURES_2023.csv"),
 rpgRef_tab <- rpgRef_tab[ , colnames(rpgRef_tab) %in% c("CODE", "LIBELLE_CULTURE")]
 pollu_rast <- rast(here::here("data", "Pollution_lumineuse", "PNReunion-PolLum-CoeurNuit-2021-Monobande.tif"))
 lidarMNT <- readLines(here::here("data", "LidarHD", "IGNF_MNT-LIDAR-HD.txt"))
+token_animation <- readLines(here::here("data", "mapbox_token.txt"))

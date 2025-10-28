@@ -1039,5 +1039,46 @@ server <- function(input, output) {
         }
     )
 
+    # Create movement animation frames
+    frames <- eventReactive(input$generate_frames, {
+        req(df_gps())
+        req(corresp_tab())
+        req(input$title_anim)
+        req(input$subtitle_anim)
+
+        message("Creating movement animation frames")
+        frames <- trip_animation(
+                        BDD_track = df_gps(), 
+                        corresp_tab = corresp_tab(), 
+                        title_anim = input$title_anim, 
+                        map_res = input$res_background_anim,
+                        subtitle_anim = input$subtitle_anim
+                    )
+        return(frames)
+    })
+
+    output$animation_preview <- renderPlot({
+        req(frames())
+        message("Displaying first frame of the animation")
+        print(frames()[[1]])
+    })
+
+    # Download animation with static map
+    output$download_anim <- downloadHandler(
+        filename = function() {
+            paste("trip_animation_", gsub(" ", "_", input$title_anim), "_", Sys.Date(), ".gif", sep = "")
+        },
+        content = function(file) {
+            req(frames())
+
+            message("Creating temporary file for animation")
+            temp_file <- tempfile(fileext = ".gif")
+            moveVis::animate_frames(frames(), out_file = temp_file, fps = input$fps_anim, display = FALSE)
+
+            message("Saving animation in your folder")
+            file.copy(temp_file, file, overwrite = TRUE)
+            unlink(temp_file)
+        }
+    )
 
 }
