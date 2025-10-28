@@ -363,7 +363,6 @@ get_locKer_plot <- function(k_analysis, level.UD, level.IC = 0.95, osm.lvl) {
 get_surfKer_plot <- function(k_analysis, level.UD, level.IC = 0.95){  
 
     list_ud <- lapply(k_analysis, function(x) {x$UDs})
-    col <- ctmm::color(list_ud, by = "individual")
     deviceID <- sapply(k_analysis, function(x) {x$DeviceID})
 
     # Change number ID by the name of individual
