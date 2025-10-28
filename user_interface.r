@@ -15,6 +15,8 @@ ui <-  dashboardPage(
 
         dashboardSidebar(
             sidebarMenu(
+                id = "tabs",
+
                 menuItem("Accueil", 
                          tabName = "home", 
                          icon = icon("home", lib = "glyphicon")
@@ -78,7 +80,7 @@ ui <-  dashboardPage(
                             icon = icon("stats", lib = "glyphicon")
                 ),
 
-                menuItem(   "Distribution", 
+                menuItem(   "Distribution",
                             icon = icon("screenshot", lib = "glyphicon"),
 
                     menuSubItem("Filtrage des données GPS",

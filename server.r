@@ -1,4 +1,4 @@
-server <- function(input, output) { 
+server <- function(input, output, session) { 
 
     # Import location database
     df_gps <- reactive({
@@ -798,9 +798,9 @@ server <- function(input, output) {
 
     })
 
-    observe({ # Trigger moveMod when button is clicked
-        req(input$runKDE)  
-        moveMod() 
+    # Navigate to result tab when click on run KDE button (to activate reactive moveMod())
+    observeEvent(input$runKDE, {
+        updateTabItems(session, "tabs", "resultMoveMod")
     })
 
     # Plot variogram and kernel density estimation
