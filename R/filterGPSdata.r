@@ -53,6 +53,21 @@ filterGPSdata <- function(df, DataMin, DataMax, speedZero, filterWindow, resampl
         df_sub <- subset(df_sub, Latitudedecimal < -20.8)
     }
 
+    if(filterWindow == "ShapefileFilter"){
+
+        # Combine communes shapefile to create the coastline delimitation
+        com_combine <- sf::st_union(com_shp)
+        com_combine <- sf::st_transform(com_combine, crs = 4326)
+        df_sub_sf <- sf::st_as_sf(df_sub, coords = c("Longitudedecimal", "Latitudedecimal"), crs = 4326)
+        df_sub_sf <- df_sub_sf[sf::st_within(df_sub_sf, com_combine, sparse = FALSE), ]
+
+        # Convert back to dataframe
+        df_sub <- as.data.frame(df_sub_sf)
+        df_sub$Longitudedecimal <- sf::st_coordinates(df_sub_sf)[, 1]
+        df_sub$Latitudedecimal <- sf::st_coordinates(df_sub_sf)[, 2]
+
+    }
+
     # Resample points if more than 48 points per day
     if(resampleSwitch == TRUE){
 

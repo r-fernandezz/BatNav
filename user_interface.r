@@ -292,9 +292,10 @@ ui <-  dashboardPage(
                     h2("Filtrage des points par une emprise spatiale"),
                     radioButtons(   inputId = "filterWindow",
                                     label = NULL,
-                                    choices = c("Filtre Sud-Ouest Ocean Indien : Supprimer les points hors de la fenêtre 10°S–30°S, 40°E–65°E" = "SudOIFilter",
+                                    choices = c("Pas de filtre spatial" = "NoFilter",
+                                                "Filtre Sud-Ouest Ocean Indien : Supprimer les points hors de la fenêtre 10°S–30°S, 40°E–65°E" = "SudOIFilter",
                                                 "Filtre La Réunion : Supprimer les points hors de la fenêtre 21.4°S–20.8°S, 55.2°E–55.9°E" = "ReunionFilter",
-                                                "Pas de filtre spatial" = "NoFilter"
+                                                "Filtre de trait de côte : Supprimer les points hors du trait de côte de l'île" = "ShapefileFilter"
                                                 )
                     ),
 
@@ -311,16 +312,16 @@ ui <-  dashboardPage(
                     radioButtons(   
                             inputId = "speedZero",
                             label = NULL,
-                            choices = c("Conserver les points avec une vitesse de 0 km/h" = "0km/h",
-                                        "Conserver les points avec une vitesse > 0 km/h" = ">0km/h",
-                                        "Conserver tous les points" = "all")
+                            choices = c("Conserver tous les points" = "all",
+                                        "Conserver les points avec une vitesse de 0 km/h" = "0km/h",
+                                        "Conserver les points avec une vitesse > 0 km/h" = ">0km/h")
                         ),
 
                     h2("Filtrage par individu"),
                     p("Ajouter un tableau CSV avec deux colonnes 'DeviceID' et 'nom_individu' (sans accents !) pour faire la correspondance entre l'identifiant du GPS et le nom de l'individu."),
                     p(  style = "color: orange;", 
                         icon("exclamation-triangle", lib = "font-awesome"),
-                        "Charger le tableau de correspondance pour améliorer la visualisation dans certaines analyses."
+                        "Charger le tableau de correspondance pour améliorer la visualisation des résultats de certaines analyses."
                     ),
                     fileInput(  inputId = "correspFile", 
                                 label = NULL,
