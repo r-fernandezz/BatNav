@@ -257,7 +257,7 @@ ui <-  dashboardPage(
                             tags$ul(
                                 style = "list-style-type: none; padding-left: 0;",
                                 tags$li("1️⃣ Rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres de votre analyse."),
-                                tags$li("2️⃣ Lancer si besoin les analyses et visualiser vos résultats en vous déplaçant dans les différents onglets disponibles.")
+                                tags$li("2️⃣ Lancer les analyses et visualiser les résultats en vous déplaçant dans les différents onglets disponibles.")
                             )
                         )
                 ),
@@ -278,8 +278,8 @@ ui <-  dashboardPage(
                     ),
 
                     h2("Tableaux des localisations GPS"), 
-                    p("Les points dupliqués (même numéro de balise et date/heure) sont automatiquement supprimés lors de l'importation."),
-                    p(style = "color: green;",
+                    p("Les points dupliqués (même numéro de balise et date/heure) seront automatiquement supprimés lors de l'importation."),
+                    p(  style = "color: green;",
                         icon("fast-forward", lib = "font-awesome"),
                         "Pour accelerer le filtrage des données, charger les tableaux après avoir sélectionné tous les paramètres de cette page."),
                     fileInput(  inputId = "BDDFile", 
@@ -293,9 +293,9 @@ ui <-  dashboardPage(
                     radioButtons(   inputId = "filterWindow",
                                     label = NULL,
                                     choices = c("Pas de filtre spatial" = "NoFilter",
-                                                "Filtre Sud-Ouest Ocean Indien : Supprimer les points hors de la fenêtre 10°S–30°S, 40°E–65°E" = "SudOIFilter",
-                                                "Filtre La Réunion : Supprimer les points hors de la fenêtre 21.4°S–20.8°S, 55.2°E–55.9°E" = "ReunionFilter",
-                                                "Filtre de trait de côte : Supprimer les points hors du trait de côte de l'île" = "ShapefileFilter"
+                                                "Filtre 'Sud-Ouest Ocean Indien' : Supprimer les points hors de la fenêtre 10°S–30°S, 40°E–65°E" = "SudOIFilter",
+                                                "Filtre 'La Réunion' : Supprimer les points hors de la fenêtre 21.4°S–20.8°S, 55.2°E–55.9°E" = "ReunionFilter",
+                                                "Filtre 'Trait de côte' : Supprimer les points hors du trait de côte de l'île" = "ShapefileFilter"
                                                 )
                     ),
 
@@ -353,9 +353,16 @@ ui <-  dashboardPage(
                             icon("exclamation-triangle", lib = "font-awesome"),
                             "La colonne proportion théorique est calculée sur une base de 1 point toutes les 15 minutes entre 18h et 6h."
                         ),
-                        p("Ajouter la distance parcourue au tableau (processus long)"),
-                        switchInput(inputId = "distanceAnalysis", value = FALSE, onLabel = "Oui", offLabel = "Non"),
-                        
+                        p("Ajouter la distance parcourue au tableau", style = "font-weight: bold;"),
+                        switchInput(inputId = "distanceAnalysis",
+                                    value = FALSE, 
+                                    onLabel = "Oui", 
+                                    offLabel = "Non"),
+                        div(
+                            style = "color: orange;",
+                            icon("hourglass", lib = "font-awesome"),
+                            "Le calcul de la distance parcourue peut prendre plusieurs minutes en fonction du nombre de points dans le tableau."
+                        ),
                         br(),
                         div(
                             style = "text-align: center;",
@@ -395,7 +402,7 @@ ui <-  dashboardPage(
                         h1("Emprise sur le Parc National de La Réunion"),
                         p(  
                             icon("book", lib = "font-awesome"),
-                            "Analyses réalisées avec les données générées par le Parc national de La Réunion 2021",
+                            "Analyses réalisées avec les données générées par le parc national de La Réunion 2021",
                             a("(source)", 
                                 href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/PNRun", 
                                 target = "_blank"
@@ -421,7 +428,7 @@ ui <-  dashboardPage(
                 ),
 
                 tabItem(tabName = "VizDataOCS",
-                        h1("Classes d'occupation du sol fréquentées par les individus"),
+                        h1("Classes d'occupation du sol fréquentées"),
                         p(  
                             icon("book", lib = "font-awesome"),
                             "Analyses réalisées avec les données générées par Dupuy, Stéphane; Gaetano, Raffaele, 2019, 'La Réunion - Carte d'occupation du sol 2018 (Spot6/7) - 1.5m'",
@@ -436,7 +443,7 @@ ui <-  dashboardPage(
                         ),
                         withSpinner(dataTableOutput(outputId = "tab_OCS")),
                         br(),
-                        h3("Proportion de localisation par classe d'occupation du sol"),
+                        h3("Proportion de localisations par classe d'occupation du sol"),
                         div(
                             style = "text-align: center;",
                             downloadButton("download_diagCirc_OCS", "Télécharger le diagramme")
@@ -450,7 +457,7 @@ ui <-  dashboardPage(
                         h1("Les zones du plan local d'urbanisme fréquéntées"),
                         p(  
                             icon("book", lib = "font-awesome"),
-                            "Analyses réalisées avec la base permanente des PLU de La Réunion 2021",
+                            "Analyses réalisées avec la base permanente du PLU de La Réunion 2021",
                             a("(source)", 
                                 href = "http://peigeo.re:8080/geonetwork/srv/fre/catalog.search#/metadata/d35ec660-e26f-4bcb-add0-83c90997018f", 
                                 target = "_blank"
@@ -473,7 +480,7 @@ ui <-  dashboardPage(
                             ),
                             br(),
                             box(
-                                title = "Proportion de localisation par type de zone",
+                                title = "Proportion de localisations par type de zone",
                                 width = 6,
                                 withSpinner(plotOutput("diagCirc_PLU")),
                                 div(
@@ -577,7 +584,7 @@ ui <-  dashboardPage(
                     ),
                     withSpinner(dataTableOutput(outputId = "tab_vegeONF")),
                     br(),
-                    h3("Proportion de localisation par type de végétation"),
+                    h3("Proportion de localisations par type de végétation"),
                     div(
                         style = "text-align: center;",
                         downloadButton("download_diagCirc_vegeONF", "Télécharger le diagramme")
@@ -609,13 +616,16 @@ ui <-  dashboardPage(
                                 target = "_blank"
                             )),
                         p(" Ces données ont été dégradées à une résolution de 3m (produit brut à 0.5m). 
-                            Les points qualifiés de 'NA' sont ceux hors de l'emprise du levé LidarHD ou avec des valeurs négatives d'altitude.
-                            Les points sur l'eau ont généralement des valeurs négatives (mais peuvent avoir des valeurs positives)."),
+                            Les points qualifiés de 'NA' sont ceux hors de l'emprise du levé LidarHD ou avec des valeurs négatives d'altitude."),
+                        p(  style = "color: red;", 
+                            icon("exclamation-triangle", lib = "font-awesome"),
+                            "Les points sur l'eau ont peuvent avoir des valeurs négatives ou positives, nécéssitant un filtrage préalable de ces derniers dans l'onglet 'Paramétrage des données GPS'."
+                        ),
                         p(  
                             style = "color: orange;", 
                             icon("hourglass", lib = "font-awesome"),
-                            "Cette analyse télécharge les dalles MNT dans lesquelles des points sont trouvés à l'intérieur (et les 8 dalles voisines). 
-                            Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur.
+                            "Cette analyse télécharge les dalles MNT contenant des points GPS (et leurs 8 dalles voisines). 
+                            Les dalles sont téléchargées une seule fois et stockées sur votre ordinateur dans 'BatNav/data/LidarHD'.
                             Cette analyse peut donc prendre plusieurs heures si les dalles n'ont jamais été téléchargées auparavant."
                         ),
                         br(),
@@ -667,7 +677,7 @@ ui <-  dashboardPage(
                             Si la distance entre ces deux points est inférieure à la distance définie par l'utilisateur ci-dessous, le point de fin de nuit est considéré comme un reposoir diurne probable."),
                         p(  style = "color: red;", 
                             icon("exclamation-triangle", lib = "font-awesome"),
-                            "Pour réaliser cette analyse aucun filtre de vitesse ne doit être appliqué dans l'onglet paramétrage."
+                            "Pour réaliser cette analyse aucun filtre de vitesse ne doit être appliqué dans l'onglet 'Paramétrage des données GPS'."
                         ),
                         br(),
                         numericInput(  inputId = "distanceRoost",
@@ -696,13 +706,8 @@ ui <-  dashboardPage(
                 tabItem(tabName = "flightHeight",
 
                     h1("Exploration de la hauteur de vol"),
-                    p("Les graphiques ci-dessous permettent d'ajuster les valeurs de hdop, vdop, vitesse et du nombre de satellite. Un seuil pour chacun de ces paramètres doit être déterminé pour filtrer les points qui ne doivent pas être considérés dans l'analyse."),
-                    p(  
-                        style = "color: red;", 
-                        icon("exclamation-triangle", lib = "font-awesome"),
-                        "Les données dans cette section sont affectées par les paramétrages appliqués dans l'onglet 'Paramétrage des données GPS'."
-                    ),
-                    h3("Appliquer les filtres pour l'analyse de la hauteur de vol"),
+                    p("Les graphiques ci-dessous permettent d'ajuster un seuil pour les paramètres 'Hdop', 'Vdop' et 'Vitesse' afin de supprimer les points qui ne doivent pas être considérés pour explorer la hauteur de vol."),
+                    h3("Filtrage des données"),
                     br(),
                     box(
                         title = "Dilution de la précision horizontale (Hdop)",
@@ -721,22 +726,22 @@ ui <-  dashboardPage(
                         title = "Nombre de satellites",
                         width = 6,
                         withSpinner(plotOutput("plot_nbSat")),
-                        numericInput(inputId = "param_nbsat", label = "Les points doivent avoir un nombre de satellites minimum de...", value = 0, min = 0, max = 100, step = 1)
+                        numericInput(inputId = "param_nbsat", label = "Les points doivent avoir un nombre minimal de satellites de...", value = 0, min = 0, max = 100, step = 1)
                     ),
                     box(
                         title = "Vitesse",
                         width = 6,
                         withSpinner(plotOutput("plot_speed")),
-                        numericInput(inputId = "param_speed", label = "Les points doivent avoir une vitesse minimum de...", value = 0, min = 0, max = 100, step = 1)
+                        numericInput(inputId = "param_speed", label = "Les points doivent avoir une vitesse minimale de...", value = 0, min = 0, max = 100, step = 1)
                     ),
-                    h3("Aperçu des données pour l'analyse"),
+                    h3("Aperçu des données restantes après application des filtres"),
                     withSpinner(dataTableOutput("preview_tab_flyFilter")),
                     div(
                         style = "text-align: center;",
                         downloadButton("download_tab_flyFilter", "Télécharger le tableau")
                     ),
 
-                    h3("Résultats de l'analyse de la hauteur de vol"),
+                    h3("Explorer la hauteur de vol"),
                     p(  style = "color: orange;", 
                         icon("hourglass", lib = "font-awesome"),
                         "Ce processus peut prendre plusieurs heures."
@@ -748,7 +753,7 @@ ui <-  dashboardPage(
                     br(),
                     fluidPage(
                         box(   
-                            title = "Hauteurs de vol au-dessus du sol (m)",
+                            title = "Hauteur de vol au-dessus du sol (m)",
                             width = 12,
                             withSpinner(plotOutput("hist_flyHeight")),
                             sliderInput( inputId = "inter_hist_flyHeight",
@@ -768,8 +773,8 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "filterDataMoveMod",
                 
-                    h1("Filtrer les données pour la modélisation du mouvement"),
-                    p("Si vous souhaitez conserver uniquement un individu spécifique et/ou une période sur la durée du suivi. La table de données chargé et filtrer dans l'onglet 'Paramétrage des données GPS' sera à nouveau filtrée selon les mois sélectionnés ci-dessous."),
+                    h1("Filtrer les données avant la modélisation"),
+                    p("Si vous souhaitez conserver uniquement une période spécifique sur la durée du suivi, la table de données chargée et filtrée dans l'onglet 'Paramétrage des données GPS' sera à nouveau filtrée selon les mois sélectionnés ci-dessous."),
                     checkboxGroupInput(
                         inputId = "filterMoveMod",
                         label = "Sélectionner les mois à conserver :",
@@ -829,20 +834,24 @@ ui <-  dashboardPage(
                 
                 tabItem(tabName = "MoveMod",
 
-                    h1("Créer les modèles de mouvement individuels"),
+                    h1("Créer les modèles de mouvement par individu"),
                     p(  style = "color: orange;", 
                         icon("hourglass", lib = "font-awesome"),
                         "Le calcul des modèles de mouvement pour chaque individu peut prendre plusieurs heures."
                     ),
                     p(  icon("floppy-disk", lib = "font-awesome"),
-                        "Les résultats de la modélisation sont sauvegardés dans un fichier 'model_par_individus.rds' (renommage du fichier optionnel) à l'emplacement 'BatNav/output/kernel_analysis'. De nouvelles exportations de résultats peuvent être générées avec ce fichier sans devoir recalculer les modèles."
+                        "Les résultats de la modélisation sont sauvegardés dans un fichier 'model_par_individus.rds' (le nom peut être modifié ci-dessous) à l'emplacement 'BatNav/output/kernel_analysis'."
+                    ),
+                    p(  style = "color: green;",
+                        icon("fast-forward", lib = "font-awesome"),
+                        "Un fichier .RDS peut être chargé afin de réaliser de nouvelles exportations de résultats sans devoir recalculer les modèles."
                     ),
                     br(),
                     radioButtons(
                         inputId = "moveMod_source",
                         label = "Comment débuter l'analyse :",
                         choices = c("Choix n°1 : Modéliser à partir des données" = "create", 
-                                    "Choix n°2 : Importer un fichier RDS déjà existant" = "import"),
+                                    "Choix n°2 : Importer un fichier .RDS déjà existant" = "import"),
                         selected = "create"
                     ),
                     br(),
@@ -873,7 +882,7 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "resultMoveMod",
 
-                    h1("Résultats des modèles de mouvement individuels"),
+                    h1("Résultats des modèles de mouvement générés"),
                     numericInput(  
                             inputId = "kernel_lvl2",
                             label = "Niveau de contour du kernel (en %)",
@@ -883,7 +892,7 @@ ui <-  dashboardPage(
                             step = 1
                     ),
                     sliderInput(inputId = "zoomOSM1",
-                                label = "Détails du fond de carte OpenStreetMap",
+                                label = "Détails du fond de carte",
                                 min = 1,
                                 max = 13,
                                 value = 11,
@@ -936,7 +945,7 @@ ui <-  dashboardPage(
                         title = "Localisation des kernels individuels",
                         width = 6,
                         sliderInput(inputId = "zoomOSM2",
-                                    label = "Détails du fond de carte OpenStreetMap",
+                                    label = "Détails du fond de carte",
                                     min = 1,
                                     max = 13,
                                     value = 11,
@@ -951,7 +960,6 @@ ui <-  dashboardPage(
                     ),
 
                     h1("Moyenner les modèles de mouvement individuels"),
-                    p(  "Ce processus qui est réalisé avec le fichier de sauvegarde RDS généré durant la modélisation (choix 1 ou 2)."),
                     p(  style = "color: orange;", 
                         icon("wrench", lib = "font-awesome"),
                         "Les résultats ci-dessous sont générés en fonction du niveau de contour du kernel sélectionné plus haut."
@@ -966,7 +974,7 @@ ui <-  dashboardPage(
                         title = "Kernel moyen des individus",
                         width = 12,
                         sliderInput(inputId = "zoomOSM3",
-                                label = "Choisir le niveau de détail du fond de carte OpenStreetMap",
+                                label = "Choisir le niveau de détail du fond de carte",
                                 min = 1,
                                 max = 13,
                                 value = 11,
@@ -984,7 +992,6 @@ ui <-  dashboardPage(
 
                 tabItem(tabName = "aniMove",
                     h1("Créer une animation des déplacements"),
-                    p("Cette animation est réalisée avec les données GPS entrée dans l'onglet 'Paramétrage des données GPS'."),
                     p(  style = "color: orange;", 
                         icon("hourglass", lib = "font-awesome"),
                         "Attention la création puis le téléchargement de l'animation peut prendre plusieurs heures."
@@ -1015,9 +1022,9 @@ ui <-  dashboardPage(
                         inputId = "fps_anim",
                         label = "Nombre d'images par seconde",
                         min = 1,
-                        max = 1000,
+                        max = 10000,
                         value = 200,
-                        step = 1
+                        step = 10
                     ),
                     p(  style = "color: orange;",
                         icon("info-circle", lib = "font-awesome"),
@@ -1025,7 +1032,7 @@ ui <-  dashboardPage(
                     ),
                     numericInput(
                         inputId = "nb_cores_anim",
-                        label = "Nombre de cœurs à utiliser pour le calcul (parallélisation)",
+                        label = "Nombre de cœurs à utiliser pour le calcul",
                         value = 2,
                         min = 1,
                         max = 30,
