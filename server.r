@@ -1052,7 +1052,8 @@ server <- function(input, output, session) {
                         corresp_tab = corresp_tab(), 
                         title_anim = input$title_anim, 
                         map_res = input$res_background_anim,
-                        subtitle_anim = input$subtitle_anim
+                        subtitle_anim = input$subtitle_anim,
+                        n_cores = input$nb_cores_anim
                     )
         return(frames)
     })
@@ -1078,6 +1079,7 @@ server <- function(input, output, session) {
             message("Saving animation in your folder")
             file.copy(temp_file, file, overwrite = TRUE)
             unlink(temp_file)
+            unlink(paste0(tempdir(), "/moveVis"), recursive = TRUE)
         }
     )
 

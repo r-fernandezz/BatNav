@@ -5,8 +5,11 @@
 #' @description Create animation tracking
 #'
 #' @param BDD_track dataframe with tracking data (columns : DeviceID, Longitudedecimal, Latitudedecimal, Year, Month, Day, Hour, Minute, Second)
+#' @param title_anim Title of the animation
+#' @param subtitle_anim Subtitle of the animation
+#' @param map_res Resolution of the background map.
+#' @param n_cores Number of cores to use for parallel processing.
 #' @param corresp_tab DataFrame. Correspondence table to change the DeviceID number by the name of individual.
-#' 
 #' 
 #' @return Frames object from moveVis package
 #'
@@ -19,6 +22,7 @@ trip_animation <- function( BDD_track,
                             title_anim,
                             subtitle_anim,
                             map_res,
+                            n_cores,
                             corresp_tab = NULL){
     
   # Modify time column
@@ -37,6 +41,15 @@ trip_animation <- function( BDD_track,
     BDD_track$DeviceID <- BDD_track$nom_individu
     legend_title <- "Individuals"
   }
+
+  message("Parallel and disk setup...")
+  moveVis::use_multicore(n_cores = n_cores)
+  moveVis::use_disk( 
+    frames_to_disk = TRUE, 
+    dir_frames = paste0(tempdir(), "/moveVis"),
+    n_memory_frames = NULL, 
+    verbose = TRUE
+  )
 
   message("Creating move2 object...")
   

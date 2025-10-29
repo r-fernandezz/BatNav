@@ -1022,6 +1022,18 @@ ui <-  dashboardPage(
                         icon("info-circle", lib = "font-awesome"),
                         "Plus le nombre d'images par seconde est élevé, plus l'animation est courte."
                     ),
+                    numericInput(
+                        inputId = "nb_cores_anim",
+                        label = "Nombre de cœurs à utiliser pour le calcul (parallélisation)",
+                        value = 2,
+                        min = 1,
+                        max = 30,
+                        step = 1
+                    ),
+                    p(  style = "color: orange;",
+                        icon("info-circle", lib = "font-awesome"),
+                        "Veiller à laisser au moins un coeur disponible pour votre machine."
+                    ),
                     actionButton("generate_frames", "Générer les images de l'animation"),
                     h3("Visualiser l'une des images de l'animation avant son téléchargement"),
                     p("Corriger les images de l'animation si nécessaire avant de la créer, en modifiant les paramètres ci-dessus puis en cliquant à nouveau sur 'Générer les images de l'animation'."),
