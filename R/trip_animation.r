@@ -24,7 +24,8 @@ trip_animation <- function( BDD_track,
                             map_res,
                             n_cores,
                             corresp_tab = NULL){
-    
+  
+  message("Preparing data...")
   # Modify time column
   BDD_track$Timestamp <- as.POSIXct(paste(paste(BDD_track$Year, BDD_track$Month, BDD_track$Day, sep = "-"), 
                                           paste(BDD_track$Hour, BDD_track$Minute, BDD_track$Second, sep = ":"), 
@@ -38,6 +39,7 @@ trip_animation <- function( BDD_track,
   legend_title <- "Tag number"
 
   if(!is.null(corresp_tab)){
+    message("Applying correspondence table to DeviceID...")
     BDD_track$DeviceID <- BDD_track$nom_individu
     legend_title <- "Individuals"
   }

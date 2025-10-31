@@ -1042,14 +1042,13 @@ server <- function(input, output, session) {
     # Create movement animation frames
     frames <- eventReactive(input$generate_frames, {
         req(df_gps())
-        req(corresp_tab())
         req(input$title_anim)
         req(input$subtitle_anim)
 
         message("Creating movement animation frames")
         frames <- trip_animation(
                         BDD_track = df_gps(), 
-                        corresp_tab = corresp_tab(), 
+                        corresp_tab = input$correspFile, 
                         title_anim = input$title_anim, 
                         map_res = input$res_background_anim,
                         subtitle_anim = input$subtitle_anim,

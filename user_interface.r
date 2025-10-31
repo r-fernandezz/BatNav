@@ -863,8 +863,8 @@ ui <-  dashboardPage(
                     br(),
                     p(strong("Si choix 1 : Considérer l'erreur de positionnement dans les modèles de mouvement individuels")),
                     switchInput(inputId = "hdop_error", value = FALSE, onLabel = "Oui", offLabel = "Non"),
-                    p(  style = "color: red;", 
-                        icon("exclamation-triangle", lib = "font-awesome"),
+                    p(  style = "color: orange;", 
+                        icon("hourglass", lib = "font-awesome"),
                         "Rallonge considérablement le temps de calcul."
                     ),
                     br(),
