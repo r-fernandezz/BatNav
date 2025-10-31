@@ -259,7 +259,17 @@ ui <-  dashboardPage(
                                 tags$li("1️⃣ Rendez-vous dans l'onglet 'Paramétrage des données GPS' pour importer vos données et configurer les paramètres de votre analyse."),
                                 tags$li("2️⃣ Lancer les analyses et visualiser les résultats en vous déplaçant dans les différents onglets disponibles.")
                             )
-                        )
+                    ),
+                    br(),
+                    p(icon("lightbulb", lib = "font-awesome"),
+                        "N'hésitez pas à jeter un coup d'œil au terminal durant votre analyse, il vous fournira des informations utiles...",
+                        style = "text-align: justify; margin-left: 15px; margin-right: 15px;"
+                    ),
+                    br(),
+                    p(  "Bonnes analyses avec BatNav !",
+                        icon("smile", lib = "font-awesome"), 
+                        style = "text-align: center; font-weight: bold; margin-top: 30px; font-size: 16px;"
+                    )
                 ),
 
                 tabItem(tabName = "readData", 
@@ -361,7 +371,7 @@ ui <-  dashboardPage(
                         div(
                             style = "color: orange;",
                             icon("hourglass", lib = "font-awesome"),
-                            "Le calcul de la distance parcourue peut prendre plusieurs minutes en fonction du nombre de points dans le tableau."
+                            "Le calcul des champs de distance peut prendre plusieurs minutes en fonction du nombre de points par individu dans le tableau."
                         ),
                         br(),
                         div(
