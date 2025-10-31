@@ -154,7 +154,7 @@ get_moveMod <- function(bdd, hdop_error, corresp_tab = NULL){
 
         # Calculate kernel to remove bias with common grid
         message("#### Calculate kernel for individual ", id_tag)
-        ud <- ctmm::akde(tel_sub, mod, grid = common_grid, debias = TRUE, weights = TRUE)
+        ud <- ctmm::akde(tel_sub, mod, grid = common_grid, debias = TRUE, weights = TRUE, dt.plot = FALSE)
         sum_ud <- summary(ud)
 
         return(list(DeviceID = id_tag, bdd.ctmm = tel_sub, models = mod, UDs = ud, svf = svf, sum_mod = sum_mod, sum_ud = sum_ud))
