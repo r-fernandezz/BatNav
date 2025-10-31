@@ -791,8 +791,12 @@ ui <-  dashboardPage(
                 
                     h1("Evaluer la qualité des données avant la modélisation"),
                     p("Cette évaluatione est basée sur les données entrées dans l'onglet 'Paramétrage des données GPS'"),
-                    p(  style = "color: orange;", 
+                    p(  style = "color: red;", 
                         icon("exclamation-triangle", lib = "font-awesome"),
+                        "Le ré-échantillonnage des points GPS doit être appliqué dans l'onglet 'Paramétrage des données GPS'."
+                    ),
+                    p(  style = "color: orange;", 
+                        icon("info-circle", lib = "font-awesome"),
                         "Les résultats de cet onglet doivent être correctement interprétés afin de garantir la fiabilité des modèles générés dans l'étape suivante."
                     ),
                     numericInput(  
