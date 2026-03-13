@@ -46,10 +46,15 @@ trip_animation <- function( BDD_track,
 
   message("Parallel and disk setup...")
   moveVis::use_multicore(n_cores = n_cores)
+  
+  # Create temporary folder for animation frames
+  unlink(here::here("tempfolder"), recursive = TRUE) #remove previous temporary folder if exists
+  dir.create(here::here("tempfolder"), showWarnings = FALSE)
+
   moveVis::use_disk( 
     frames_to_disk = TRUE, 
-    dir_frames = paste0(tempdir(), "/moveVis"),
-    n_memory_frames = NULL, 
+    dir_frames = here::here("tempfolder"),
+    n_memory_frames = 100, 
     verbose = TRUE
   )
 
@@ -63,7 +68,7 @@ trip_animation <- function( BDD_track,
                                   track_id_column = "DeviceID", 
                                   track_attributes = "")
 
-  m <- moveVis::align_move(BDD_work, res = units::set_units(15, "min"))
+  m <- moveVis::align_move(BDD_work, res = units::set_units(3, "hour"))
 
   message("Creating animation...")
 

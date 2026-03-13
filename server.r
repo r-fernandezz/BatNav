@@ -1072,13 +1072,21 @@ server <- function(input, output, session) {
             req(frames())
 
             message("Creating temporary file for animation")
-            temp_file <- tempfile(fileext = ".gif")
-            moveVis::animate_frames(frames(), out_file = temp_file, fps = input$fps_anim, display = FALSE)
+            temp_folder <- here::here("tempfolder")
+            temp_file <- file.path(temp_folder, "animation.gif") # Ensure the temporary file has the correct extension
+
+            message("Creating animation...")
+            moveVis::animate_frames(
+                frames(), 
+                out_file = temp_file, 
+                fps = input$fps_anim, 
+                display = FALSE
+            )
 
             message("Saving animation in your folder")
-            file.copy(temp_file, file, overwrite = TRUE)
-            unlink(temp_file)
-            unlink(paste0(tempdir(), "/moveVis"), recursive = TRUE)
+            file.copy(temp_file, file, overwrite = TRUE) # Copy the temporary file to the final destination
+            unlink(here::here("tempfolder"), recursive = TRUE) # Clean up the temporary folder
+            message("Animation created and downloaded successfully!")
         }
     )
 
