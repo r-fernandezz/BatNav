@@ -1051,6 +1051,7 @@ server <- function(input, output, session) {
                         corresp_tab = input$correspFile, 
                         title_anim = input$title_anim, 
                         map_res = input$res_background_anim,
+                        interpol_anim = input$interpol_anim,
                         subtitle_anim = input$subtitle_anim,
                         n_cores = input$nb_cores_anim
                     )

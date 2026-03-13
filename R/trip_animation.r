@@ -7,6 +7,7 @@
 #' @param BDD_track dataframe with tracking data (columns : DeviceID, Longitudedecimal, Latitudedecimal, Year, Month, Day, Hour, Minute, Second)
 #' @param title_anim Title of the animation
 #' @param subtitle_anim Subtitle of the animation
+#' @param interpol_anim Numeric. Time interval in minute for interpolation of the tracks.
 #' @param map_res Resolution of the background map.
 #' @param n_cores Number of cores to use for parallel processing.
 #' @param corresp_tab DataFrame. Correspondence table to change the DeviceID number by the name of individual.
@@ -21,6 +22,7 @@
 trip_animation <- function( BDD_track,
                             title_anim,
                             subtitle_anim,
+                            interpol_anim,
                             map_res,
                             n_cores,
                             corresp_tab = NULL){
@@ -68,7 +70,7 @@ trip_animation <- function( BDD_track,
                                   track_id_column = "DeviceID", 
                                   track_attributes = "")
 
-  m <- moveVis::align_move(BDD_work, res = units::set_units(3, "hour"))
+  m <- moveVis::align_move(BDD_work, res = units::set_units(interpol_anim, "min"))
 
   message("Creating animation...")
 

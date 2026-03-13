@@ -1037,12 +1037,26 @@ ui <-  dashboardPage(
                         label = "Nombre d'images par seconde",
                         min = 1,
                         max = 10000,
-                        value = 200,
+                        value = 25,
                         step = 10
                     ),
                     p(  style = "color: orange;",
                         icon("info-circle", lib = "font-awesome"),
                         "Plus le nombre d'images par seconde est élevé, plus l'animation est courte."
+                    ),
+                    sliderInput( 
+                        inputId = "interpol_anim",
+                        label = "Temps d'interpolation des points (en minutes)",
+                        min = 1,
+                        max = 60*24,
+                        value = 15,
+                        step = 1
+                    ),
+                    p(  style = "color: orange;",
+                        icon("info-circle", lib = "font-awesome"),
+                        "Cette valeur d'interpolation doit être réfléchie en fonction de la fréquence temporelle d'acquisition des données GPS et de la durée du suivi. 
+                        Plus cette valeur est proche de la résolution temporelle des données, plus les trajectoires seront fidèles aux données, mais plus l'animation demandera de ressources pour être créée. 
+                        A l'inverse, une interpolation trop grossière peut créer des trajectoires peu fidèles aux données."
                     ),
                     numericInput(
                         inputId = "nb_cores_anim",
